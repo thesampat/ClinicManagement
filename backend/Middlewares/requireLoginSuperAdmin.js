@@ -2,13 +2,12 @@ const jwt = require('jsonwebtoken');
 const { SuperAdmin } = require("../Models/SuperAdminModel")
 
 const protectSuperAdmin = (req, res, next) => {
-    d
     const { authorization } = req.headers;
     if (!authorization) {
         return res.status(401).json({ error: "you must be logged in through super admin!" })
     }
     const token = authorization.replace("Bearer ", "")
-    jwt.verify(token, "sahil26244", (err, payload) => {
+    jwt.verify(token, "clinic7865", (err, payload) => {
         if (err) {
             return res.status(401).json({ error: "you must be logged in through super admin!" })
         }

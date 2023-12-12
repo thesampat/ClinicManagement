@@ -1,7 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { SuperAdmin } = require("../Models/SuperAdminModel");
-const { AssistantDoctor } = require('../Models/AssitantDoctorModel')
+const { AssistantDoctor } = require('../Models/AssitantDoctorModel');
+const { setPermissionRoles, getPermissions } = require("./Other");
 require("dotenv").config();
 
 
@@ -9,7 +10,6 @@ const assistantDoctorRegisterBySuperAdmin = async (req, res) => {
     const { name, email, password, fees, education, typesOfDoctor,
         pic, phone, experience, doctorAvailableDays, slotTimes, availableTime, doctorId, availability, education_details, experience_details } = req.body;
 
-    console.log(name, email, password)
     const Role = "AssistantDoctor";
     if (!name || !email || !password) {
         return res.status(422).json({ error: "Please provide all fields." });
@@ -59,7 +59,7 @@ const assistantDoctorRegisterBySuperAdmin = async (req, res) => {
                     availability
                 })
 
-                await setPermissionRoles(name, Role)
+                await setPermissionRoles(name, Role, newDoctor?._id)
                 let newDoctorRes = await newDoctor.save()
 
                 return res.status(201).send({ msg: 'Assistant doctor registered successfully.', data: newDoctorRes?._id });
@@ -86,6 +86,7 @@ const AssistantDoctorLogin = async (req, res) => {
 
     try {
         const doctor = await AssistantDoctor.findOne({ email })
+        let userAccess = await getPermissions(doctor._id)
 
         if (!doctor) {
             return res.status(401).json({ error: "Invalid credentials." });
@@ -99,7 +100,7 @@ const AssistantDoctorLogin = async (req, res) => {
 
             if (result) {
                 const token = jwt.sign(
-                    { doctorId: doctor._id },
+                    { doctorId: doctor._id, permissions: userAccess?.permissions, role: userAccess?.role },
                     process.env.SECRET_KEY,
                     {
                         expiresIn: "1h",

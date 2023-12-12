@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Admin } = require("../Models/AdminModel"); // Assuming you have an Admin model
+const { setPermissionRoles } = require("./Other");
 require("dotenv").config();
 
 const adminRegister = async (req, res) => {
@@ -30,7 +31,7 @@ const adminRegister = async (req, res) => {
                         role: Role,
                     });
 
-                    await setPermissionRoles(name, Role)
+                    await setPermissionRoles(name, Role, new_admin?._id)
                     await new_admin.save();
                     return res.status(201).send({ msg: "Signup Successful" });
                 } catch (error) {

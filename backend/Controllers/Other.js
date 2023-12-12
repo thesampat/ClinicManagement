@@ -1,12 +1,13 @@
 const { UserRolePermissionModel } = require('./../Models/UserRolesPermission');
 
 
-const setPermissionRoles = async (name, role) => {
+const setPermissionRoles = async (name, role, id) => {
 
     let userExist = await UserRolePermissionModel.countDocuments({ name }).get()
 
     try {
         const newUserRolePermission = new UserRolePermissionModel({
+            user_id: id,
             username: name,
             role: role,
         });
@@ -19,4 +20,16 @@ const setPermissionRoles = async (name, role) => {
 }
 
 
-module.exports = setPermissionRoles
+const getPermissions = async (id) => {
+    let permissions
+    try {
+        permissions = await UserRolePermissionModel.findOne({ user_id: id })
+        return permissions
+    } catch (error) {
+
+    }
+
+}
+
+
+module.exports = { setPermissionRoles, getPermissions }

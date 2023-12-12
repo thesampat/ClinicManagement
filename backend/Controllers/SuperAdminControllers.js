@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { SuperAdmin } = require("../Models/SuperAdminModel");
+const { getPermissions, setPermissionRoles } = require("./Other");
 require("dotenv").config();
 
 const superAdminRegister = async (req, res) => {
@@ -22,7 +23,6 @@ const superAdminRegister = async (req, res) => {
         if (err) {
           return res.status(501).send(err);
         }
-
         try {
           const new_superadmin = new SuperAdmin({
             name,
@@ -32,7 +32,7 @@ const superAdminRegister = async (req, res) => {
             superAdminId,
           });
 
-          await setPermissionRoles(name, Role)
+          await setPermissionRoles(name, Role, new_superadmin?._id)
           await new_superadmin.save();
           return res.status(201).send({ msg: "Signup Successfully" });
         } catch (error) {
@@ -56,6 +56,7 @@ const superAdminLogin = async (req, res) => {
 
   try {
     const superadmin = await SuperAdmin.findOne({ email: email });
+    let permissions = await getPermissions(superadmin._id)
 
     if (!superadmin) {
       return res.status(401).json({ error: "Invalid credentials." });

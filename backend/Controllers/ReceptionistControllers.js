@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Receptionist } = require("../Models/ReceptionistModel")
 const { SuperAdmin } = require("../Models/SuperAdminModel");
-const setPermissionRoles = require("./Other");
+const { setPermissionRoles, getPermissions } = require("./Other");
 require("dotenv").config();
 
 const generateItemId = async () => {
@@ -42,13 +42,6 @@ const receptionistRegisterBySuperAdmin = async (req, res) => {
 
 
     try {
-        // const requestId = req.superadmin._id
-        // const requester = await SuperAdmin.findById(requestId)
-
-        // if (!requester || requester.role !== 'SuperAdmin') {
-        //     return res.status(403).send('Only SuperAdmins can register doctors.');
-        // }
-
         const authReceptionist = await Receptionist.findOne({ email })
         if (authReceptionist) {
             return res.status(403).send('Receptionist is already registered');
@@ -72,7 +65,7 @@ const receptionistRegisterBySuperAdmin = async (req, res) => {
                     experience_details,
                     location,
                 })
-                await setPermissionRoles(name, Role)
+                await setPermissionRoles(name, Role, newReceptionist?._id)
                 await newReceptionist.save()
                 return res.status(201).send({ msg: 'Receptionist registered successfully.', data: newReceptionist?._id });
             } catch (error) {
@@ -98,6 +91,7 @@ const receptionistLogin = async (req, res) => {
 
     try {
         const receptionist = await Receptionist.findOne({ email: email })
+        let permissions = await getPermissions(receptionist._id)
 
         if (!receptionist) {
             console.log('Hcek')
@@ -113,7 +107,7 @@ const receptionistLogin = async (req, res) => {
 
             if (result) {
                 const token = jwt.sign(
-                    { receptionistId: receptionist._id },
+                    { receptionistId: receptionist._id, permissions: permissions?.permissions, role: permissions?.role },
                     process.env.SECRET_KEY,
                     {
                         expiresIn: "1h",
@@ -132,11 +126,11 @@ const receptionistLogin = async (req, res) => {
                     }
                 })
             } else {
-
                 return res.status(401).json({ error: "Invalid credentials." });
             }
         })
     } catch (error) {
+        console.log(error)
         return res.status(500).json({ error: "Server error." });
     }
 }

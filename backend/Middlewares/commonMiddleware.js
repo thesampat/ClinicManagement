@@ -11,7 +11,7 @@ const protectSuperAdminAndReceptionist = (req, res, next) => {
 
   const token = authorization.replace('Bearer ', '');
 
-  jwt.verify(token, 'sahil26244', (err, payload) => {
+  jwt.verify(token, 'clinic7865', (err, payload) => {
     if (err) {
       return res.status(401).json({ error: 'You must be logged in!' });
     }

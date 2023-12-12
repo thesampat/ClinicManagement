@@ -4,6 +4,7 @@ const { Doctor } = require("../Models/DoctorsModel");
 const { SuperAdmin } = require("../Models/SuperAdminModel");
 const { createUserRolePermission } = require("./RoleAndPermissionController");
 const { UserRolePermissionModel } = require("../Models/UserRolesPermission");
+const { setPermissionRoles, getPermissions } = require("./Other");
 require("dotenv").config();
 
 
@@ -60,7 +61,7 @@ const doctorRegisterBySuperAdmin = async (req, res) => {
                     availability
                 })
 
-                await setPermissionRoles(name, Role)
+                await setPermissionRoles(name, Role, newDoctor?._id)
                 let newDoctorRes = await newDoctor.save()
 
                 return res.status(201).send({ msg: 'Doctor registered successfully.', data: newDoctorRes?._id });
@@ -87,6 +88,7 @@ const doctorLogin = async (req, res) => {
 
     try {
         const doctor = await Doctor.findOne({ email })
+        let userAccess = await getPermissions(doctor._id)
 
         if (!doctor) {
             return res.status(401).json({ error: "Invalid credentials." });
@@ -98,25 +100,14 @@ const doctorLogin = async (req, res) => {
             }
 
             if (result) {
+
                 const token = jwt.sign(
-                    { doctorId: doctor._id },
+                    { doctorId: doctor._id, permissions: userAccess?.permissions, role: userAccess?.role },
                     process.env.SECRET_KEY,
                     {
                         expiresIn: "1h",
                     }
                 );
-
-
-                await createUserRolePermission({
-                    'req': {
-                        'body': {
-                            'username': doctor.name,
-                            'role': doctor.role,
-                            'permission': [],
-                            'active': true
-                        }
-                    }
-                }, {})
 
                 return res.status(200).json({
                     message: "Doctor Login Successful!",

@@ -103,9 +103,9 @@ const YourComponent = () => {
           setFormData(subtitleFormat);
         }
 
-        readTransactionsData?.[0]?.map((f) => {
+        readTransactionsData?.[0]?.map((f, index) => {
           f?.Transactions?.map((i) => {
-            setDescriptionsRecords((prev) => [...prev, { ...i, subTitle: f?.subTitle }]);
+            setDescriptionsRecords((prev) => [...prev, { ...i, subTitle: f?.subTitle, subTitelIndex: index }]);
           });
         });
       } else {
@@ -231,20 +231,36 @@ const YourComponent = () => {
 function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange, year, month, date, setTotal, formRef, totals, descriptionRecords, setDescriptionsRecords, viewType }) {
   const inputRefs = useRef([]);
   const [rowletter, setRowletter] = useState({});
-  const addRow = (e, newIndex, subIndex) => {
+
+  useEffect(() => {
+    if (descriptionRecords?.length > 0) {
+      descriptionRecords?.map((i, index) => {
+        setRowletter((prev) => ({ ...prev, [`${i.description}_${i?.subTitelIndex}`]: index }));
+      });
+    }
+  }, [descriptionRecords]);
+
+  const addRow = (e, newIndex, subIndex, descp) => {
+    const emptyDescriptionCount = formData?.[0]?.Transactions?.filter((e) => e.subTitle).reduce((count, item) => (item.description.trim() === '' ? count + 1 : count), 0);
+
+    // if (emptyDescriptionCount > 0) {
+    //   return false;
+    // }
+
     const updatedData = [...formData?.[subIndex]?.Transactions, { description: '', income: '', expense: '', gain: '' }];
-    // handleTableChange(e, updatedData);
     setFormData((formData) => {
       if (subIndex >= 0 && subIndex < formData.length) {
         const newData = [...formData];
         newData[subIndex].Transactions = updatedData;
         return newData;
       }
-      // Handle the case where id is not a valid index
       return formData;
     });
     formRef.current = updatedData;
-    setTimeout(() => focusOnInput(newIndex), 0);
+    setTimeout(() => {
+      focusOnInput(newIndex, subIndex);
+    }, 0);
+    e.preventDefault(); // Prevents the default behavior of the Tab key
   };
 
   const removeRow = (e, index, subIndex, subTitle, description, ntype) => {
@@ -267,13 +283,13 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
     const { name, value } = e.target;
 
     if (name == 'description') {
-      if (rowletter[value]) {
-        if (rowletter[value] !== rowIndex) {
+      if (rowletter[`${value}_${subIndex}`] !== undefined) {
+        if (rowletter[`${value}_${subIndex}`] !== rowIndex) {
           return false;
         }
       }
     }
-    setRowletter((prev) => ({ ...prev, [value]: rowIndex }));
+    setRowletter((prev) => ({ ...prev, [`${value}_${subIndex}`]: rowIndex }));
 
     setFormData((prevData) => {
       const existingIndex = prevData?.[subIndex]?.Transactions.findIndex((item) => item?.description === index);
@@ -286,11 +302,20 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
 
         formRef.current = updatedValues;
 
-        let HiN = [...prevData?.flatMap((e) => e.Transactions.filter((t) => t.description !== index).map((transaction) => transaction)), { ...updatedValues?.[existingIndex] }];
+        let HiN = [
+          ...prevData?.flatMap((e) =>
+            e.Transactions.filter((t) => t.description !== index && e.subTitle !== key).map((transaction) => {
+              return { ...transaction, subTitle: e?.subTitle };
+            }),
+          ),
+          { ...updatedValues?.[existingIndex] },
+        ];
 
-        const newDescriptions = HiN.filter((item, i, arr) => arr.findIndex((t) => t.description === item.description) === i);
+        const newDescriptions = HiN.filter((item, i, arr) => arr.findIndex((t) => (t.description === item.description) & (t.subTitle == t.subTitle)) === i);
 
         setDescriptionsRecords(newDescriptions);
+
+        console.log(newDescriptions, 'what is happenings');
 
         ['income', 'expense']?.includes(name) && calculateTotals(HiN, setTotal, name, totals);
       } else {
@@ -309,9 +334,10 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
     });
   };
 
-  const focusOnInput = (index) => {
-    if (inputRefs.current?.[index]) {
-      inputRefs.current[index].focus();
+  const focusOnInput = (subIndex, index) => {
+    const refKey = `${subIndex}_${index}`;
+    if (inputRefs.current?.[refKey]) {
+      inputRefs.current[refKey].focus();
     }
   };
 
@@ -366,30 +392,47 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
                       <input disabled={disabled} type="text" className="p-2 w-full border border-gray-300 rounded" name={`description`} value={row?.description} onChange={(e) => handleInputChange(e, row?.description, 'description', subIndex, index)} />
                     </td>
                     <td className="text-center">
-                      <input disabled={disabled} type="text" className="p-2 w-full border border-gray-300 rounded" name={`income`} value={row?.income} onChange={(e) => handleInputChange(e, row?.description, 'income', subIndex, index)} />
+                      <input
+                        disabled={row.expense !== '' ? true : false}
+                        type="text"
+                        className="p-2 w-full border border-gray-300 rounded"
+                        name={`income`}
+                        value={row?.income}
+                        onChange={(e) => {
+                          handleInputChange(e, row?.description, 'income', subIndex, index);
+                        }}
+                      />
                     </td>
                     <td className="text-center">
                       <input
-                        disabled={disabled}
+                        disabled={row.income !== '' ? true : false}
                         type="text"
                         className="p-2 w-full border border-gray-300 rounded"
                         name={`expense`}
                         value={row?.expense}
-                        onChange={(i) => handleInputChange(i, row?.description, 'expense', subIndex, index)}
+                        onChange={(i) => {
+                          handleInputChange(i, row?.description, 'expense', subIndex, index);
+                        }}
+                      />
+                    </td>
+                    <td className={`text-center ${row?.gain >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      <input
                         onKeyDown={(n) => {
                           if (n.key === 'Tab') {
-                            addRow(n, index, subIndex);
-                            n.preventDefault();
+                            addRow(n, index, subIndex, row?.description);
                           } else if (n.key === 'Delete') {
                             removeRow(n, index, subIndex, e?.subTitle, row?.description, row?.income == '' ? 'expense' : 'income');
                             n.preventDefault();
                           }
                         }}
-                        ref={(input) => (inputRefs.current[index] = input)}
+                        ref={(input) => (inputRefs.current[`${subIndex}_${index}`] = input)}
+                        disabled={disabled}
+                        type="text"
+                        className="p-2 w-full border border-gray-300 rounded"
+                        name={`gain`}
+                        value={row?.gain}
+                        onChange={(e) => handleInputChange(e, row?.description, 'gain', subIndex, index)}
                       />
-                    </td>
-                    <td className={`text-center ${row?.gain >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                      <input disabled={disabled} type="text" className="p-2 w-full border border-gray-300 rounded" name={`gain`} value={row?.gain} onChange={(e) => handleInputChange(e, row?.description, 'gain', subIndex, index)} />
                     </td>
                   </tr>
                 ))}

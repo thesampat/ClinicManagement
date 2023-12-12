@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Consultant } = require("../Models/ConsultantModel");
 const { SuperAdmin } = require("../Models/SuperAdminModel");
+const { setPermissionRoles, getPermissions } = require("./Other");
 require("dotenv").config();
 
 const generateItemId = async () => {
@@ -70,7 +71,7 @@ const consultantRegisterBySuperAdmin = async (req, res) => {
                     location
                 })
 
-                await setPermissionRoles(name, Role)
+                await setPermissionRoles(name, Role, newConsultant?._id)
                 await newConsultant.save()
                 return res.status(201).send({ msg: 'Consultant registered successfully.', data: newConsultant?._id });
             } catch (error) {
@@ -119,6 +120,7 @@ const consultantLogin = async (req, res) => {
 
     try {
         const consultant = await Consultant.findOne({ email })
+        let userAccess = await getPermissions(consultant._id)
 
         if (!consultant) {
             return res.status(401).json({ error: "Invalid credentials." });
@@ -131,7 +133,7 @@ const consultantLogin = async (req, res) => {
 
             if (result) {
                 const token = jwt.sign(
-                    { consultantId: consultant._id },
+                    { consultantId: consultant._id, permissions: userAccess?.permissions, role: userAccess?.role },
                     process.env.SECRET_KEY,
                     {
                         expiresIn: "1h",
