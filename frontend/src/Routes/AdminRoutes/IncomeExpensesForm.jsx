@@ -240,45 +240,6 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
     }
   }, [descriptionRecords]);
 
-  const addRow = (e, newIndex, subIndex, descp) => {
-    const emptyDescriptionCount = formData?.[0]?.Transactions?.filter((e) => e.subTitle).reduce((count, item) => (item.description.trim() === '' ? count + 1 : count), 0);
-
-    // if (emptyDescriptionCount > 0) {
-    //   return false;
-    // }
-
-    const updatedData = [...formData?.[subIndex]?.Transactions, { description: '', income: '', expense: '', gain: '' }];
-    setFormData((formData) => {
-      if (subIndex >= 0 && subIndex < formData.length) {
-        const newData = [...formData];
-        newData[subIndex].Transactions = updatedData;
-        return newData;
-      }
-      return formData;
-    });
-    formRef.current = updatedData;
-    setTimeout(() => {
-      focusOnInput(newIndex, subIndex);
-    }, 0);
-    e.preventDefault(); // Prevents the default behavior of the Tab key
-  };
-
-  const removeRow = (e, index, subIndex, subTitle, description, ntype) => {
-    let removedSubTitel = descriptionRecords?.filter((d) => d.description !== description);
-    setDescriptionsRecords(removedSubTitel);
-
-    if (formData?.[subIndex]?.Transactions?.length <= 1) {
-      return false;
-    }
-    setFormData((prevFormData) => {
-      const updatedData = [...prevFormData];
-      updatedData[subIndex].Transactions = updatedData[subIndex].Transactions.filter((_, i) => i !== index);
-      return updatedData;
-    });
-    // console.log(removedSubTitel);
-    calculateTotals(removedSubTitel, setTotal, ntype, totals);
-  };
-
   const handleInputChange = (e, index, key, subIndex, rowIndex) => {
     const { name, value } = e.target;
 
@@ -314,8 +275,6 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
         const newDescriptions = HiN.filter((item, i, arr) => arr.findIndex((t) => (t.description === item.description) & (t.subTitle == t.subTitle)) === i);
 
         setDescriptionsRecords(newDescriptions);
-
-        console.log(newDescriptions, 'what is happenings');
 
         ['income', 'expense']?.includes(name) && calculateTotals(HiN, setTotal, name, totals);
       } else {
@@ -360,97 +319,51 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
   return (
     <div>
       {viewType == 'regular' && (
-        <table className="min-w-full divide-y divide-gray-200 border border-gray-300">
+        <table className="min-w-full">
           <thead>
             <tr className="text-center text-xs bg-primary-400 font-medium text-primary-50 uppercase tracking-wider">
-              <th className="px-4 py-2 border border-gray-300">Description</th>
+              <th colSpan={2} className="px-4 py-2 border border-gray-300">
+                Description
+              </th>
               <th className="px-4 py-2 border border-gray-300">Income</th>
               <th className="px-4 py-2 border border-gray-300">Expense</th>
               <th className="px-4 py-2 border border-gray-300">Gain</th>
+              <th colSpan={2} className="px-4 py-2 border border-gray-300">
+                Edit
+              </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200 border-separate border-spacing-y-3">
+          <tbody className="border-separate">
             {formData?.map((e, subIndex) => (
               <React.Fragment key={subIndex}>
-                <tr className="mb-4">
-                  <th colSpan="4" className="text-center">
-                    <input
-                      disabled={disabled}
-                      type="text"
-                      className="p-2 w-full border border-gray-300 rounded"
-                      value={e?.subTitle}
-                      id={subIndex}
-                      onChange={(e) => {
-                        handleTitleChange(e, subIndex);
-                      }}
-                    />
+                <tr className="">
+                  <th colSpan={7} className="text-start">
+                    <p className="bg-slate-300 text-center mx-3 py-2 my-1 rounded-lg">{e?.subTitle}</p>
                   </th>
                 </tr>
                 {e?.Transactions?.map((row, index) => (
-                  <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                    <td className="text-center">
-                      <input disabled={disabled} type="text" className="p-2 w-full border border-gray-300 rounded" name={`description`} value={row?.description} onChange={(e) => handleInputChange(e, row?.description, 'description', subIndex, index)} />
+                  <tr key={index} className="d-flex hover:border-black" style={{ '-webkit-appearance': 'none' }}>
+                    <td colSpan={2} className="px-1 ps-2">
+                      {<p className="bg-blue-200 text-center py-2 my-1">{row?.description}</p>}
                     </td>
-                    <td className="text-center">
-                      <input
-                        disabled={row.expense !== '' ? true : false}
-                        type="text"
-                        className="p-2 w-full border border-gray-300 rounded"
-                        name={`income`}
-                        value={row?.income}
-                        onChange={(e) => {
-                          handleInputChange(e, row?.description, 'income', subIndex, index);
-                        }}
-                      />
+                    <td className="px-1">{<p className="bg-blue-200 text-center py-2 my-1">{row?.income || '-'}</p>}</td>
+                    <td className="px-1">{<p className="bg-blue-200 text-center py-2 my-1">{row?.expense || '-'}</p>}</td>
+                    <td colSpan={2} className="px-1 pe-2">
+                      {<p className="bg-blue-200 text-center py-2 my-1">{row?.gain}</p>}
                     </td>
-                    <td className="text-center">
-                      <input
-                        disabled={row.income !== '' ? true : false}
-                        type="text"
-                        className="p-2 w-full border border-gray-300 rounded"
-                        name={`expense`}
-                        value={row?.expense}
-                        onChange={(i) => {
-                          handleInputChange(i, row?.description, 'expense', subIndex, index);
-                        }}
-                      />
-                    </td>
-                    <td className={`text-center ${row?.gain >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                      <input
-                        onKeyDown={(n) => {
-                          if (n.key === 'Tab') {
-                            addRow(n, index, subIndex, row?.description);
-                          } else if (n.key === 'Delete') {
-                            removeRow(n, index, subIndex, e?.subTitle, row?.description, row?.income == '' ? 'expense' : 'income');
-                            n.preventDefault();
-                          }
-                        }}
-                        ref={(input) => (inputRefs.current[`${subIndex}_${index}`] = input)}
-                        disabled={disabled}
-                        type="text"
-                        className="p-2 w-full border border-gray-300 rounded"
-                        name={`gain`}
-                        value={row?.gain}
-                        onChange={(e) => handleInputChange(e, row?.description, 'gain', subIndex, index)}
-                      />
+                    <td className="px-1 pe-2">
+                      {
+                        <p className="text-center py-2 my-1 bg-yellow-300 text-gray-600 font-bold">
+                          <button className="">EDIT</button>
+                        </p>
+                      }
                     </td>
                   </tr>
                 ))}
               </React.Fragment>
             ))}
-            <tr>
-              <td colSpan={4} className="text-center text-xl font-bold">
-                <button
-                  onClick={(e) => {
-                    setFormData((ed) => [...ed, subtitleFormat?.[0]]);
-                  }}
-                  className="bg-gray-300 w-full"
-                >
-                  +
-                </button>
-              </td>
-            </tr>
           </tbody>
+
           <ToastContainer />
         </table>
       )}
