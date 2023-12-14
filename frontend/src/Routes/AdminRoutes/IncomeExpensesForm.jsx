@@ -231,6 +231,7 @@ const YourComponent = () => {
 function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange, year, month, date, setTotal, formRef, totals, descriptionRecords, setDescriptionsRecords, viewType }) {
   const inputRefs = useRef([]);
   const [rowletter, setRowletter] = useState({});
+  const [dynamicInput, setDynamicInput] = useState({ title: '', description: '', income: '', expense: '' });
 
   useEffect(() => {
     if (descriptionRecords?.length > 0) {
@@ -240,56 +241,73 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
     }
   }, [descriptionRecords]);
 
-  const handleInputChange = (e, index, key, subIndex, rowIndex) => {
-    const { name, value } = e.target;
-
-    if (name == 'description') {
-      if (rowletter[`${value}_${subIndex}`] !== undefined) {
-        if (rowletter[`${value}_${subIndex}`] !== rowIndex) {
-          return false;
-        }
-      }
-    }
-    setRowletter((prev) => ({ ...prev, [`${value}_${subIndex}`]: rowIndex }));
-
+  const handleInputChange = () => {
     setFormData((prevData) => {
-      const existingIndex = prevData?.[subIndex]?.Transactions.findIndex((item) => item?.description === index);
-      let updatedValues;
+      const existingIndex = prevData?.findIndex((item) => item?.Transactions?.some((t) => t?.description === dynamicInput?.description));
+
+      let updatedValues = [];
+      const gainValue = dynamicInput?.expense ? -parseFloat(dynamicInput?.expense) : parseFloat(dynamicInput?.income);
 
       if (existingIndex !== -1) {
         // Description already exists, update the existing entry
-        const gainValue = name === 'expense' ? -parseFloat(value) : parseFloat(value);
-        updatedValues = prevData?.[subIndex]?.Transactions.map((item, i) => (i === existingIndex ? { ...item, [name]: value, gain: gainValue || 0, subTitle: prevData?.[subIndex]?.subTitle } : { ...item }));
+        updatedValues = prevData?.map((item, i) => {
+          if (i === existingIndex) {
+            const updatedTransactions = item?.Transactions?.map((transaction) => {
+              return transaction?.description === dynamicInput?.description ? { ...transaction, ...dynamicInput, gain: gainValue || 0, subTitle: item?.subTitle } : { ...transaction };
+            });
+            return { ...item, Transactions: updatedTransactions };
+          }
+          return item;
+        });
 
-        formRef.current = updatedValues;
-
+        formRef.current = updatedValues?.[existingIndex]?.Transactions;
         let HiN = [
           ...prevData?.flatMap((e) =>
-            e.Transactions.filter((t) => t.description !== index && e.subTitle !== key).map((transaction) => {
+            e.Transactions.filter((t) => t.description !== dynamicInput?.description && e.subTitle !== dynamicInput?.title).map((transaction) => {
               return { ...transaction, subTitle: e?.subTitle };
             }),
           ),
-          { ...updatedValues?.[existingIndex] },
+          { ...updatedValues?.[existingIndex]?.Transactions?.find((t) => t?.description === dynamicInput?.description) },
         ];
-
-        const newDescriptions = HiN.filter((item, i, arr) => arr.findIndex((t) => (t.description === item.description) & (t.subTitle == t.subTitle)) === i);
-
+        const newDescriptions = HiN.filter((item, i, arr) => arr.findIndex((t) => t.description === item.description && t.subTitle === t.subTitle) === i);
         setDescriptionsRecords(newDescriptions);
-
-        ['income', 'expense']?.includes(name) && calculateTotals(HiN, setTotal, name, totals);
+        calculateTotals(HiN, setTotal, dynamicInput?.income == '' ? 'expense' : 'income', totals);
       } else {
         // Description does not exist, add a new entry
-        updatedValues = [...prevData?.[subIndex]?.Transactions, { description: index, income: '', expense: '', gain: '', subTitle: prevData?.[subIndex]?.subTitle }];
-        formRef.current = updatedValues;
+        if (prevData?.length > 0) {
+          updatedValues = prevData?.map((item) => {
+            // If subTitle exists, add new transaction
+            if (item?.subTitle === dynamicInput?.title) {
+              const newTransaction = { description: dynamicInput?.description, income: dynamicInput?.income || '', expense: dynamicInput?.expense || '', gain: gainValue, subTitle: dynamicInput?.title };
+              return { ...item, Transactions: [...item?.Transactions, newTransaction] };
+            }
+          });
+
+          // If subTitle doesn't exist, create a new entry
+          if (!updatedValues?.some((item) => item?.subTitle === dynamicInput?.title)) {
+            const newTransaction = { description: dynamicInput?.description, income: dynamicInput?.income || '', expense: dynamicInput?.expense || '', gain: gainValue, subTitle: dynamicInput?.title };
+            updatedValues.push({ subTitle: dynamicInput?.title, Transactions: [newTransaction] });
+          }
+        } else {
+          const newTransaction = { description: dynamicInput?.description, income: dynamicInput?.income || '', expense: dynamicInput?.expense || '', gain: gainValue };
+          updatedValues.push({ subTitle: dynamicInput?.title, Transactions: [newTransaction] });
+        }
+
+        formRef.current = updatedValues?.find((item) => item?.subTitle === dynamicInput?.title)?.Transactions;
+        let HiN = [
+          ...prevData?.flatMap((e) =>
+            e.Transactions.filter((t) => e.subTitle !== dynamicInput?.title).map((transaction) => {
+              return { ...transaction, subTitle: e?.subTitle };
+            }),
+          ),
+          { ...updatedValues?.find((item) => item?.subTitle === dynamicInput?.title)?.Transactions?.find((t) => t?.description === dynamicInput?.description) },
+        ];
+        const newDescriptions = HiN.filter((item, i, arr) => arr.findIndex((t) => t.description === item.description && t.subTitle === t.subTitle) === i);
+        setDescriptionsRecords(newDescriptions);
+        calculateTotals(HiN, setTotal, dynamicInput?.income == '' ? 'expense' : 'income', totals);
       }
 
-      // Update the state
-      return prevData.map((item, i) => {
-        if (i === subIndex) {
-          return { ...item, Transactions: updatedValues };
-        }
-        return item;
-      });
+      return updatedValues;
     });
   };
 
@@ -338,25 +356,45 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
               <React.Fragment key={subIndex}>
                 <tr className="">
                   <th colSpan={7} className="text-start">
-                    <p className="bg-slate-300 text-center mx-3 py-2 my-1 rounded-lg">{e?.subTitle}</p>
+                    <p className="bg-slate-300 text-center mx-3 py-2 my-1 rounded-lg">
+                      <input type="text" />
+                    </p>
                   </th>
                 </tr>
                 {e?.Transactions?.map((row, index) => (
                   <tr key={index} className="d-flex hover:border-black" style={{ '-webkit-appearance': 'none' }}>
                     <td colSpan={2} className="px-1 ps-2">
-                      {<p className="bg-blue-200 text-center py-2 my-1">{row?.description}</p>}
+                      <input
+                        type="text"
+                        name="description"
+                        value={dynamicInput?.description}
+                        onChange={(e) => {
+                          setDynamicInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+                        }}
+                      />
                     </td>
-                    <td className="px-1">{<p className="bg-blue-200 text-center py-2 my-1">{row?.income || '-'}</p>}</td>
-                    <td className="px-1">{<p className="bg-blue-200 text-center py-2 my-1">{row?.expense || '-'}</p>}</td>
+                    <td className="px-1">
+                      <input
+                        type="text"
+                        name="income"
+                        value={dynamicInput?.income}
+                        onChange={(e) => {
+                          setDynamicInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+                        }}
+                      />
+                    </td>
+                    <td className="px-1">
+                      <input
+                        type="text"
+                        name="expense"
+                        value={dynamicInput?.expense}
+                        onChange={(e) => {
+                          setDynamicInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+                        }}
+                      />
+                    </td>
                     <td colSpan={2} className="px-1 pe-2">
-                      {<p className="bg-blue-200 text-center py-2 my-1">{row?.gain}</p>}
-                    </td>
-                    <td className="px-1 pe-2">
-                      {
-                        <p className="text-center py-2 my-1 bg-yellow-300 text-gray-600 font-bold">
-                          <button className="">EDIT</button>
-                        </p>
-                      }
+                      {<p className="bg-blue-200 text-center py-2 my-1">{row?.gain || 0}</p>}
                     </td>
                   </tr>
                 ))}
