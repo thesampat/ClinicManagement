@@ -31,6 +31,15 @@ import DistributorForm from './Inventory/DistributorForm';
 import DistributorCompaniesList from './Inventory/companiesFormList';
 import OrderForm from './Inventory/OrderForm';
 import ReturnForm from './Inventory/ReturnForm';
+import Webpages from '../coverPage/coverRoute';
+import { Classical_Homeopathy } from '../coverPage/AllPages/Classical_Homeopathy';
+import { TreatmentPackage } from '../coverPage/AllPages/TreatmetnPackages';
+import { HealthPackage } from '../coverPage/AllPages/Health_Package';
+import { ThearapyPackage } from '../coverPage/AllPages/Alternative_Therapies';
+import { Testimonials } from '../coverPage/AllPages/Testimonials';
+import { OnlineClinic } from '../coverPage/AllPages/onlineClinic';
+import { ContactUs } from '../coverPage/AllPages/contact_us';
+import { PrivacyPolicy } from '../coverPage/AllPages/privacy_policy';
 
 export default function AllRoutes() {
   return (
@@ -40,6 +49,19 @@ export default function AllRoutes() {
           <Route path="/" element={<MainPage />} />
           <Route path="/signup" element={<MainDoctorSignup />} />
           <Route path="login" element={<Login />} />
+
+          {/* for size pages */}
+          <Route path="web" element={<Webpages />}>
+            <Route path="classical_homeopathy" element={<Classical_Homeopathy />} />
+            <Route path="treatmentPackage/:treatmentType" element={<TreatmentPackage />} />
+            <Route path="alternative_therapies/:threapyType" element={<ThearapyPackage />} />
+            <Route path="health_packages/:packageType" element={<HealthPackage />} />
+            <Route path="testimonials/:testimonialType" element={<Testimonials />} />
+            <Route path="online_clinic/:ocType" element={<OnlineClinic />} />
+            <Route path="online_clinic/:ocType" element={<OnlineClinic />} />
+            <Route path="contact_us" element={<ContactUs />} />
+            <Route path="privacy_policy" element={<PrivacyPolicy />} />
+          </Route>
 
           <Route
             path="/dashboard"
