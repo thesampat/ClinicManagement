@@ -29,7 +29,7 @@ const SidePanel = () => {
   ];
 
   return (
-    <div className={`SidePanel bg-blue-400 h-full text-black transition-all duration-300 ${isCollapsed ? 'w-14' : 'w-48'} overflow-hidden flex flex-col items-center shadow-md rounded`}>
+    <div className={`SidePanel bg-blue-400 ms-3 mt-3 h-[100vh] text-black transition-all duration-300 ${isCollapsed ? 'w-14' : 'w-48'} overflow-hidden flex flex-col items-center shadow-md rounded`}>
       <button onClick={toggleCollapse} className="p-2">
         {isCollapsed ? (
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
