@@ -18,9 +18,9 @@ function App() {
   }, [])
 
   return (
-    <div className='bg-primary-50 flex flex-col' >
+    <div className='bg-white flex flex-col' >
       <div className={`Main ${userLoginSuccess ? 'flex' : ''}`}>
-        <div className='pt-3 pb-3 ps-3'>
+        <div className=''>
           {userLoginSuccess && <SidePanel />}
         </div>
         <AllRoutes />

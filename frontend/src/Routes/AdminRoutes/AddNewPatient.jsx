@@ -256,7 +256,7 @@ export default function AddNewPatient() {
       {patientId == 'addNew' ? <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: 'Patient' }, { title: 'Add New Patient' }]} /> : <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: 'Patient' }, { title: 'Patient List', url: '/table/patients/list' }, { title: 'Update Patient' }]} />}
 
       {formData !== null && (
-        <div className="bg-primary-50 pb-8 rounded-md pt-4 border-2 border-primary-400 ">
+        <div className="bg-white pb-8 rounded-md pt-4 border-2 border-primary-400 ">
           {/* Personal Information */}
           <div className="px-6 py-6 rounded-md ">
             {/* heading */}

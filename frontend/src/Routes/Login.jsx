@@ -79,29 +79,28 @@ export default function Login() {
   }, [userLoginProcess, userLoginSuccess, userLoginFail]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+    <div className="bg-blue-200 flex items-center justify-center min-h-screen">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-96 border border-gray-300">
         {/* heading */}
         <p className="text-center mb-4 text-2xl font-bold ">Login to continue.</p>
 
         {/* email input */}
-        <CustomInput label={'Email'} name={'email'} type={'text'} value={userInput.email} onChange={handelCustomInputChange} placeholder={'Enter Email!'} icon={<IoPersonOutline />} />
+        <label htmlFor="email" className="block mt-4 text-sm font-medium text-primary-900 mb-1">
+          Email
+        </label>
+        <input id="email" type="text" name="email" value={userInput.email} onChange={handelCustomInputChange} placeholder="Enter Email!" className="w-full px-4 py-2 border border-primary-300 text-primary-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500" />
 
         {/* password input */}
-        <CustomInput label={'Password'} name="password" type={'password'} value={userInput.password} onChange={handelCustomInputChange} placeholder={'Enter Your Password'} icon={<IoPersonOutline />} />
+        <label htmlFor="password" className="block mt-4 text-sm font-medium text-primary-900 mb-1">
+          Password
+        </label>
+        <input id="password" type="password" name="password" value={userInput.password} onChange={handelCustomInputChange} placeholder="Enter Your Password" className="w-full px-4 py-2 border border-primary-300 text-primary-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500" />
 
         {/* select user role */}
-        <label htmlFor="countries" className=" block w-32 mt-5 text-sm font-medium text-primary-900  mb-1">
-          Select an option
+        <label htmlFor="role" className="block mt-4 text-sm font-medium text-primary-900 mb-1">
+          Select Role
         </label>
-        <select
-          id="countries"
-          value={userRole}
-          onChange={(e) => {
-            setUserRole(e.target.value);
-          }}
-          className="w-full border border-primary-300 text-primary-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 p-2.5 "
-        >
+        <select id="role" value={userRole} onChange={(e) => setUserRole(e.target.value)} className="w-full px-4 py-2 border border-primary-300 text-primary-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500">
           <option value={''}>Select Role</option>
           <option value="superAdmin">Main Doctor</option>
           <option value="doctor">Doctor</option>

@@ -125,7 +125,7 @@ export default function AddAppointment() {
           <CustomSpinner />
         ) : (
           <>
-            <div className="bg-primary-50 pb-8 rounded-md pt-4 border-2 border-primary-400 ">
+            <div className="bg-white pb-8 rounded-md pt-4 border-2 border-primary-400 ">
               {/* Personal Information */}
               <div className="px-6 py-6 rounded-md ">
                 <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3 ">Add Appointment </h2>

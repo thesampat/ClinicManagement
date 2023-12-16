@@ -31,7 +31,6 @@ import DistributorForm from './Inventory/DistributorForm';
 import DistributorCompaniesList from './Inventory/companiesFormList';
 import OrderForm from './Inventory/OrderForm';
 import ReturnForm from './Inventory/ReturnForm';
-import Webpages from '../coverPage/coverRoute';
 import { Classical_Homeopathy } from '../coverPage/AllPages/Classical_Homeopathy';
 import { TreatmentPackage } from '../coverPage/AllPages/TreatmetnPackages';
 import { HealthPackage } from '../coverPage/AllPages/Health_Package';
@@ -40,6 +39,7 @@ import { Testimonials } from '../coverPage/AllPages/Testimonials';
 import { OnlineClinic } from '../coverPage/AllPages/onlineClinic';
 import { ContactUs } from '../coverPage/AllPages/contact_us';
 import { PrivacyPolicy } from '../coverPage/AllPages/privacy_policy';
+import { Webpages } from '../coverPage/coverRoute';
 
 export default function AllRoutes() {
   return (
