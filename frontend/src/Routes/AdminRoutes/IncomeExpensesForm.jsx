@@ -127,8 +127,7 @@ const YourComponent = () => {
           month: month,
         };
 
-        console.log(formDataUseRef, 'what is this check');
-        // createItem(formDataUseRef, setIsPorcessing);
+        createItem(formDataUseRef, setIsPorcessing);
       } else if (formData?.length <= 0) {
         toast.error('No changes to save', { position: toast.POSITION.TOP_RIGHT });
       }
@@ -231,8 +230,12 @@ const YourComponent = () => {
 function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange, year, month, date, setTotal, formRef, totals, descriptionRecords, setDescriptionsRecords, viewType }) {
   const inputRefs = useRef([]);
   const [rowletter, setRowletter] = useState({});
+<<<<<<< HEAD
   const [dynamicInput, setDynamicInput] = useState({ title: '', description: '', income: '', expense: '' });
 
+=======
+  const [idescription, setidescription] = useState({ description: '' });
+>>>>>>> ictabControl
   useEffect(() => {
     if (descriptionRecords?.length > 0) {
       descriptionRecords?.map((i, index) => {
@@ -241,7 +244,80 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
     }
   }, [descriptionRecords]);
 
+<<<<<<< HEAD
   const handleInputChange = () => {
+=======
+  const addRow = (e, newIndex, subIndex, descp) => {
+    const emptyDescriptionCount = formData?.[0]?.Transactions?.filter((e) => e.subTitle).reduce((count, item) => (item.description.trim() === '' ? count + 1 : count), 0);
+
+    const updatedData = [...formData?.[subIndex]?.Transactions, { description: '', income: '', expense: '', gain: '' }];
+    setFormData((formData) => {
+      if (subIndex >= 0 && subIndex < formData.length) {
+        const newData = [...formData];
+        newData[subIndex].Transactions = updatedData;
+        return newData;
+      }
+      return formData;
+    });
+    formRef.current = updatedData;
+    setTimeout(() => {
+      focusOnInput(newIndex, subIndex);
+    }, 0);
+    e.preventDefault(); // Prevents the default behavior of the Tab key
+  };
+
+  const removeRow = (e, index, subIndex, description, ntype) => {
+    let removedSubTitel = descriptionRecords?.filter((d) => d.description !== description);
+    setDescriptionsRecords(removedSubTitel);
+
+    if (formData?.[subIndex]?.Transactions?.length <= 1) {
+      return false;
+    }
+    setFormData((prevFormData) => {
+      const updatedData = [...prevFormData];
+      updatedData[subIndex].Transactions = updatedData[subIndex].Transactions.filter((_, i) => i !== index);
+      return updatedData;
+    });
+    // console.log(removedSubTitel);
+    calculateTotals(removedSubTitel, setTotal, ntype, totals);
+  };
+
+  const removeSubtitle = (subIndex) => {
+    let subtitleGroup = descriptionRecords?.map((k) => k.subTitle);
+
+    console.log(subIndex);
+    if ([...new Set(subtitleGroup || [])]?.length <= 1) {
+      return false;
+    }
+
+    const removediSubtitles = descriptionRecords.filter((record, index) => record?.subTitelIndex !== subIndex);
+    setDescriptionsRecords(removediSubtitles);
+
+    setFormData((prevFormData) => {
+      const updatedData = [...prevFormData];
+      updatedData.splice(subIndex, 1);
+      return updatedData;
+    });
+
+    calculateTotals(removediSubtitles, setTotal, 'expense', totals);
+    calculateTotals(removediSubtitles, setTotal, 'income', totals);
+  };
+
+  const handleInputChange = (e, index, key, subIndex, rowIndex) => {
+    const { name, value } = e.target;
+
+    console.log(e, 'what is e now');
+
+    if (name == 'description') {
+      if (rowletter[`${value}_${subIndex}`] !== undefined) {
+        if (rowletter[`${value}_${subIndex}`] !== rowIndex) {
+          return false;
+        }
+      }
+    }
+    setRowletter((prev) => ({ ...prev, [`${value}_${subIndex}`]: rowIndex }));
+
+>>>>>>> ictabControl
     setFormData((prevData) => {
       const existingIndex = prevData?.findIndex((item) => item?.Transactions?.some((t) => t?.description === dynamicInput?.description));
 
@@ -354,16 +430,48 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
           <tbody className="border-separate">
             {formData?.map((e, subIndex) => (
               <React.Fragment key={subIndex}>
-                <tr className="">
-                  <th colSpan={7} className="text-start">
-                    <p className="bg-slate-300 text-center mx-3 py-2 my-1 rounded-lg">
-                      <input type="text" />
-                    </p>
+                <tr className="mb-4">
+                  <th colSpan="4" className="text-center">
+                    <input
+                      disabled={disabled}
+                      type="text"
+                      className="p-2 w-full border border-gray-300 rounded"
+                      value={e?.subTitle}
+                      id={subIndex}
+                      onChange={(e) => {
+                        handleTitleChange(e, subIndex);
+                      }}
+                      onKeyDown={(n) => {
+                        if (n.key === 'Delete') {
+                          removeSubtitle(subIndex);
+                        }
+                      }}
+                    />
                   </th>
                 </tr>
                 {e?.Transactions?.map((row, index) => (
-                  <tr key={index} className="d-flex hover:border-black" style={{ '-webkit-appearance': 'none' }}>
-                    <td colSpan={2} className="px-1 ps-2">
+                  <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                    <td className="text-center">
+                      <input
+                        disabled={disabled}
+                        type="text"
+                        className="p-2 w-full border border-gray-300 rounded"
+                        name={`description`}
+                        value={row?.description !== '' ? row?.description : idescription?.description}
+                        onChange={(e) => setidescription({ description: e.target.value })}
+                        onKeyDown={(e) => {
+                          if (e.key == 'Tab') {
+                            setidescription({ description: '' });
+                            handleInputChange({ target: { name: 'description', value: idescription?.description } }, row?.description, 'description', subIndex, index);
+                          }
+                          if (e.key === 'Delete') {
+                            removeRow(e, index, subIndex, e?.subTitle, row?.description, row?.income == '' ? 'expense' : 'income');
+                            e.preventDefault();
+                          }
+                        }}
+                      />
+                    </td>
+                    <td className="text-center">
                       <input
                         type="text"
                         name="description"
@@ -385,6 +493,13 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
                     </td>
                     <td className="px-1">
                       <input
+                        onKeyDown={(n) => {
+                          if (n.key === 'Tab') {
+                            addRow(n, index, subIndex, row?.description);
+                          }
+                        }}
+                        ref={(input) => (inputRefs.current[`${subIndex}_${index}`] = input)}
+                        disabled={disabled}
                         type="text"
                         name="expense"
                         value={dynamicInput?.expense}
