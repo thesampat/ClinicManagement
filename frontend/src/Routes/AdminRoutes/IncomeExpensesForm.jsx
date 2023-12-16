@@ -127,8 +127,7 @@ const YourComponent = () => {
           month: month,
         };
 
-        console.log(formDataUseRef, 'what is this check');
-        // createItem(formDataUseRef, setIsPorcessing);
+        createItem(formDataUseRef, setIsPorcessing);
       } else if (formData?.length <= 0) {
         toast.error('No changes to save', { position: toast.POSITION.TOP_RIGHT });
       }
@@ -231,7 +230,7 @@ const YourComponent = () => {
 function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange, year, month, date, setTotal, formRef, totals, descriptionRecords, setDescriptionsRecords, viewType }) {
   const inputRefs = useRef([]);
   const [rowletter, setRowletter] = useState({});
-
+  const [idescription, setidescription] = useState({ description: '' });
   useEffect(() => {
     if (descriptionRecords?.length > 0) {
       descriptionRecords?.map((i, index) => {
@@ -242,10 +241,6 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
 
   const addRow = (e, newIndex, subIndex, descp) => {
     const emptyDescriptionCount = formData?.[0]?.Transactions?.filter((e) => e.subTitle).reduce((count, item) => (item.description.trim() === '' ? count + 1 : count), 0);
-
-    // if (emptyDescriptionCount > 0) {
-    //   return false;
-    // }
 
     const updatedData = [...formData?.[subIndex]?.Transactions, { description: '', income: '', expense: '', gain: '' }];
     setFormData((formData) => {
@@ -263,7 +258,7 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
     e.preventDefault(); // Prevents the default behavior of the Tab key
   };
 
-  const removeRow = (e, index, subIndex, subTitle, description, ntype) => {
+  const removeRow = (e, index, subIndex, description, ntype) => {
     let removedSubTitel = descriptionRecords?.filter((d) => d.description !== description);
     setDescriptionsRecords(removedSubTitel);
 
@@ -279,8 +274,31 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
     calculateTotals(removedSubTitel, setTotal, ntype, totals);
   };
 
+  const removeSubtitle = (subIndex) => {
+    let subtitleGroup = descriptionRecords?.map((k) => k.subTitle);
+
+    console.log(subIndex);
+    if ([...new Set(subtitleGroup || [])]?.length <= 1) {
+      return false;
+    }
+
+    const removediSubtitles = descriptionRecords.filter((record, index) => record?.subTitelIndex !== subIndex);
+    setDescriptionsRecords(removediSubtitles);
+
+    setFormData((prevFormData) => {
+      const updatedData = [...prevFormData];
+      updatedData.splice(subIndex, 1);
+      return updatedData;
+    });
+
+    calculateTotals(removediSubtitles, setTotal, 'expense', totals);
+    calculateTotals(removediSubtitles, setTotal, 'income', totals);
+  };
+
   const handleInputChange = (e, index, key, subIndex, rowIndex) => {
     const { name, value } = e.target;
+
+    console.log(e, 'what is e now');
 
     if (name == 'description') {
       if (rowletter[`${value}_${subIndex}`] !== undefined) {
@@ -383,13 +401,35 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
                       onChange={(e) => {
                         handleTitleChange(e, subIndex);
                       }}
+                      onKeyDown={(n) => {
+                        if (n.key === 'Delete') {
+                          removeSubtitle(subIndex);
+                        }
+                      }}
                     />
                   </th>
                 </tr>
                 {e?.Transactions?.map((row, index) => (
                   <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
                     <td className="text-center">
-                      <input disabled={disabled} type="text" className="p-2 w-full border border-gray-300 rounded" name={`description`} value={row?.description} onChange={(e) => handleInputChange(e, row?.description, 'description', subIndex, index)} />
+                      <input
+                        disabled={disabled}
+                        type="text"
+                        className="p-2 w-full border border-gray-300 rounded"
+                        name={`description`}
+                        value={row?.description !== '' ? row?.description : idescription?.description}
+                        onChange={(e) => setidescription({ description: e.target.value })}
+                        onKeyDown={(e) => {
+                          if (e.key == 'Tab') {
+                            setidescription({ description: '' });
+                            handleInputChange({ target: { name: 'description', value: idescription?.description } }, row?.description, 'description', subIndex, index);
+                          }
+                          if (e.key === 'Delete') {
+                            removeRow(e, index, subIndex, e?.subTitle, row?.description, row?.income == '' ? 'expense' : 'income');
+                            e.preventDefault();
+                          }
+                        }}
+                      />
                     </td>
                     <td className="text-center">
                       <input
@@ -420,9 +460,6 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
                         onKeyDown={(n) => {
                           if (n.key === 'Tab') {
                             addRow(n, index, subIndex, row?.description);
-                          } else if (n.key === 'Delete') {
-                            removeRow(n, index, subIndex, e?.subTitle, row?.description, row?.income == '' ? 'expense' : 'income');
-                            n.preventDefault();
                           }
                         }}
                         ref={(input) => (inputRefs.current[`${subIndex}_${index}`] = input)}
