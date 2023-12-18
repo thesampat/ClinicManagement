@@ -230,12 +230,7 @@ const YourComponent = () => {
 function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange, year, month, date, setTotal, formRef, totals, descriptionRecords, setDescriptionsRecords, viewType }) {
   const inputRefs = useRef([]);
   const [rowletter, setRowletter] = useState({});
-<<<<<<< HEAD
-  const [dynamicInput, setDynamicInput] = useState({ title: '', description: '', income: '', expense: '' });
-
-=======
   const [idescription, setidescription] = useState({ description: '' });
->>>>>>> ictabControl
   useEffect(() => {
     if (descriptionRecords?.length > 0) {
       descriptionRecords?.map((i, index) => {
@@ -244,9 +239,6 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
     }
   }, [descriptionRecords]);
 
-<<<<<<< HEAD
-  const handleInputChange = () => {
-=======
   const addRow = (e, newIndex, subIndex, descp) => {
     const emptyDescriptionCount = formData?.[0]?.Transactions?.filter((e) => e.subTitle).reduce((count, item) => (item.description.trim() === '' ? count + 1 : count), 0);
 
@@ -317,7 +309,6 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
     }
     setRowletter((prev) => ({ ...prev, [`${value}_${subIndex}`]: rowIndex }));
 
->>>>>>> ictabControl
     setFormData((prevData) => {
       const existingIndex = prevData?.findIndex((item) => item?.Transactions?.some((t) => t?.description === dynamicInput?.description));
 
