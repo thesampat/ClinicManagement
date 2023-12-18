@@ -298,8 +298,6 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
   const handleInputChange = (e, index, key, subIndex, rowIndex) => {
     const { name, value } = e.target;
 
-    console.log(e, 'what is e now');
-
     if (name == 'description') {
       if (rowletter[`${value}_${subIndex}`] !== undefined) {
         if (rowletter[`${value}_${subIndex}`] !== rowIndex) {
