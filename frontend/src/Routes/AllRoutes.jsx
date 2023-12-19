@@ -211,7 +211,7 @@ export default function AllRoutes() {
           />
 
           <Route
-            path="main/inventory/:section/Order/:inventory_item_id"
+            path="main/inventory/:section/Order/:inventory_item_id/:medicine_id"
             element={
               <PrivateRoute allowedRoles={['SuperAdmin']}>
                 <OrderForm />{' '}

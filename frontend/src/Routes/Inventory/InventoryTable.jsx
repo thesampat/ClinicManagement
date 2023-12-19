@@ -16,7 +16,7 @@ import { getHeadings } from './customTableFuctions';
 
 const fetchData = async (path, data) => {
   try {
-    const result = await axios.get(`${END_POINT}/${path}page=${data.page}&&limit=${data?.limit}&&search=${data?.search}`, {
+    const result = await axios.get(`${END_POINT}/${path}search=${data}`, {
       headers: {
         Authorization: getJwtToken(),
       },
@@ -79,18 +79,19 @@ export default function InventoryTable({ listType }) {
     listType === 'Distributors' && fetchData(`inventory/distributors/?`, query).then((data) => setTableData(data?.data));
     listType === 'Order' && fetchData(`inventory/orders/?`, query).then((data) => setTableData(data?.data));
     listType === 'Returns' && fetchData(`inventory/returns/?`, query).then((data) => setTableData(data?.data));
+    listType === 'medicineDetections' && fetchData(`inventory/inventory/?`, query).then((data) => setTableData(data?.data));
   }, [listType, query]);
 
   return (
     <div className="m-3 rounded-md bg-slate-100 px-8 w-full min-h-[100vh] h-fit py-8">
-      {!inventory_item_id && (
+      {!inventory_item_id && listType !== 'medicineDetections' && (
         <button onClick={(e) => navigate(`${section}/addNew`)} className="p-2 bg-black text-white rounded fond-semibold">
           Add {getTitle(listType)}
         </button>
       )}
       <hr className="bg-black h-1 w-full my-5" />
       <div className="flex justify-between flex-wrap items-center ">
-        <div className=" -mt-5 mb-2">
+        <div className="mt-5 mb-2">
           <CustomInput
             label={''}
             name="search"
@@ -100,6 +101,18 @@ export default function InventoryTable({ listType }) {
               setQuery({ ...query, search: e.target.value, page: 1 });
             }}
             placeholder={'Search'}
+          />
+        </div>
+        <div className="mt-5 mb-2 flex">
+          <CustomInput
+            label={'Quantity'}
+            name="quantity"
+            type={'text'}
+            value={query.minQuantity}
+            onChange={(e) => {
+              setQuery({ ...query, minQuantity: e.target.value, page: 1 });
+            }}
+            placeholder={'Type Quantity'}
           />
         </div>
       </div>
@@ -134,37 +147,47 @@ export default function InventoryTable({ listType }) {
                         </td>
                       ))}
                       <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">
-                        <span
-                          onClick={() => {
-                            switch (listType) {
-                              case 'Distributors':
-                                navigate(`/main/inventory/${listType}/${listType}/${item?._id}`);
-                                break;
-                              case 'Order':
-                                navigate(`/main/inventory/${listType}/${listType}/${item?._id}`);
-                                break;
-                              case 'inventory':
-                                navigate(`/main/inventory/inventory/${item?._id}`);
-                                break;
-                              case 'Returns':
-                                navigate(`/main/inventory/${listType}/${listType}/${item?._id}`);
-                                break;
+                        {listType !== 'medicineDetections' ? (
+                          <>
+                            {
+                              <span
+                                onClick={() => {
+                                  switch (listType) {
+                                    case 'Distributors':
+                                      navigate(`/main/inventory/${listType}/${listType}/${item?._id}`);
+                                      break;
+                                    case 'Order':
+                                      navigate(`/main/inventory/${listType}/${listType}/${item?._id}`);
+                                      break;
+                                    case 'inventory':
+                                      navigate(`/main/inventory/inventory/${item?._id}`);
+                                      break;
+                                    case 'Returns':
+                                      navigate(`/main/inventory/${listType}/${listType}/${item?._id}`);
+                                      break;
+                                  }
+                                }}
+                                className="bg-gray-100 cursor-pointer text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-gray-500"
+                              >
+                                Modify
+                              </span>
                             }
-                          }}
-                          className="bg-gray-100 cursor-pointer text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-gray-500"
-                        >
-                          Modify
-                        </span>
-                        <DeleteConfirmatationModal
-                          deleteFunction={() => {
-                            listType === 'inventory' && deleteData(`inventory/inventory/${item?._id}`, 'Medicine');
-                            listType === 'Distributors' && deleteData(`inventory/distributors/${item?._id}`, 'Distributor');
-                            listType === 'Order' && deleteData(`inventory/orders/${item?._id}`, 'Order');
-                            listType === 'Returns' && deleteData(`inventory/returns/${item?._id}`, 'Return Order');
-                          }}
-                          text={listType}
-                          heading={'Delete Item'}
-                        />
+                            <DeleteConfirmatationModal
+                              deleteFunction={() => {
+                                listType === 'inventory' && deleteData(`inventory/inventory/${item?._id}`, 'Medicine');
+                                listType === 'Distributors' && deleteData(`inventory/distributors/${item?._id}`, 'Distributor');
+                                listType === 'Order' && deleteData(`inventory/orders/${item?._id}`, 'Order');
+                                listType === 'Returns' && deleteData(`inventory/returns/${item?._id}`, 'Return Order');
+                              }}
+                              text={listType}
+                              heading={'Delete Item'}
+                            />
+                          </>
+                        ) : (
+                          <span onClick={() => navigate(`/main/inventory/Order/Order/addNew/${item?.medicine_id}`)} className="bg-gray-100 cursor-pointer text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-gray-500">
+                            Order
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))

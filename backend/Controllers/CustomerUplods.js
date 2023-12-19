@@ -33,8 +33,6 @@ const UploadReport = async (req, res) => {
     const patientId = req.params.patientId;
     const uploadType = req.params.uploadType
 
-    console.log(patientId, uploadType, 'ceck in')
-
 
     if (['pictures', 'profile_image']?.includes(uploadType)) {
         const upload = multer({ storage }).array('images', 10); // 'document' can be an array of files with a maximum limit of 10

@@ -15,12 +15,17 @@ const getHeadings = (sectionType) => {
     // Orders
     case 'Order':
       main_head = ['Order_Id', 'nameOfMedicine', 'company', 'potencyOrPower', 'quantity', 'typeOfMedicine'];
-      custom_head = ['Order Id', 'Medicine Name', 'Conpany', 'Power', 'Qty', 'Type'];
+      custom_head = ['Order Id', 'Medicine Name', 'Company', 'Power', 'Qty', 'Type'];
       break;
 
     case 'Returns':
       main_head = ['order', 'damage', 'date'];
       custom_head = ['Order', 'damage', 'date'];
+      break;
+
+    case 'medicineDetections':
+      main_head = ['nameOfMedicine', 'company', 'potencyOrPower', 'quantity', 'typeOfMedicine'];
+      custom_head = ['Medicine Name', 'Company', 'Power', 'Qty', 'Type'];
       break;
   }
 
