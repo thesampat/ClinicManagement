@@ -36,6 +36,8 @@ const getAllDistributors = async (req, res) => {
             secondQuery['companies'] = 0
         }
 
+        console.log(query, secondQuery)
+
         const skip = page ? (parseInt(page) - 1) * (pageSize ? parseInt(pageSize) : 10) : 0;
         const limit = pageSize ? parseInt(pageSize) : 10;
 

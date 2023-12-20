@@ -14,6 +14,7 @@ import ModalCustom from '../../Components/CommonComponents/ModalCustomPopup';
 import CustomTextarea from '../../Components/CommonComponents/CustomTextarea';
 import CustomImageInput from '../../Components/CommonComponents/CustomImageInput';
 import axios from 'axios';
+import CustomSelect from '../../Components/CommonComponents/CustomSelect';
 
 const fetchSingleItem = async (id) => {
   try {
@@ -29,6 +30,35 @@ const fetchSingleItem = async (id) => {
   }
 };
 
+const fetchMedicine = async (id) => {
+  try {
+    const result = await axios.get(`${END_POINT}/inventory/inventory/${id}`, {
+      headers: {
+        Authorization: getJwtToken(),
+      },
+    });
+    return result;
+  } catch (error) {
+    console.log(error);
+    toast.error('Something went wrong while fetching data');
+  }
+};
+
+const fetchDistributor = async (cname) => {
+  const encodedSearch = encodeURIComponent(JSON.stringify({ 'companies.name': cname }));
+
+  try {
+    const result = await axios.get(`${END_POINT}/inventory/distributors?search=${encodedSearch}`, {
+      headers: {
+        Authorization: getJwtToken(),
+      },
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    toast.error('Something went wrong while fetching data');
+  }
+};
 const createItem = async (data, navigate, setIsPorcessing) => {
   try {
     const result = await axios.post(`${END_POINT}/inventory/orders`, data, {
@@ -73,6 +103,8 @@ const initialFormData = {
   typeOfMedicine: '',
   damage: '',
   date: '',
+  to: '',
+  distributor: '',
 };
 
 const initialFormError = initialFormData;
@@ -83,27 +115,52 @@ export default function OrderForm() {
   const [formError, setFormError] = useState(initialFormError);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
-  const { inventory_item_id } = useParams();
+  const { inventory_item_id, medicine_id } = useParams();
+  const [selectedMedicine, setSelectedMedicine] = useState(null);
   const [isProcessing, setIsPorcessing] = useState(false);
   const dispatch = useDispatch();
   const [profile_image_res, set_profile_image_res] = useState('');
+  let [distributorsOptions, setDistributorsOptions] = useState([]);
 
   useEffect(() => {
     if (inventory_item_id === 'addNew') {
+      fetchMedicine(medicine_id).then((e) => {
+        setSelectedMedicine(e?.data);
+        const { company, nameOfMedicine, potencyOrPower, typeOfMedicine } = e.data;
+        setFormData({ company: company, nameOfMedicine: nameOfMedicine, potencyOrPower: potencyOrPower, typeOfMedicine: typeOfMedicine });
+      });
       setFormData(initialFormData);
     } else {
       fetchSingleItem(inventory_item_id).then((e) => {
         setFormData(e?.data);
       });
     }
-  }, [inventory_item_id]);
+  }, [inventory_item_id, medicine_id]);
+
+  useEffect(() => {
+    if (selectedMedicine !== null) {
+      fetchDistributor(selectedMedicine?.nameOfMedicine).then((e) => {
+        e?.data?.map((e) => {
+          setDistributorsOptions((prev) => [...prev, e]);
+        });
+      });
+    }
+  }, [selectedMedicine]);
 
   // handel input change
   const handleInputChange = (event) => {
-    const { name, value, type, checked } = event.target;
+    let { name, value, type, checked } = event.target;
+    let filteredi;
+
+    if (name == 'distributor') {
+      filteredi = distributorsOptions?.filter((d) => d?.companyName == value)?.[0];
+      value = filteredi?._id;
+    }
+
     setFormData({
       ...formData,
       [name]: value,
+      to: filteredi?.email,
     });
   };
 
@@ -129,6 +186,7 @@ export default function OrderForm() {
 
     setFormError(updatedFormError);
 
+    console.log(formData);
     if (isValidInput) {
       setIsPorcessing(true);
       inventory_item_id == 'addNew' ? createItem(trimmedFormData, navigate, setIsPorcessing) : updateItem(trimmedFormData, setIsPorcessing);
@@ -148,13 +206,23 @@ export default function OrderForm() {
           <div className="px-6 py-6 rounded-md">
             <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3">Order Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-              <CustomInput label="Name of Medicine" name="nameOfMedicine" type="text" value={formData?.nameOfMedicine} onChange={handleInputChange} />
-              <CustomInput label="Company" name="company" type="text" value={formData?.company} onChange={handleInputChange} />
-              <CustomInput label="Potency / Power" name="potencyOrPower" type="text" value={formData?.potencyOrPower} onChange={handleInputChange} />
+              <CustomInput label="Name of Medicine" name="nameOfMedicine" type="text" value={selectedMedicine?.nameOfMedicine} onChange={handleInputChange} />
+              <CustomInput label="Company" name="company" type="text" value={selectedMedicine?.company} onChange={handleInputChange} />
+              <CustomInput label="Potency / Power" name="potencyOrPower" type="text" value={selectedMedicine?.potencyOrPower} onChange={handleInputChange} />
               <CustomInput label="Quantity" name="quantity" type="number" value={formData?.quantity} onChange={handleInputChange} />
-              <CustomInput label="Type of Medicine" name="typeOfMedicine" type="text" value={formData?.typeOfMedicine} onChange={handleInputChange} />
-              {/* <CustomInput label="Damage" name="damage" type="text" value={formData?.damage} onChange={handleInputChange} />
-              <CustomInput label={'Expiry Date'} name={'date'} type={'date'} value={formData?.date?.slice(0, 10)} onChange={handleInputChange} placeholder={'Enter Expiry Date'} error={formError.expiryDate} /> */}
+              <CustomInput label="Type of Medicine" name="typeOfMedicine" type="text" value={selectedMedicine?.typeOfMedicine} onChange={handleInputChange} />
+
+              <CustomSelect
+                onChange={(e) => {
+                  handleInputChange(e);
+                }}
+                options={distributorsOptions?.map((e) => e?.companyName)}
+                label="distributor"
+                value={formData?.distributor}
+                error={formError?.distributor}
+                name="distributor"
+                placeholder="-- Select Distributor --"
+              />
             </div>
           </div>
 

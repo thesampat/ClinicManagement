@@ -220,7 +220,7 @@ export default function AllRoutes() {
           />
 
           <Route
-            path="main/inventory/:section/Returns/:inventory_item_id"
+            path="main/inventory/:section/Returns/:inventory_item_id/:order_id"
             element={
               <PrivateRoute allowedRoles={['SuperAdmin']}>
                 <ReturnForm />{' '}

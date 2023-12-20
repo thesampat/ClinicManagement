@@ -141,7 +141,7 @@ const AddPrescription = () => {
   };
 
   const handelInputChange = (event) => {
-    const { name, value, id: ukey } = event.target;
+    const { name, value, id: ukey } = event?.target;
 
     // Update the formData state
     setFormData((prev) => prev?.map((item) => (item?.Date === ukey ? { ...item, [name]: value } : item)));
@@ -164,6 +164,7 @@ const AddPrescription = () => {
     }
   };
 
+  console.log(formData, 'what is nnow');
   const handelPriceTable = (event) => {
     let { name, value, id: ukey } = event.target;
 
@@ -270,25 +271,38 @@ const AddPrescription = () => {
           </div>
         </div>
 
-        <button
-          className="p-2 font-semibold bg-yellow-500 rounded-lg"
-          onClick={(e) => {
-            e.preventDefault();
+        <div className="flex align-center gap-4">
+          <button
+            className="p-2 font-semibold bg-yellow-500 rounded-lg"
+            onClick={(e) => {
+              e.preventDefault();
 
-            if (formData == null) {
-              setFormData([{ ...initialFormData, customerId: singlePatientData?._id, paitendId: singlePatientData?.customerId, doctorId: userLogindata?.data?._id, Date: visibleDate }]);
-            } else {
-              if (formData?.filter((e) => e.Date === visibleDate)?.length === 0) {
-                setFormData((prev) => [
-                  { ...initialFormData, customerId: singlePatientData?._id, paitendId: singlePatientData?.customerId, doctorId: userLogindata?.data?._id, Date: visibleDate },
-                  ...prev, // Spread the previous items after the new one
-                ]);
+              if (formData == null) {
+                setFormData([{ ...initialFormData, customerId: singlePatientData?._id, paitendId: singlePatientData?.customerId, doctorId: userLogindata?.data?._id, Date: visibleDate }]);
+              } else {
+                if (formData?.filter((e) => e.Date === visibleDate)?.length === 0) {
+                  setFormData((prev) => [
+                    { ...initialFormData, customerId: singlePatientData?._id, paitendId: singlePatientData?.customerId, doctorId: userLogindata?.data?._id, Date: visibleDate },
+                    ...prev, // Spread the previous items after the new one
+                  ]);
+                }
               }
-            }
-          }}
-        >
-          Add New
-        </button>
+            }}
+          >
+            Add New
+          </button>
+
+          <div>
+            <input
+              onChange={(e) => {
+                setVisibleDate(e.target.value);
+              }}
+              type="date"
+              name=""
+              id=""
+            />
+          </div>
+        </div>
       </div>
 
       <div className="mainpaddLayout">
@@ -307,8 +321,9 @@ const AddPrescription = () => {
               ?.map((singlePrescriptionForm) => (
                 <div>
                   <h2 className="text-black text-lg font-bold py-2 ps-5">Date: {format(new Date(singlePrescriptionForm?.Date), 'dd/MM/yyyy')}</h2>
-                  <PrescriptionForm disabled={format(new Date(singlePrescriptionForm?.Date), 'dd/MM/yyyy') !== format(new Date(visibleDate), 'dd/MM/yyyy') ? true : false} handelPriceTable={handelPriceTable} formData={singlePrescriptionForm} setFormData={setFormData} handelInputChange={handelInputChange} prescriptionScrollDate={singlePrescriptionForm?.Date} handleTableChange={handleTableChange} />
+                  <PrescriptionForm disabled={false} handelPriceTable={handelPriceTable} formData={singlePrescriptionForm} setFormData={setFormData} handelInputChange={handelInputChange} prescriptionScrollDate={singlePrescriptionForm?.Date} handleTableChange={handleTableChange} />
                 </div>
+                // format(new Date(singlePrescriptionForm?.Date), 'dd/MM/yyyy') !== format(new Date(visibleDate), 'dd/MM/yyyy') ? true : false
               ))
           )}
         </div>

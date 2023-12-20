@@ -16,7 +16,7 @@ import { getHeadings } from './customTableFuctions';
 
 const fetchData = async (path, data) => {
   try {
-    const result = await axios.get(`${END_POINT}/${path}search=${data}`, {
+    const result = await axios.get(`${END_POINT}/${path}&page=${data?.page}&pageSize=${data?.limit}`, {
       headers: {
         Authorization: getJwtToken(),
       },
@@ -63,7 +63,7 @@ const getTitle = (listType) => {
 export default function InventoryTable({ listType }) {
   // Redux selectors to access state
   const [tableData, setTableData] = useState(null);
-  const [query, setQuery] = useState({ search: '', page: 1, limit: 10 });
+  const [query, setQuery] = useState({ search: '', page: 1, limit: 10, minQuantity: undefined });
   let tableHeading;
   const { inventory_item_id, section } = useParams();
   let letModifedHeading;
@@ -79,7 +79,7 @@ export default function InventoryTable({ listType }) {
     listType === 'Distributors' && fetchData(`inventory/distributors/?`, query).then((data) => setTableData(data?.data));
     listType === 'Order' && fetchData(`inventory/orders/?`, query).then((data) => setTableData(data?.data));
     listType === 'Returns' && fetchData(`inventory/returns/?`, query).then((data) => setTableData(data?.data));
-    listType === 'medicineDetections' && fetchData(`inventory/inventory/?`, query).then((data) => setTableData(data?.data));
+    listType === 'medicineDetections' && fetchData(`inventory/inventory/?minQuantity=${query?.minQuantity || undefined}`, query).then((data) => setTableData(data?.data));
   }, [listType, query]);
 
   return (
@@ -147,7 +147,7 @@ export default function InventoryTable({ listType }) {
                         </td>
                       ))}
                       <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">
-                        {listType !== 'medicineDetections' ? (
+                        {listType !== 'medicineDetections' && listType !== 'Order' ? (
                           <>
                             {
                               <span
@@ -184,8 +184,8 @@ export default function InventoryTable({ listType }) {
                             />
                           </>
                         ) : (
-                          <span onClick={() => navigate(`/main/inventory/Order/Order/addNew/${item?.medicine_id}`)} className="bg-gray-100 cursor-pointer text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-gray-500">
-                            Order
+                          <span onClick={() => navigate(`/main/inventory/Order/${listType == 'Order' ? 'Returns' : 'Order'}/addNew/${listType == 'Order' ? item?.Order_Id : item?._id}`)} className="bg-gray-100 cursor-pointer text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-gray-500">
+                            {listType == 'Order' ? 'Return' : 'Order'}
                           </span>
                         )}
                       </td>

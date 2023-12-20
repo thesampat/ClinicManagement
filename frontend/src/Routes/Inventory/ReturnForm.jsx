@@ -89,7 +89,7 @@ export default function ReturnForm() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [orderIds, setOrderIds] = useState([]);
   const navigate = useNavigate();
-  const { inventory_item_id } = useParams();
+  const { inventory_item_id, order_id } = useParams();
   const [isProcessing, setIsPorcessing] = useState(false);
   const dispatch = useDispatch();
   const [profile_image_res, set_profile_image_res] = useState('');
@@ -100,9 +100,13 @@ export default function ReturnForm() {
     });
   }, []);
 
+  console.log(formData, 'what is form data now');
+
   useEffect(() => {
     if (inventory_item_id === 'addNew') {
-      setFormData(initialFormData);
+      if (order_id !== undefined) {
+        setFormData({ ...initialFormData, order: order_id });
+      }
     } else {
       fetchSingleItem(inventory_item_id)
         .then((e) => {
@@ -110,7 +114,7 @@ export default function ReturnForm() {
         })
         .catch(setFormData([]));
     }
-  }, [inventory_item_id]);
+  }, [inventory_item_id, order_id]);
 
   // handel input change
   const handleInputChange = (event) => {

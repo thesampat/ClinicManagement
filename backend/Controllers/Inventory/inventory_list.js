@@ -25,19 +25,22 @@ const createInventoryItem = async (req, res) => {
 // Get all inventory items
 const getAllInventoryItems = async (req, res) => {
     try {
-        const { search, page, pageSize } = req.query;
+        const { minQuantity = 'undefined', page, pageSize } = req.query;
 
         const query = {};
 
-        const searchObject = JSON.parse(decodeURIComponent(search || '{}'));
-
-        if (Object.keys(searchObject)?.length > 0) {
-            Object.keys(searchObject).forEach((field) => {
-                query[field] = searchObject[field];
-            });
+        // Handle minQuantity separately if it exists in req.query
+        if (minQuantity !== 'undefined') {
+            const minQuantityValue = parseInt(minQuantity);
+            if (!isNaN(minQuantityValue)) {
+                query.quantity = { $lte: minQuantityValue };
+            } else {
+                // Handle the case where minQuantity is not a valid integer
+                return res.status(400).json({ error: 'minQuantity must be a valid integer' });
+            }
         }
 
-        const skip = page ? (parseInt(page) - 1) * (pageSize ? parseInt(pageSize) : 10) : 0;
+        let skip = page ? (parseInt(page) - 1) * (pageSize ? parseInt(pageSize) : 10) : 0;
         const limit = pageSize ? parseInt(pageSize) : 10;
 
         const inventoryItems = await InventoryList.find(query)
@@ -45,11 +48,13 @@ const getAllInventoryItems = async (req, res) => {
             .skip(skip)
             .limit(limit);
 
-        res.status(200).json(inventoryItems);
+        return res.status(200).json(inventoryItems);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.log(error);
+        return res.status(500).json({ error: error.message });
     }
 };
+
 
 // Get a specific inventory item by ID
 const getInventoryItemById = async (req, res) => {

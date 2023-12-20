@@ -10,7 +10,7 @@ const CustomSelect = ({ disabled, label, options, onChange, value, name, placeho
 
   const handleOptionClick = (event) => {
     const optionValue = event.target.value; // Extract the value from event.target
-    onChange({ target: { name, value: optionValue } }); // Send the updated value to the parent component
+    onChange({ target: { name, value: optionValue, id: id } }); // Send the updated value to the parent component
     setIsOpen(false);
   };
 
