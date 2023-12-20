@@ -100,13 +100,6 @@ const getFilteredAppointment = async (req, res) => {
     const query = {};
 
 
-    // if (startDate && endDate) {
-    //   query.Date = {
-    //     $gte: startDate,
-    //     $lte: endDate,
-    //   };
-    // }
-
     // Add custom filters from request body
     if (search && typeof search === 'object') {
       Object.keys(search).forEach((field) => {

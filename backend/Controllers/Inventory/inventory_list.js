@@ -25,7 +25,26 @@ const createInventoryItem = async (req, res) => {
 // Get all inventory items
 const getAllInventoryItems = async (req, res) => {
     try {
-        const inventoryItems = await InventoryList.find().sort({ medicine_id: -1 });
+        const { search, page, pageSize } = req.query;
+
+        const query = {};
+
+        const searchObject = JSON.parse(decodeURIComponent(search || '{}'));
+
+        if (Object.keys(searchObject)?.length > 0) {
+            Object.keys(searchObject).forEach((field) => {
+                query[field] = searchObject[field];
+            });
+        }
+
+        const skip = page ? (parseInt(page) - 1) * (pageSize ? parseInt(pageSize) : 10) : 0;
+        const limit = pageSize ? parseInt(pageSize) : 10;
+
+        const inventoryItems = await InventoryList.find(query)
+            .sort({ medicine_id: -1 })
+            .skip(skip)
+            .limit(limit);
+
         res.status(200).json(inventoryItems);
     } catch (error) {
         res.status(500).json({ error: error.message });

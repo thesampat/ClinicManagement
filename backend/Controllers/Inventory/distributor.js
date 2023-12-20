@@ -14,12 +14,42 @@ const createDistributor = async (req, res) => {
 // Get all distributors
 const getAllDistributors = async (req, res) => {
     try {
-        const distributors = await Distributor.find();
+        const { search, page, pageSize, qtype } = req.query;
+        let secondQuery = {}
+
+        const query = {};
+
+        const searchObject = JSON.parse(decodeURIComponent(search || '{}'));
+
+        if (Object.keys(searchObject)?.length > 0) {
+            Object.keys(searchObject).forEach((field) => {
+                query[field] = searchObject[field];
+
+                if (field == 'companies.name') {
+                    secondQuery['companies'] = 0
+                }
+
+            });
+        }
+
+        if (qtype == 'list') {
+            secondQuery['companies'] = 0
+        }
+
+        const skip = page ? (parseInt(page) - 1) * (pageSize ? parseInt(pageSize) : 10) : 0;
+        const limit = pageSize ? parseInt(pageSize) : 10;
+
+        const distributors = await Distributor.find(query, secondQuery)
+            .sort({ medicine_id: -1 })
+            .skip(skip)
+            .limit(limit);
+
         res.status(200).json(distributors);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 // Get a specific distributor by ID
 const getDistributorById = async (req, res) => {
@@ -70,9 +100,7 @@ const deleteDistributorById = async (req, res) => {
 };
 
 
-
 /// add companies 
-
 const generateItemId = async () => {
     try {
         const count = await Distributor.countDocuments({});

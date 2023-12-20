@@ -1,4 +1,54 @@
+const { Distributor } = require('../../Models/DistributorModel');
 const { OrderListModel } = require('../../Models/Order_PurchaseModel'); // Adjust the path as needed
+const sendEmail = require('../OtherFunctions/emailing');
+
+
+const getEmailTemplate = (body, Order_Id, distributor_user) => {
+
+
+    const {
+        nameOfMedicine,
+        quantity,
+        distributor,
+        potencyOrPower,
+        typeOfMedicine
+    } = body;
+
+    console.log(distributor_user)
+
+    const template = `
+        Hello ${distributor_user?.companyName},
+
+        We have a new order request (${Order_Id}) for the following medicine:
+
+        - Medicine: ${nameOfMedicine}
+        - Quantity: ${quantity}
+        - potencyOrPower: ${potencyOrPower}
+        - potencyOrPower: ${potencyOrPower}
+        - typeOfMedicine: ${typeOfMedicine}
+
+        Please process the order at your earliest convenience.
+
+        Best regards,
+        ${process.env.COMPANY}
+    `;
+
+    return template;
+};
+
+// Example usage
+const body = {
+    nameOfMedicine: 'Test 1',
+    quantity: 10,
+    distributor: 'Distributor Name', // Replace with the actual distributor's name
+    to: 'distributor@example.com' // Replace with the actual distributor's email address
+};
+
+const Order_Id = 'ORD2023121312';
+
+const emailTemplate = getEmailTemplate(body, Order_Id);
+console.log(emailTemplate);
+
 
 const generateOrderId = async () => {
     try {
@@ -17,16 +67,18 @@ const generateOrderId = async () => {
 };
 
 
-
 // Create a new order
 const createOrder = async (req, res) => {
     try {
         const Order_Id = await generateOrderId()
+        let distributor_user = await Distributor.findOne({ _id: req.body.distributor })
+        console.log(distributor_user)
+        await sendEmail(distributor_user?.email, 'Medicine Order Request From AdityaHomeopathic', getEmailTemplate(req.body, Order_Id, distributor_user))
         const newOrder = await OrderListModel.create({ ...req.body, Order_Id: Order_Id });
-        res.status(201).json({ msg: 'OrderListModel Created', data: newOrder?._id, });
+        res.status(201).json({ msg: 'Purchase Order Created', data: newOrder?._id, });
     } catch (error) {
         console.log(error)
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: 'Failed to create order' });
     }
 };
 

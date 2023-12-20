@@ -7,6 +7,8 @@ const orderListSchema = new mongoose.Schema({
     potencyOrPower: { type: String },
     quantity: { type: Number, required: true },
     typeOfMedicine: { type: String },
+    date: { type: Date, default: Date.now },
+    distributor: new mongoose.SchemaTypes.ObjectId()
 });
 
 // Schema for the order return

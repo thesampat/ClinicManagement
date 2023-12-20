@@ -1,19 +1,60 @@
 const { Mongoose, default: mongoose } = require('mongoose');
-const { OrderReturnModel } = require('../../Models/Order_PurchaseModel'); // Adjust the path as needed
+const { OrderReturnModel, OrderListModel } = require('../../Models/Order_PurchaseModel'); // Adjust the path as needed
+const sendEmail = require('../OtherFunctions/emailing');
+const { Distributor } = require('../../Models/DistributorModel');
 
 
 // Create a new order
-const createReturnOrder = async (req, res) => {
-    let { damage, order, date } = req.body
-    let payload = { damage: damage, order: new mongoose.Schema.Types.ObjectId(order), date: date.slice(0, 10) }
-    try {
 
+const getReturnOrderEmailTemplate = (returnOrder, originalOrder, distributor_user_object) => {
+    const {
+        nameOfMedicine,
+        quantity,
+        distributor,
+        date
+    } = originalOrder;
+
+    const template = `
+        Hello ${distributor_user_object.companyName},
+
+        A return order has been created for the original order (${originalOrder.Order_Id}). Here are the details:
+
+        Return Order Details:
+        - Medicine: ${originalOrder.nameOfMedicine}
+        - Damage: ${returnOrder.damage}
+        - Date: ${returnOrder.date}
+
+        Original Order Details:
+        - Medicine: ${nameOfMedicine}
+        - Quantity: ${quantity}
+        - Order Date: ${date}
+
+        Best regards,
+        Your Company Name
+    `;
+
+    return template;
+};
+
+
+
+const createReturnOrder = async (req, res) => {
+    let { damage, order, date } = req.body;
+    try {
+        let order_object = await OrderListModel.findOne({ order });
+        let distributor_user_object = await Distributor.findOne({ _id: order_object?.distributor });
+        if (!order_object) {
+            return res.status(404).json({ error: 'Original order not found' });
+        }
+        const emailTemplate = getReturnOrderEmailTemplate(req.body, order_object, distributor_user_object);
+        await sendEmail(distributor_user_object.email, 'Return Order Request', emailTemplate);
         const newOrder = await OrderReturnModel.create(req.body);
-        res.status(201).json({ msg: 'OrderReturnModel Created', data: newOrder?._id });
+        res.status(201).json({ msg: 'Return Order Request', data: newOrder?._id });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 // Get all orders
 const getAllReturnOrders = async (req, res) => {
