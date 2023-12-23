@@ -16,6 +16,9 @@ const inventory = require("./Routes/InventoryRoutes")
 const adminRouter = require('./Routes/AdminRoutes')
 const RolesPermissionRoutes = require('./Routes/RoleAndPermission')
 
+// Alternative Theripies
+const nutrition = require('./Routes/Alternative_Therapies/nutritionRoutes')
+
 
 // Direct Routers
 const IncomeAndExpensesRouter = require('./Controllers/IncomeAndExpensesController')
@@ -51,7 +54,7 @@ app.use("/receptionist", receptionistRoutes);
 app.use("/consultant", consultantRoutes);
 app.use("/appointment", checkRolesPermissions, appointmentRoutes);
 app.use("/prescription", checkRolesPermissions, prescriptionRoutes);
-app.use("/nutrition", checkRolesPermissions, nutritionRoutes);
+// app.use("/nutrition", checkRolesPermissions, nutritionRoutes);
 app.use("/enquiry", checkRolesPermissions, enquiryRoutes);
 app.use("/public/customer", checkRolesPermissions, createCustomerByExternal);
 app.use("/public/appointment", checkRolesPermissions, createExternalAppointment)
@@ -59,6 +62,10 @@ app.use("/incomeExpense", IncomeAndExpensesRouter)
 app.use("/inventory", checkRolesPermissions, inventory)
 app.use("/configAccess", checkRolesPermissions, RolesPermissionRoutes)
 app.use("/admin", adminRouter)
+
+
+// AlterNative Theripies Routes
+app.use('/nutrition', nutrition)
 
 
 

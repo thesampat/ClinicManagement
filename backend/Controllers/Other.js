@@ -32,4 +32,22 @@ const getPermissions = async (id) => {
 }
 
 
-module.exports = { setPermissionRoles, getPermissions }
+const generateItemId = async (Model) => {
+    try {
+        const count = await Model.countDocuments({});
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+        const day = currentDate.getDate().toString().padStart(2, '0');
+
+        const itemId = `${year}${month}${day}${count}`;
+        return itemId;
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
+};
+
+
+
+module.exports = { setPermissionRoles, getPermissions, generateItemId }
