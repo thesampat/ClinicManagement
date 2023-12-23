@@ -63,8 +63,8 @@ export default function AllRoutes() {
             <Route path="online_clinic/:ocType" element={<OnlineClinic />} />
             <Route path="contact_us" element={<ContactUs />} />
             <Route path="privacy_policy" element={<PrivacyPolicy />} />
-            <Route path="feedback" element={<FeedBack/>} />
-            <Route path="popup" element={<Popup/>} />
+            <Route path="feedback" element={<FeedBack />} />
+            <Route path="popup" element={<Popup />} />
           </Route>
 
           <Route
