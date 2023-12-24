@@ -4,7 +4,8 @@ import CustomSelect from '../../Components/CommonComponents/CustomSelect';
 import CustomTextarea from '../../Components/CommonComponents/CustomTextarea';
 import statesData from '../../Files/states.json';
 import { RefrenceList, educationLevels, indianStatesAndUTs, statusOptions } from '../../Files/dropdownOptions';
-
+import { END_POINT } from "../../Redux/AdminReducer/action";
+import axios from 'axios';  // Import Axios
 
 const initialFormData = {
     FirstName: '',
@@ -35,18 +36,14 @@ const initialFormData = {
     Status: "",
     CaseNo: "",
     Date: "",
-
 };
 
 const initialFormError = { ...initialFormData };
 
 export const FeedBack = () => {
-
     const [formData, setFormData] = useState(initialFormData);
     const [formError, setFormError] = useState(initialFormError);
-    const [filteredStates, setFilteredStates] = useState([]);
-    const [selectedState, setSelectedState] = useState('');
-    const [states, setStates] = useState([]);
+
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setFormData({
@@ -55,9 +52,21 @@ export const FeedBack = () => {
         });
     };
 
+    const handleSubmit = async () => {
+        try {
+            const response = await axios.post(`${END_POINT}/feedback`, formData);
 
-
-
+            if (response.status === 200) {
+                // Form submitted successfully, handle success
+                console.log('Form submitted successfully');
+            } else {
+                // Handle error
+                console.error('Error submitting form');
+            }
+        } catch (error) {
+            console.error('Error submitting form', error);
+        }
+    };
 
     return (
         <>
@@ -412,6 +421,7 @@ export const FeedBack = () => {
                 </div>
             </div>
 
+            <button onClick={handleSubmit}>Submit Form</button>
 
         </>
     )
