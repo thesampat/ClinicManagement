@@ -43,6 +43,8 @@ import { Webpages } from '../coverPage/coverRoute';
 import { FeedBack } from './publicRoutes/FeedBack';
 import Popup from './publicRoutes/Popup';
 import AfterActionComponent from './publicRoutes/actionView';
+import NutritionManage from './AdminRoutes/alternative_therapies/nutritionAdmin';
+import NutritionList from './AdminRoutes/alternative_therapies/nutritionList';
 
 export default function AllRoutes() {
   return (
@@ -251,6 +253,17 @@ export default function AllRoutes() {
               </PrivateRoute>
             }
           />
+
+          {/* //alternative_therapies */}
+
+          <Route
+            path="nutrition/:nutrition_id"
+            element={
+              <PrivateRoute allowedRoles={['SuperAdmin']}>
+                <NutritionManage />{' '}
+              </PrivateRoute>
+            }
+          ></Route>
         </>
       )}
 

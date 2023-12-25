@@ -57,6 +57,8 @@ const getTitle = (listType) => {
     return 'Enquiry';
   } else if (listType === 'assistantDoctor') {
     return 'Assistant Doctor';
+  } else if (listType === 'nutrition') {
+    return 'nutrition';
   } else {
     return 'Default Title';
   }
@@ -85,6 +87,7 @@ export default function Table() {
     listType === 'consultant' && fetchData('consultant/?', query).then((data) => setTableData(data?.data));
     listType === 'enquiry' && fetchData('enquiry/?', query).then((data) => setTableData(data?.data));
     listType === 'assistantDoctor' && fetchData('assistantDoctor/?', query).then((data) => setTableData(data?.data));
+    listType === 'nutrition' && fetchData('nutrition/?', query).then((data) => setTableData(data?.data));
   }, [listType, query]);
 
   return (
@@ -155,6 +158,7 @@ export default function Table() {
                             listType === 'enquiry' && deleteData(`enquiry/${item?._id}`, 'Enquiry');
                             listType === 'assistantDoctor' && deleteData(`assistantDoctor/${item?._id}`, 'assistantDoctor');
                             listType === 'doctors' && deleteData(`doctor/${item?._id}`, 'Doctor');
+                            listType === 'nutrition' && deleteData(`nutrition/${item?._id}`, 'Nutrition');
                           }}
                           text={item.name}
                           heading={'Delete Item'}
