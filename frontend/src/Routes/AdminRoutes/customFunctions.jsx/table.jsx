@@ -36,6 +36,10 @@ const getHeadings = (sectionType) => {
       main_head = ['fullName', 'dateOfBirth', 'gender', 'bloodGroup'];
       custom_head = ['Name', 'DOB', 'Gender', 'Bood Group'];
       break;
+    case 'feedback':
+      main_head = ['FirstName', 'dateOfBirth', 'typesOfDoctor', 'education'];
+      custom_head = ['Name', 'Phone', 'type', 'Degree'];
+      break;
   }
 
   return { main: main_head, display: custom_head };

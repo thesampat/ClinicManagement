@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+const commentSchema = new mongoose.Schema({
+    date: String,
+    content: String,
+    signature: String,
+    rating: Number,
+});
+
 const feedbackSchema = new mongoose.Schema({
     Status: String,
     CaseNo: String,
@@ -19,16 +26,7 @@ const feedbackSchema = new mongoose.Schema({
     profession: String,
     industry: String,
     email: String,
-    comments: String,
-    signature: String,
-    comments1: String,
-    signature1: String,
-    comments2: String,
-    signature2: String,
-    comments3: String,
-    signature3: String,
-    comments4: String,
-    signature4: String,
+    comments: [commentSchema],
 });
 
 const Feedback = mongoose.model('Feedback', feedbackSchema);

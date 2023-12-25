@@ -59,6 +59,8 @@ const getTitle = (listType) => {
     return 'Assistant Doctor';
   } else if (listType === 'nutrition') {
     return 'nutrition';
+  } else if (listType === 'feedback') {
+    return 'feedback';
   } else {
     return 'Default Title';
   }
@@ -88,6 +90,16 @@ export default function Table() {
     listType === 'enquiry' && fetchData('enquiry/?', query).then((data) => setTableData(data?.data));
     listType === 'assistantDoctor' && fetchData('assistantDoctor/?', query).then((data) => setTableData(data?.data));
     listType === 'nutrition' && fetchData('nutrition/?', query).then((data) => setTableData(data?.data));
+    listType === 'feedback' && fetchData('feedback/?', query).then((data) => setTableData(data?.data));
+  }, [listType, query]);
+
+  useEffect(() => {
+    setTableData(null);
+    listType === 'feedback' &&
+      fetchData('feedback/?', query).then((data) => {
+        console.log('Feedback Data:', data?.data);
+        setTableData(data?.data);
+      });
   }, [listType, query]);
 
   return (
@@ -159,6 +171,7 @@ export default function Table() {
                             listType === 'assistantDoctor' && deleteData(`assistantDoctor/${item?._id}`, 'assistantDoctor');
                             listType === 'doctors' && deleteData(`doctor/${item?._id}`, 'Doctor');
                             listType === 'nutrition' && deleteData(`nutrition/${item?._id}`, 'Nutrition');
+                            listType === 'feedback' && deleteData(`feedback/${item?._id}`, 'feedback');
                           }}
                           text={item.name}
                           heading={'Delete Item'}
