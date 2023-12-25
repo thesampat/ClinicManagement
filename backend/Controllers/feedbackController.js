@@ -4,9 +4,18 @@ const createFeedback = async (req, res) => {
     try {
         const newFeedback = new Feedback(req.body);
         const savedFeedback = await newFeedback.save();
-        res.status(201).json(savedFeedback);
+        res.status(201).json(savedFeedback?._id);
     } catch (error) {
         res.status(500).json({ error: "Error creating feedback" });
+    }
+}
+
+const getAllFeedbackPatients = async (req, res) => {
+    try {
+        const feedback = await Feedback.find({}, { FirstName: 1, LastName: 1 })
+        res.status(200).json(feedback);
+    } catch (error) {
+        res.status(500).json({ error: "Error fetching feedback" });
     }
 }
 
@@ -52,6 +61,9 @@ const deleteFeedback = async (req, res) => {
     }
 }
 
+
+
+
 const updateFeedbackById = async (req, res) => {
     try {
         const updateFeedback = await Feedback.findByIdAndUpdate(
@@ -77,5 +89,6 @@ module.exports = {
     getAllFeedback,
     getFeedbackById,
     deleteFeedback,
-    updateFeedbackById
+    updateFeedbackById,
+    getAllFeedbackPatients
 };
