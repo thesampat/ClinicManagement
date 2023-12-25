@@ -26,6 +26,7 @@ const feedbackSchema = new mongoose.Schema({
     profession: String,
     industry: String,
     email: String,
+    complaints: [{ content: String }],
     comments: [commentSchema],
 });
 

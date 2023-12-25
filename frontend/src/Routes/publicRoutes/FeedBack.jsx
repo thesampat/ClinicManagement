@@ -53,6 +53,7 @@ const initialFormData = {
   Status: '',
   CaseNo: '',
   Date: '',
+  complaints: Array.from({ length: 10 }, () => ({ content: '' })),
 };
 
 const initialFormError = { ...initialFormData };
@@ -130,9 +131,18 @@ export const FeedBack = () => {
 
     if (isValidInput) {
       setIsPorcessing(true);
-      console.log(trimmedFormData, 'thsi is trimmed form data');
       createItem(trimmedFormData, navigate, setIsPorcessing, setSelectedPatient, setOperateType);
     }
+  };
+
+  const handleComplaintChange = (index, value) => {
+    const updatedComplaints = [...formData.complaints];
+    updatedComplaints[index]['content'] = value;
+
+    setFormData({
+      ...formData,
+      complaints: updatedComplaints,
+    });
   };
 
   return (
@@ -205,9 +215,14 @@ export const FeedBack = () => {
                 <h2 className="text-2xl font-semibold text-primary-400  border-l-4 border-primary-400 pl-3 mb-2">Present set of Complaints</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
-                  <CustomTextarea label="Additional Comments" value={formData?.comments} onChange={handleInputChange} name="comments" placeholder="Enter any additional comments..." error={formError?.comments} rows={3} />
-
-                  <CustomInput label="Signature" value={formData?.signature} onChange={handleInputChange} name="signature" error={formError?.signature} />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+                    {formData?.complaints?.map((complaint, index) => (
+                      <div key={index}>
+                        <label className="block text-sm font-medium text-gray-700">{`Complaint ${index + 1}`}</label>
+                        <input type="text" value={complaint?.content} onChange={(e) => handleComplaintChange(index, e.target.value)} className="mt-1 p-2 block w-full border rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:outline-none" />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -218,7 +233,7 @@ export const FeedBack = () => {
         </div>
       )}
 
-      {operateType == 'comment' && (
+      {selectedPatient !== null && (
         <div className="p-20">
           <div className="bg-primary-50 pb-8 rounded-md pt-4 border-2 border-primary-400 ">
             <div className="pb-8 rounded-md pt-4">
