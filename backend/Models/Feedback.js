@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
 
-const commentSchema=new mongoose.Schema({
-
-})
+const commentSchema = new mongoose.Schema({
+    date: String,
+    content: String,
+    signature: String,
+    rating: Number,
+});
 
 const feedbackSchema = new mongoose.Schema({
     Status: String,
@@ -23,11 +26,9 @@ const feedbackSchema = new mongoose.Schema({
     profession: String,
     industry: String,
     email: String,
-    comments:[commentSchema]
+    comments: [commentSchema],
 });
 
 const Feedback = mongoose.model('Feedback', feedbackSchema);
 
 module.exports = Feedback;
-
-

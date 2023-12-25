@@ -33,36 +33,45 @@ const getFeedbackById = async (req, res) => {
 }
 
 const deleteFeedback = async (req, res) => {
-    const { id } = req.params;
     try {
-        const deletedFeedback = await Feedback.findByIdAndRemove(id);
-        if (!deletedFeedback) {
-            return res.status(404).json({ error: "Feedback not found" });
+        const updateFeedback = await Feedback.findByIdAndUpdate(
+            req.params.id,
+
+            { $pull: { comments: { _id: req.params.commentId } } },
+            { new: true }
+        );
+
+        if (!updateFeedback) {
+            return res.status(404).json({ message: "Feedback not found" });
         }
-        res.status(200).json({ message: "Feedback deleted successfully" });
+
+        res.json(updateFeedback);
     } catch (error) {
-        res.status(500).json({ error: "Error deleting feedback" });
+        console.error('Error removing comment from feedback:', error);
+        res.status(400).json({ message: error.message });
     }
 }
+
 const updateFeedbackById = async (req, res) => {
-    console.log("uuu")
     try {
-        console.log("update")
-      const updateFeedback = await Feedback.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true }
-      );
-      if (!updateFeedback) {
-        return res.status(404).json({ message: "Feedback not found" });
-      }
-      res.json(updateFeedback);
+        const updateFeedback = await Feedback.findByIdAndUpdate(
+            req.params.id,
+            { $push: { comments: req.body.comments } },
+            { new: true }
+        );
+
+        if (!updateFeedback) {
+            return res.status(404).json({ message: "Feedback not found" });
+        }
+
+        res.json(updateFeedback);
     } catch (error) {
         console.error('Error updating feedback:', error);
-      res.status(400).json({ message: error.message });
+        res.status(400).json({ message: error.message });
     }
-  }
-  
+}
+
+
 module.exports = {
     createFeedback,
     getAllFeedback,
