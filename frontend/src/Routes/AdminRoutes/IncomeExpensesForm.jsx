@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import CustomSelect from '../../Components/CommonComponents/CustomSelect';
-import calculateTotals from './IncomeExpenseFunctions.jsx/totalCalculate';
+import calculateTotals from './IncomeExpenseFunctionsAndComponents.jsx/totalCalculate';
 import { getJwtToken } from '../../Redux/AdminReducer/action';
 import { END_POINT } from '../../Redux/AdminReducer/action';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
-import { convertedReadData, transformData } from './IncomeExpenseFunctions.jsx/transformData';
+import { convertedReadData, transformData, transformedShortcutsData } from './IncomeExpenseFunctionsAndComponents.jsx/transformData';
+import { IEButtonModal } from './IncomeExpenseFunctionsAndComponents.jsx/popupModal';
 
 const subtitleFormat = [
   {
@@ -32,6 +33,20 @@ const createItem = async (data, setIsPorcessing) => {
   } catch (error) {
     setIsPorcessing(false);
     toast.error(error);
+  }
+};
+
+const fetchShortCuts = async (year) => {
+  try {
+    const result = await axios.get(`${END_POINT}/incomeExpense/shortcuts?year=${year}`, {
+      headers: {
+        Authorization: getJwtToken(),
+      },
+    });
+    return result;
+  } catch (error) {
+    console.log(error);
+    toast.error('Something went wrong while fetching data');
   }
 };
 
@@ -84,6 +99,7 @@ const YourComponent = () => {
   const [date, setDate] = useState(dateString?.[2]);
   const [descriptionRecords, setDescriptionsRecords] = useState([]);
   const [viewType, setViewType] = useState('regular');
+  const [isPopupOpen, setPopupOpen] = useState(false);
 
   useEffect(() => {
     setFormData();
@@ -108,8 +124,16 @@ const YourComponent = () => {
             setDescriptionsRecords((prev) => [...prev, { ...i, subTitle: f?.subTitle, subTitelIndex: index }]);
           });
         });
-      } else {
-        setFormData(subtitleFormat);
+      }
+
+      console.log(res?.data?.[0]?.dailyData?.length);
+      if (res?.data?.[0]?.dailyData?.length <= 0) {
+        fetchShortCuts(2023).then((shorts) => {
+          if (shorts.data?.[0]?.data?.length >= 0) {
+            let convertedShortcuts = transformedShortcutsData(shorts.data?.[0]);
+            setFormData(convertedShortcuts);
+          }
+        });
       }
     });
   }, [year, month, date]);
@@ -148,7 +172,10 @@ const YourComponent = () => {
           <h3 className="text-2xl font-bold ps-5">
             Income & Expenditure - {date}/{month}/{year}
           </h3>
-          <div className="grid grid-cols-1">
+          <div className="grid grid-cols-2 gap-2">
+            <button className="bg-blue-400 rounded-lg self-center" onClick={(e) => setPopupOpen(true)}>
+              Shortcu
+            </button>
             <CustomSelect options={['2023', '2022', '2021']} style={{ height: '10px', width: '150px' }} value={year} onChange={(e) => setYear(e.target.value)} name={'Year'} />
           </div>
         </div>
@@ -223,6 +250,7 @@ const YourComponent = () => {
           )}
         </div>
       </div>
+      {isPopupOpen && <IEButtonModal isPopupOpen={isPopupOpen} setPopupOpen={setPopupOpen} />}
     </div>
   );
 };
@@ -276,8 +304,6 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
 
   const removeSubtitle = (subIndex) => {
     let subtitleGroup = descriptionRecords?.map((k) => k.subTitle);
-
-    console.log(subIndex);
     if ([...new Set(subtitleGroup || [])]?.length <= 1) {
       return false;
     }
@@ -330,8 +356,6 @@ function IncomeExpenseTable({ disabled, setFormData, formData, handleTableChange
         const newDescriptions = HiN.filter((item, i, arr) => arr.findIndex((t) => (t.description === item.description) & (t.subTitle == t.subTitle)) === i);
 
         setDescriptionsRecords(newDescriptions);
-
-        console.log(newDescriptions, 'what is happenings');
 
         ['income', 'expense']?.includes(name) && calculateTotals(HiN, setTotal, name, totals);
       } else {

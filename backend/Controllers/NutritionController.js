@@ -1,16 +1,16 @@
 const { Nutrition } = require("../Models/NutritionModel");
 
-const createNutritionRecord = async(req,res) => {
+const createNutritionRecord = async (req, res) => {
     try {
         const newRecord = new Nutrition(req.body);
         const savedRecord = await newRecord.save();
-        res.status(201).json(savedRecord)
+        return res.status(200).json(savedRecord)
     } catch (error) {
-        res.status(500).json({ error: "Error creating nutrition record" });
+        return res.status(500).json({ error: "Error creating nutrition record" });
     }
 }
 
-const getAllNutritionRecords = async(req,res) => {
+const getAllNutritionRecords = async (req, res) => {
     try {
         const records = await Nutrition.find();
         res.status(200).json(records)
@@ -19,11 +19,11 @@ const getAllNutritionRecords = async(req,res) => {
     }
 }
 
-const getNutritionRecordById = async(req,res) => {
-    const {id} = req.params;
+const getNutritionRecordById = async (req, res) => {
+    const { id } = req.params;
     try {
         const record = await Nutrition.findById(id);
-        if(!record){
+        if (!record) {
             return res.status(404).json({ error: "Record not found" });
         }
         res.status(200).json(record);
@@ -32,11 +32,11 @@ const getNutritionRecordById = async(req,res) => {
     }
 }
 
-const deleteNutritionRecord = async(req,res) => {
-    const {id} = req.params;
+const deleteNutritionRecord = async (req, res) => {
+    const { id } = req.params;
     try {
         const deleteRecord = await Nutrition.findByIdAndRemove(id);
-        if(!deleteRecord){
+        if (!deleteRecord) {
             return res.status(404).json({ error: "Record not found" });
         }
         res.status(200).json({ message: "Record deleted successfully" });
@@ -45,7 +45,9 @@ const deleteNutritionRecord = async(req,res) => {
     }
 }
 
-module.exports = {createNutritionRecord,
+module.exports = {
+    createNutritionRecord,
     getAllNutritionRecords,
     getNutritionRecordById,
-    deleteNutritionRecord}
+    deleteNutritionRecord
+}

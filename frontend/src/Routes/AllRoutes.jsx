@@ -42,6 +42,7 @@ import { PrivacyPolicy } from '../coverPage/AllPages/privacy_policy';
 import { Webpages } from '../coverPage/coverRoute';
 import { FeedBack } from './publicRoutes/FeedBack';
 import Popup from './publicRoutes/Popup';
+import AfterActionComponent from './publicRoutes/actionView';
 
 export default function AllRoutes() {
   return (
@@ -65,6 +66,7 @@ export default function AllRoutes() {
             <Route path="privacy_policy" element={<PrivacyPolicy />} />
             <Route path="feedback" element={<FeedBack />} />
             <Route path="popup" element={<Popup />} />
+            <Route path="afterAction" element={<AfterActionComponent />} />
           </Route>
 
           <Route

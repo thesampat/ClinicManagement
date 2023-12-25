@@ -61,4 +61,19 @@ function convertedReadData(inputData) {
   });
 }
 
-export { transformData, convertedReadData };
+const transformedShortcutsData = (originalData) => {
+  let ires = originalData?.data?.map((item) => ({
+    subTitle: item.title,
+    Transactions: item.items.map((transaction) => ({
+      description: transaction,
+      income: '', // You can set values for income, expense, and gain if needed
+
+      expense: '',
+      gain: '',
+    })),
+  }));
+
+  return ires;
+};
+
+export { transformData, convertedReadData, transformedShortcutsData };
