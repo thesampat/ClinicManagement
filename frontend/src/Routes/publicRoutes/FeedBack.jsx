@@ -9,6 +9,8 @@ import { UploadFile, END_POINT, RemoveFile, UploadImages, DeleteImages } from '.
 import CustomButton from '../../Components/CommonComponents/CustomButton';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { FaRegStar, FaStar } from 'react-icons/fa';
+import AfterActionComponent from './actionView';
 
 const createItem = async (data, navigate, setIsPorcessing, setSelectedPatient, setOperateType) => {
   try {
@@ -18,9 +20,30 @@ const createItem = async (data, navigate, setIsPorcessing, setSelectedPatient, s
     setIsPorcessing(false);
     // navigate(`/enquiry/${id}`);
     toast.success('Created Successfully');
+    return result?.data._id;
   } catch (error) {
     setIsPorcessing(false);
     toast.error(error);
+  }
+};
+
+const submitComments = async (patientId, rating, comments, signature,setIsPorcessing,setOperateType,navigate) => {
+  try {
+    const feedbackData = {
+      date: new Date().toISOString(),
+      content: comments,
+      signature,
+      rating,
+    };
+
+    await axios.put(`${END_POINT}/feedback/${patientId}`, { comments: feedbackData });
+    setIsPorcessing(false);
+    setOperateType(null);
+    toast.success('Comments submitted successfully');
+    navigate(`/web/afterAction`);
+  } catch (error) {
+    toast.error('Failed to submit comments');
+    console.error(error);
   }
 };
 
@@ -57,9 +80,19 @@ const initialFormData = {
 
 const initialFormError = { ...initialFormData };
 
+const initialFormDataForUpdate = {
+  comments: '',
+  CaseRating: 0,
+  Signature: '',
+};
+
+const initialFormDataForUpdateError = { ...initialFormDataForUpdate };
+
 export const FeedBack = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [formError, setFormError] = useState(initialFormError);
+  const [FormDataForUpdate, setFormDataForUpdate] = useState(initialFormDataForUpdate);
+  const [FormDataForUpdateError, setFormDataForUpdateError] = useState(initialFormDataForUpdateError);
   const [filteredStates, setFilteredStates] = useState([]);
   const [selectedState, setSelectedState] = useState('');
   const [states, setStates] = useState([]);
@@ -127,22 +160,58 @@ export const FeedBack = () => {
     // }
 
     // setFormError(updatedFormError);
-
     if (isValidInput) {
       setIsPorcessing(true);
       console.log(trimmedFormData, 'thsi is trimmed form data');
-      createItem(trimmedFormData, navigate, setIsPorcessing, setSelectedPatient, setOperateType);
+
+        createItem(trimmedFormData, navigate, setIsPorcessing, setSelectedPatient, setOperateType);
+
+    }
+  };
+  const handleFormUpdate = () => {
+    const trimmedFormData = { ...FormDataForUpdate };
+    let isValidInput = true;
+
+    for (const key in trimmedFormData) {
+      if (trimmedFormData?.hasOwnProperty(key)) {
+        if (typeof trimmedFormData[key] === 'string') {
+          trimmedFormData[key] = trimmedFormData[key].trim();
+        }
+      }
+    }
+
+    if (isValidInput) {
+      setIsPorcessing(true);
+      submitComments(selectedPatient, trimmedFormData.CaseRating, trimmedFormData.comments, trimmedFormData.Signature, setIsPorcessing, setOperateType,navigate);
+      setSelectedPatient(null);
     }
   };
 
+  const handleSelectChange = (event) => {
+    const selectedPatientName = event.target.value;
+    let selectedPatientId = patientList.find((patient) => patient?.FirstName === selectedPatientName)?._id;
+
+    setSelectedPatient(selectedPatientId);
+    setOperateType('comment');
+  };
+  const handleAddButton = (event) => {
+    setOperateType('add')
+    setSelectedPatient(null);
+  };
+  const handleStarRating = (rating) => {
+    console.log('Updating rating:', rating);
+    setFormData((prevData) => ({
+      ...prevData,
+      CaseRating: rating,
+    }));
+  };
+  
+  
   return (
     <>
       <div className="w-full justify-between mx-auto w-full px-5 flex">
         <CustomSelect
-          onChange={(e) => {
-            let selectedPatienti = patientList?.filter((p) => p?.FirstName === e.target.value)?.[0];
-            setSelectedPatient(selectedPatienti?._id);
-          }}
+          onChange={handleSelectChange}
           options={patientList?.map((e) => e?.FirstName)}
           label="Reference"
           placeholder="-- Select Patient Reference --"
@@ -153,7 +222,7 @@ export const FeedBack = () => {
         />
         <div className="groupofButtons flex gap-10">
           {operateType !== 'add' && (
-            <button className="w-fit p-3 mt-6 font-bold bg-primary-200 text-white h-12" onClick={() => setOperateType('add')}>
+            <button className="w-fit p-3 mt-6 font-bold bg-primary-200 text-white h-12" onClick={handleAddButton}>
               Add New
             </button>
           )}
@@ -200,17 +269,7 @@ export const FeedBack = () => {
               </div>
             </div>
 
-            <div className="pb-8 rounded-md pt-4">
-              <div className="px-6 py-6 rounded-md ">
-                <h2 className="text-2xl font-semibold text-primary-400  border-l-4 border-primary-400 pl-3 mb-2">Present set of Complaints</h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
-                  <CustomTextarea label="Additional Comments" value={formData?.comments} onChange={handleInputChange} name="comments" placeholder="Enter any additional comments..." error={formError?.comments} rows={3} />
-
-                  <CustomInput label="Signature" value={formData?.signature} onChange={handleInputChange} name="signature" error={formError?.signature} />
-                </div>
-              </div>
-            </div>
             <div className="lg:w-80 mx-auto w-full px-5  ">
               <CustomButton onClick={handleForm} isProcessing={isProcessing} label={'Submit'} />
             </div>
@@ -221,49 +280,43 @@ export const FeedBack = () => {
       {operateType == 'comment' && (
         <div className="p-20">
           <div className="bg-primary-50 pb-8 rounded-md pt-4 border-2 border-primary-400 ">
+          <div className="m-3 rounded-md bg-gray-100 h-fit lg:px-6 w-50 p-5 bg-white">
+          <div className="headingTitle flex justify-between">
+          <div className="flex gap-4">
+           <div className="flex gap-2 items-center">
+            <label htmlFor="CaseMark" className="text-md">
+              Rate Case
+            </label>
+            <div className="flex items-center">
+              {/* {[...Array(5)].map((_, index) => (
+                <FaStar key={index} onClick={(e) => handleStarRating(e, index + 1, 'CaseRating', formData?.Date)} className={`cursor-pointer h-5 w-5 ${index < patientList?.CaseRating ? 'text-yellow-400 fas' : 'text-gray-300 far'}`} />
+              ))} */}
+{[...Array(5)].map((_, index) => (
+  <FaStar
+    key={index}
+    onClick={() => handleStarRating(index + 1)}
+    className={`cursor-pointer h-5 w-5 ${index < formData?.CaseRating ? 'text-yellow-400 fas' : 'text-gray-300 far'}`}
+  />
+))}
+            </div>
+          </div>
+          </div>
+          </div>
+          </div>
             <div className="pb-8 rounded-md pt-4">
               <div className="px-6 py-6 rounded-md ">
-                <h2 className="text-2xl font-semibold text-primary-400  border-l-4 border-primary-400 pl-3 mb-2">Feedback at 1st Follow up visit </h2>
+                <h2 className="text-2xl font-semibold text-primary-400  border-l-4 border-primary-400 pl-3 mb-2">Review </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
-                  <CustomTextarea label="Additional Comments" value={formData?.comments1} onChange={handleInputChange} name="comments1" placeholder="Enter any additional comments..." error={formError?.comments1} rows={3} />
+                  <CustomTextarea label="Additional Comments" value={formData?.comments1} onChange={handleInputChange} name="comments1" placeholder="Enter any additional comments..." error={formError?.comments1} rows={10} />
 
                   <CustomInput label="Signature" value={formData?.signature1} onChange={handleInputChange} name="signature" error={formError?.signature1} />
                 </div>
               </div>
             </div>
-            <div className="pb-8 rounded-md pt-4">
-              <div className="px-6 py-6 rounded-md ">
-                <h2 className="text-2xl font-semibold text-primary-400  border-l-4 border-primary-400 pl-3 mb-2">Feedback at 2th Follow up visit </h2>
+            <div className="lg:w-80 mx-auto w-full px-5  ">
+              <CustomButton onClick={handleFormUpdate} isProcessing={isProcessing} label={'Submit'} />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
-                  <CustomTextarea label="Additional Comments" value={formData?.comments2} onChange={handleInputChange} name="comments2" placeholder="Enter any additional comments..." error={formError?.comments2} rows={5} />
-
-                  <CustomInput label="Signature" value={formData?.signature2} onChange={handleInputChange} name="signature2" error={formError?.signature2} />
-                </div>
-              </div>
-            </div>
-            <div className="pb-8 rounded-md pt-4">
-              <div className="px-6 py-6 rounded-md ">
-                <h2 className="text-2xl font-semibold text-primary-400  border-l-4 border-primary-400 pl-3 mb-2">Feedback at 3rd Follow up visit </h2>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
-                  <CustomTextarea label="Additional Comments" value={formData?.comments3} onChange={handleInputChange} name="comments3" placeholder="Enter any additional comments..." error={formError?.comments3} rows={5} />
-
-                  <CustomInput label="Signature3" value={formData?.signature3} onChange={handleInputChange} name="signature3" error={formError?.signature3} />
-                </div>
-              </div>
-            </div>
-            <div className="pb-8 rounded-md pt-4">
-              <div className="px-6 py-6 rounded-md ">
-                <h2 className="text-2xl font-semibold text-primary-400  border-l-4 border-primary-400 pl-3 mb-2">Feedback at 4th Follow up visit </h2>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
-                  <CustomTextarea label="Additional Comments" value={formData?.comments4} onChange={handleInputChange} name="comments4" placeholder="Enter any additional comments..." error={formError?.comments4} rows={5} />
-
-                  <CustomInput label="Signature" value={formData?.signature4} onChange={handleInputChange} name="signature4" error={formError?.signature4} />
-                </div>
-              </div>
             </div>
           </div>
         </div>
