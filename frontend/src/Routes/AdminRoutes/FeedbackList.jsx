@@ -75,7 +75,7 @@ const FeedbackList = () => {
   const handlePatientAccordionToggle = () => {
     setIsPatientAccordionOpen(!isPatientAccordionOpen);
   };
-
+//jfenjd
   const LabelValuePair = ({ label, value }) => (
     <div className="label-box flex">
       <span className="label-text">{label}:</span>
