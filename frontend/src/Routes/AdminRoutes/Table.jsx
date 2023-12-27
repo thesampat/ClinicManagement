@@ -10,7 +10,7 @@ import CustomSelect from '../../Components/CommonComponents/CustomSelect';
 import DeleteConfirmatationModal from '../../Components/CommonComponents/DeleteConfirmatationModal';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams,useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { getHeadings } from './customFunctions.jsx/table';
 
@@ -76,6 +76,7 @@ export default function Table() {
   let tableHeading;
   let letModifedHeading;
   const navigate = useNavigate();
+  const location = useLocation();
 
   const res = getHeadings(listType);
   tableHeading = res?.main;
@@ -102,11 +103,17 @@ export default function Table() {
       });
   }, [listType, query]);
 
+  const excludedUrls = ['/feedback', '/someotherurl'];
+
+  const shouldDisplayButton = !excludedUrls.includes(location.pathname);
+
   return (
     <div className="m-3 rounded-md bg-slate-100 px-8 w-full min-h-[100vh] h-fit py-8">
-      <button onClick={(e) => navigate('addNew')} className="p-2 bg-black text-white rounded fond-semibold">
-        Add {getTitle(listType)}
-      </button>
+      {shouldDisplayButton && (
+        <button onClick={() => navigate('addNew')} className="p-2 bg-black text-white rounded font-semibold">
+          Add {getTitle(listType)}
+        </button>
+      )}
       <hr className="bg-black h-1 w-full my-5" />
       <div className="flex justify-between flex-wrap items-center ">
         <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: getTitle(listType) }, { title: `View All ${getTitle(listType)}` }]} />
@@ -160,8 +167,9 @@ export default function Table() {
                           }}
                           className="bg-gray-100 cursor-pointer text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-gray-500"
                         >
-                          Modify
+                           {shouldDisplayButton ? <span>Modify</span> : <span>View</span>}
                         </span>
+                        {shouldDisplayButton && (
                         <DeleteConfirmatationModal
                           deleteFunction={() => {
                             listType === 'patients' && deleteData(`customer/${item?._id}`, 'Patient');
@@ -176,6 +184,7 @@ export default function Table() {
                           text={item.name}
                           heading={'Delete Item'}
                         />
+                        )}
                       </td>
                     </tr>
                   ))
