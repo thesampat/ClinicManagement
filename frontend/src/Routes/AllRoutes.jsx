@@ -45,6 +45,7 @@ import Popup from './publicRoutes/Popup';
 import AfterActionComponent from './publicRoutes/actionView';
 import NutritionManage from './AdminRoutes/alternative_therapies/nutritionAdmin';
 import NutritionList from './AdminRoutes/alternative_therapies/nutritionList';
+import FeedbackList from '../Routes/AdminRoutes/FeedbackList';
 
 export default function AllRoutes() {
   return (
@@ -261,6 +262,14 @@ export default function AllRoutes() {
             element={
               <PrivateRoute allowedRoles={['SuperAdmin']}>
                 <NutritionManage />{' '}
+              </PrivateRoute>
+            }
+          ></Route>
+            <Route
+            path="feedback/:feedback_id"
+            element={
+              <PrivateRoute allowedRoles={['SuperAdmin']}>
+                <FeedbackList />{' '}
               </PrivateRoute>
             }
           ></Route>

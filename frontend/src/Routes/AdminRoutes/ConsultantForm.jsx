@@ -11,6 +11,7 @@ import { UploadFile, END_POINT, RemoveFile, UploadImages, DeleteImages } from '.
 import CustomSpinner from '../../Components/CommonComponents/CustomSpinner';
 import { FileUploadModal, ImageShowModal, ImageUploadModal, MultipleFileUploads } from '../../Components/CommonComponents/DoctorUploadModals';
 import ModalCustom from '../../Components/CommonComponents/ModalCustomPopup';
+import AvailabilityCalendarAndTimeSlots from '../../Components/CommonComponents/CustomDoctorAvailibiityDateCalenderSlot';
 import CustomTextarea from '../../Components/CommonComponents/CustomTextarea';
 import CustomImageInput from '../../Components/CommonComponents/CustomImageInput';
 import axios from 'axios';
@@ -209,6 +210,13 @@ export default function ConsultantForm() {
               </div>
             </div>
           )}
+
+          <div className=" px-6 pt-6">
+            <div className="flex flex-col">
+              <AvailabilityCalendarAndTimeSlots formData={formData} setFormData={setFormData} />
+            </div>
+            <span className="text-xs font-medium text-red-400 ">{formError?.availability}</span>
+          </div>
 
           {/* password input */}
           {consultant_id == 'addNew' && (

@@ -1,151 +1,188 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { deleteReceptionist, getAllReceptionist, getSingleReceptionist } from '../../Redux/AdminReducer/action';
-import { useDispatch, useSelector } from 'react-redux';
-import CustomBreadcrumbs from '../../Components/CommonComponents/CustomBreadcrumbs';
-import 'react-toastify/dist/ReactToastify.css';
-import CustomSpinner from '../../Components/CommonComponents/CustomSpinner';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { FaStar } from 'react-icons/fa';
+
+import { END_POINT } from '../../Redux/AdminReducer/action';
+import { RefrenceList, educationLevels, indianStatesAndUTs, statusOptions } from '../../Files/dropdownOptions';
 import CustomInput from '../../Components/CommonComponents/CustomInput';
-import PaginationButtons from '../../Components/CommonComponents/PaginationButtons';
 import CustomSelect from '../../Components/CommonComponents/CustomSelect';
-import DeleteConfirmatationModal from '../../Components/CommonComponents/DeleteConfirmatationModal';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom';
+import CustomTextarea from '../../Components/CommonComponents/CustomTextarea';
+import CustomButton from '../../Components/CommonComponents/CustomButton';
 
-export default function ReceptionistList() {
-  // Redux selectors to access state
-  const { getAllReceptionistProcessing, getAllReceptionistSuccess, getAllReceptionistData, deleteReceptionistProcessing, deleteReceptionistSuccess, deleteReceptionistMessage, deleteReceptionistFail } = useSelector((state) => state.AdminReducer);
-  const dispatch = useDispatch();
-  const [query, setQuery] = useState({ search: '', page: 1, limit: 10 });
-  const debounceTimer = useRef(null);
-  const navigate = useNavigate();
+const fetchItems = async (path) => {
+  try {
+    const result = await axios.get(`${END_POINT}/${path}`);
+    return result;
+  } catch (error) {
+    console.log(error);
+    toast.error('Something went wrong while fetching data');
+  }
+};
 
-  // Function to fetch data when the query changes
-  const fetchData = () => {
-    dispatch(getAllReceptionist(query));
+const initialFormData = {
+  FirstName: '',
+  MiddleName: '',
+  LastName: '',
+  dateOfBirth: '',
+  bloodGroup: '',
+  gender: '',
+  mobile: '',
+  maritalStatus: '',
+  motherTongue: '',
+  state: '',
+  education: '',
+  address: '',
+  profession: '',
+  industry: '',
+  email: '',
+  Status: '',
+  CaseNo: '',
+  Date: '',
+  comments: '',
+  CaseRating: 0,
+  Signature: '',
+};
+
+const initialFormError = { ...initialFormData };
+
+const FeedbackList = () => {
+  const [formData, setFormData] = useState(initialFormData);
+  const [isPatientAccordionOpen, setIsPatientAccordionOpen] = useState(true);
+  const { feedback_id } = useParams();
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    fetchItems(`feedback/${feedback_id}`).then((res) => {
+      console.log(res?.data);
+      setFormData(res?.data);
+    });
+  }, []);
+
+  const handleStarRating = (rating) => {
+    console.log('Updating rating:', rating);
+    setFormData((prevData) => ({
+      ...prevData,
+      CaseRating: rating,
+    }));
   };
 
-  // useEffect to fetch the list of recepnist when the component mounts
-  useEffect(() => {
-    // Clear the previous timer when query changes
-    clearTimeout(debounceTimer.current);
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
 
-    // Set a new timer to execute fetchDataWithDebounce after a delay
-    debounceTimer.current = setTimeout(fetchData, 500);
-
-    // Cleanup the timer on component unmount
-    return () => clearTimeout(debounceTimer.current);
-  }, [query]);
-
-  // delete toast messaeg and fecth latest data
-  useEffect(() => {
-    // fetch data if delete success
-    if (!deleteReceptionistProcessing && deleteReceptionistSuccess) {
-      toast.success(deleteReceptionistMessage, { position: toast.POSITION.TOP_RIGHT });
-      fetchData();
-    } else if (!deleteReceptionistProcessing && deleteReceptionistFail) {
-      toast.error(deleteReceptionistMessage, { position: toast.POSITION.TOP_RIGHT });
-    }
-  }, [deleteReceptionistSuccess, deleteReceptionistFail, deleteReceptionistProcessing]);
-
-  return (
-    <div className="px-8 pt-24 min-h-[100vh] h-fit py-8">
-      <div className="flex justify-between flex-wrap items-center ">
-        {/* Breadcrumbs */}
-        <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: 'Receptionist' }, { title: 'View All Receptionist' }]} />
-
-        {/* search input box */}
-        <div className=" -mt-5 mb-2">
-          <CustomInput
-            label={''}
-            name="search"
-            type={'text'}
-            value={query.search}
-            onChange={(e) => {
-              setQuery({ ...query, search: e.target.value, page: 1 });
-            }}
-            placeholder={'Search Receptionist.'}
-          />
-        </div>
-      </div>
-
-      {/* Conditional rendering based on loading, success, or failure */}
-      {getAllReceptionistProcessing ? <CustomSpinner /> : ''}
-
-      {/* // Display the table when data is loaded successfully */}
-      {!getAllReceptionistProcessing && getAllReceptionistSuccess && getAllReceptionistData.length > 0 ? (
-        <div className="flex justify-center flex-col  ">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 border border-gray-300">
-              <thead>
-                <tr className="text-left text-xs bg-primary-400 font-medium text-primary-50 uppercase tracking-wider">
-                  <th className="px-4 py-3 border border-gray-300">Name</th>
-                  <th className="px-4 py-3 border border-gray-300">Email</th>
-                  <th className="px-4 py-3 border border-gray-300">Phone</th>
-                  <th className="px-4 py-3 border border-gray-300"> More Action</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {getAllReceptionistData.map((item, index) => (
-                  <tr key={item._id}>
-                    <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item.name || 'NA'}</td>
-                    <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item.email || 'NA'}</td>
-                    <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item.phone || 'NA'}</td>
-                    <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">
-                      <span
-                        onClick={() => {
-                          dispatch(getSingleReceptionist(item));
-                          navigate('/receptionist/update');
-                        }}
-                        className="bg-gray-100 cursor-pointer text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-gray-500"
-                      >
-                        Modify
-                      </span>
-                      <DeleteConfirmatationModal
-                        isSuccess={deleteReceptionistSuccess}
-                        isProcessing={deleteReceptionistProcessing}
-                        deleteFunction={() => {
-                          dispatch(deleteReceptionist(item._id));
-                        }}
-                        text={item.name}
-                        heading={'Delete Receptionist'}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* limit selector and page change buttons */}
-          <div className="flex justify-between ">
-            <CustomSelect
-              options={[10, 25, 50, 75, 100]}
-              onChange={(e) => {
-                setQuery({ ...query, limit: e.target.value });
-              }}
-              value={query.limit}
-              placeholder={`limit per page.`}
-            />
-            {/* paginatation buttons */}
-            <PaginationButtons
-              onPreviousClick={() => {
-                setQuery({ ...query, page: query.page - 1 });
-              }}
-              onNextClick={() => {
-                setQuery({ ...query, page: query.page + 1 });
-              }}
-              isPreviousDisabled={query.page === 1}
-              isNextDisabled={getAllReceptionistData.length < query.limit}
-            />
-          </div>
-        </div>
-      ) : (
-        //  no data found text
-        getAllReceptionistSuccess && <div className="text-center text-gray-500 mt-4">No data found.</div>
-      )}
-
-      <ToastContainer />
+  const handlePatientAccordionToggle = () => {
+    setIsPatientAccordionOpen(!isPatientAccordionOpen);
+  };
+//jfenjd
+  const LabelValuePair = ({ label, value }) => (
+    <div className="label-box flex">
+      <span className="label-text">{label}:</span>
+      <p style={{ backgroundColor: 'white', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '8px' }} className="text-gray-600">
+        {label === 'Content' ? (
+          <>
+            {isExpanded ? value : `${value.substring(0, 50)}...`}
+            {value.length > 50 && (
+              <span
+                style={{ cursor: 'pointer', color: 'blue', marginLeft: '4px' }}
+                onClick={toggleExpand}
+              >
+                {isExpanded ? 'Read less' : 'Read more'}
+              </span>
+            )}
+          </>
+        ) : (
+          value
+        )}
+      </p>
     </div>
   );
-}
+
+  return (
+    <>
+      <div className={`p-20 flex flex-column ${isPatientAccordionOpen ? 'open' : ''}`}>
+        <div className="bg-primary-50 pb-8 rounded-md pt-4 border-2 border-primary-400">
+          <div className="accordion-header flex justify-between items-center" onClick={handlePatientAccordionToggle}>
+            <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3">
+              Patient Details
+            </h2>
+            <div className={`toggle-symbol text-2xl font-semibold text-primary-900 border-primary-400 pl-3 ${isPatientAccordionOpen ? 'open' : ''}`}>&#9660;</div>
+          </div>
+          {isPatientAccordionOpen && (
+            <>
+              <div className=" rounded-md pt-4">
+                <div className="px-6 py-6 rounded-md">
+                  <div className="grid grid-cols-3 gap-x-6">
+                    <LabelValuePair label="Status" value={formData.Status} />
+                    <LabelValuePair label="Case No" value={formData.CaseNo} />
+                    <LabelValuePair label="Date" value={formData.Date} />
+                  </div>
+                </div>
+              </div>
+              <div className=" rounded-md pt-4">
+                <div className="px-6 py-6 rounded-md">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+                    <LabelValuePair label="First Name" value={formData.FirstName} />
+                    <LabelValuePair label="Middle Name" value={formData.MiddleName} />
+                    <LabelValuePair label="Last Name" value={formData.LastName} />
+                    <LabelValuePair label="Date of Birth" value={formData.dateOfBirth} />
+                    <LabelValuePair label="Blood Group" value={formData.bloodGroup} />
+                    <LabelValuePair label="Gender" value={formData.gender} />
+                    <LabelValuePair label="Mobile Number" value={formData.mobile} />
+                    <LabelValuePair label="Marital Status" value={formData.maritalStatus} />
+                    <LabelValuePair label="Mother Tongue" value={formData.motherTongue} />
+                    <LabelValuePair label="State" value={formData.state} />
+                    <LabelValuePair label="Education" value={formData.education} />
+                    <LabelValuePair label="Address" value={formData.address} />
+                    <LabelValuePair label="Profession" value={formData.profession} />
+                    <LabelValuePair label="Industry" value={formData.industry} />
+                    <LabelValuePair label="Email ID" value={formData.email} />
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+      <div className="p-20">
+        <div className="bg-primary-50 pb-8 rounded-md pt-4 border-2 border-primary-400">
+          <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3">
+            Feedback
+          </h2>
+          <div className="label-box max-h-96 overflow-y-auto">
+            <span className="label-text">Comments:</span>
+            {Array.isArray(formData.comments) ? (
+              formData.comments.map((comment, index) => (
+                <div key={index} className="m-3 rounded-md bg-gray-100 h-fit lg:px-6 w-50 p-5 bg-white">
+                  <div className="headingTitle flex justify-between">
+                    <div className="flex items-center">
+                      <label htmlFor="CaseMark" className="text-md">
+                        Rate Case
+                      </label>
+                      {[...Array(5)].map((_, starIndex) => (
+                        <FaStar
+                          key={starIndex}
+                          onClick={() => handleStarRating(starIndex + 1)}
+                          className={`cursor-pointer h-5 w-5 ${
+                            starIndex < comment.rating ? 'text-yellow-400 fas' : 'text-gray-300 far'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <LabelValuePair label="Content" value={comment.content} />
+                  <LabelValuePair label="Signature" value={comment.signature} />
+                </div>
+              ))
+            ) : (
+              <p>No comments available.</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default FeedbackList;
