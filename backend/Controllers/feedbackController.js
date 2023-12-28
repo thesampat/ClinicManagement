@@ -20,8 +20,17 @@ const getAllFeedbackPatients = async (req, res) => {
 }
 
 const getAllFeedback = async (req, res) => {
+
+    const { page, limit } = req.query
+
+    const skip = page ? (parseInt(page) - 1) * (limit ? parseInt(limit) : 10) : 0;
+    let pageSize = limit ? parseInt(limit) : 10;
+
+    console.log('wheere in let', skip, pageSize)
+
+
     try {
-        const feedback = await Feedback.find();
+        const feedback = await Feedback.find().skip(skip).limit(pageSize);
         res.status(200).json(feedback);
     } catch (error) {
         res.status(500).json({ error: "Error fetching feedback" });

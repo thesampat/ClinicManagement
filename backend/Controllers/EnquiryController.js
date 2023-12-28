@@ -11,11 +11,15 @@ const createEnquiry = async (req, res) => {
 }
 
 const getAllEnquiry = async (req, res) => {
+  const { page, limit } = req.query
+  const skip = page ? (parseInt(page) - 1) * (limit ? parseInt(limit) : 10) : 0;
+  let pageSize = limit ? parseInt(limit) : 10;
+
   try {
-    const enquiries = await Enquiry.find();
-    res.json(enquiries);
+    const enquiry = await Enquiry.find().skip(skip).limit(pageSize);
+    res.status(200).json(enquiry);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: "Error fetching enquiry" });
   }
 }
 

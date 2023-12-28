@@ -10,7 +10,7 @@ import CustomSelect from '../../Components/CommonComponents/CustomSelect';
 import DeleteConfirmatationModal from '../../Components/CommonComponents/DeleteConfirmatationModal';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate, useParams,useLocation } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { getHeadings } from './customFunctions.jsx/table';
 
@@ -98,7 +98,6 @@ export default function Table() {
     setTableData(null);
     listType === 'feedback' &&
       fetchData('feedback/?', query).then((data) => {
-        console.log('Feedback Data:', data?.data);
         setTableData(data?.data);
       });
   }, [listType, query]);
@@ -167,23 +166,23 @@ export default function Table() {
                           }}
                           className="bg-gray-100 cursor-pointer text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-gray-500"
                         >
-                           {shouldDisplayButton ? <span>Modify</span> : <span>View</span>}
+                          {shouldDisplayButton ? <span>Modify</span> : <span>View</span>}
                         </span>
                         {shouldDisplayButton && (
-                        <DeleteConfirmatationModal
-                          deleteFunction={() => {
-                            listType === 'patients' && deleteData(`customer/${item?._id}`, 'Patient');
-                            listType === 'receptionist' && deleteData(`receptionist/${item?._id}`, 'Receptionist');
-                            listType === 'consultant' && deleteData(`consultant/${item?._id}`, 'Consultant');
-                            listType === 'enquiry' && deleteData(`enquiry/${item?._id}`, 'Enquiry');
-                            listType === 'assistantDoctor' && deleteData(`assistantDoctor/${item?._id}`, 'assistantDoctor');
-                            listType === 'doctors' && deleteData(`doctor/${item?._id}`, 'Doctor');
-                            listType === 'nutrition' && deleteData(`nutrition/${item?._id}`, 'Nutrition');
-                            listType === 'feedback' && deleteData(`feedback/${item?._id}`, 'feedback');
-                          }}
-                          text={item.name}
-                          heading={'Delete Item'}
-                        />
+                          <DeleteConfirmatationModal
+                            deleteFunction={() => {
+                              listType === 'patients' && deleteData(`customer/${item?._id}`, 'Patient');
+                              listType === 'receptionist' && deleteData(`receptionist/${item?._id}`, 'Receptionist');
+                              listType === 'consultant' && deleteData(`consultant/${item?._id}`, 'Consultant');
+                              listType === 'enquiry' && deleteData(`enquiry/${item?._id}`, 'Enquiry');
+                              listType === 'assistantDoctor' && deleteData(`assistantDoctor/${item?._id}`, 'assistantDoctor');
+                              listType === 'doctors' && deleteData(`doctor/${item?._id}`, 'Doctor');
+                              listType === 'nutrition' && deleteData(`nutrition/${item?._id}`, 'Nutrition');
+                              listType === 'feedback' && deleteData(`feedback/${item?._id}`, 'feedback');
+                            }}
+                            text={item.name}
+                            heading={'Delete Item'}
+                          />
                         )}
                       </td>
                     </tr>

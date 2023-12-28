@@ -55,7 +55,6 @@ const FeedbackList = () => {
 
   useEffect(() => {
     fetchItems(`feedback/${feedback_id}`).then((res) => {
-      console.log(res?.data);
       setFormData(res?.data);
     });
   }, []);
@@ -75,7 +74,7 @@ const FeedbackList = () => {
   const handlePatientAccordionToggle = () => {
     setIsPatientAccordionOpen(!isPatientAccordionOpen);
   };
-//jfenjd
+  //jfenjd
   const LabelValuePair = ({ label, value }) => (
     <div className="label-box flex">
       <span className="label-text">{label}:</span>
@@ -84,10 +83,7 @@ const FeedbackList = () => {
           <>
             {isExpanded ? value : `${value.substring(0, 50)}...`}
             {value.length > 50 && (
-              <span
-                style={{ cursor: 'pointer', color: 'blue', marginLeft: '4px' }}
-                onClick={toggleExpand}
-              >
+              <span style={{ cursor: 'pointer', color: 'blue', marginLeft: '4px' }} onClick={toggleExpand}>
                 {isExpanded ? 'Read less' : 'Read more'}
               </span>
             )}
@@ -104,9 +100,7 @@ const FeedbackList = () => {
       <div className={`p-20 flex flex-column ${isPatientAccordionOpen ? 'open' : ''}`}>
         <div className="bg-primary-50 pb-8 rounded-md pt-4 border-2 border-primary-400">
           <div className="accordion-header flex justify-between items-center" onClick={handlePatientAccordionToggle}>
-            <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3">
-              Patient Details
-            </h2>
+            <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3">Patient Details</h2>
             <div className={`toggle-symbol text-2xl font-semibold text-primary-900 border-primary-400 pl-3 ${isPatientAccordionOpen ? 'open' : ''}`}>&#9660;</div>
           </div>
           {isPatientAccordionOpen && (
@@ -147,9 +141,7 @@ const FeedbackList = () => {
       </div>
       <div className="p-20">
         <div className="bg-primary-50 pb-8 rounded-md pt-4 border-2 border-primary-400">
-          <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3">
-            Feedback
-          </h2>
+          <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3">Feedback</h2>
           <div className="label-box max-h-96 overflow-y-auto">
             <span className="label-text">Comments:</span>
             {Array.isArray(formData.comments) ? (
@@ -161,13 +153,7 @@ const FeedbackList = () => {
                         Rate Case
                       </label>
                       {[...Array(5)].map((_, starIndex) => (
-                        <FaStar
-                          key={starIndex}
-                          onClick={() => handleStarRating(starIndex + 1)}
-                          className={`cursor-pointer h-5 w-5 ${
-                            starIndex < comment.rating ? 'text-yellow-400 fas' : 'text-gray-300 far'
-                          }`}
-                        />
+                        <FaStar key={starIndex} onClick={() => handleStarRating(starIndex + 1)} className={`cursor-pointer h-5 w-5 ${starIndex < comment.rating ? 'text-yellow-400 fas' : 'text-gray-300 far'}`} />
                       ))}
                     </div>
                   </div>

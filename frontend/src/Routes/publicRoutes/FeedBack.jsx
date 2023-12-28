@@ -29,24 +29,18 @@ const createItem = async (data, navigate, setIsPorcessing, setSelectedPatient, s
   }
 };
 
-const submitComments = async (patientId, rating, comments, signature, setIsPorcessing, setOperateType, navigate) => {
-  try {
-    const feedbackData = {
-      date: new Date().toISOString(),
-      content: comments,
-      signature,
-      rating,
-    };
-
-    await axios.put(`${END_POINT}/feedback/${patientId}`, { comments: feedbackData });
-    setIsPorcessing(false);
-    setOperateType(null);
-    toast.success('Comments submitted successfully');
-    navigate(`/web/afterAction`);
-  } catch (error) {
-    toast.error('Failed to submit comments');
-    console.error(error);
-  }
+const submitComments = async (feedbackData, setIsPorcessing, setOperateType, navigate) => {
+  console.log(feedbackData, 'what is feedback data now');
+  // try {
+  //   await axios.put(`${END_POINT}/feedback/${feedbackData?.patient_id}`, { comments: feedbackData });
+  //   setIsPorcessing(false);
+  //   setOperateType(null);
+  //   toast.success('Comments submitted successfully');
+  //   navigate(`/web/afterAction`);
+  // } catch (error) {
+  //   toast.error('Failed to submit comments');
+  //   console.error(error);
+  // }
 };
 
 const fetchItems = async (path) => {
@@ -175,7 +169,7 @@ export const FeedBack = () => {
 
     if (isValidInput) {
       setIsPorcessing(true);
-      submitComments(selectedPatient, trimmedFormData.CaseRating, trimmedFormData.comments, trimmedFormData.Signature, setIsPorcessing, setOperateType, navigate);
+      submitComments(trimmedFormData, setIsPorcessing, setOperateType, navigate);
       setSelectedPatient(null);
     }
   };
@@ -190,8 +184,8 @@ export const FeedBack = () => {
 
   const handleAddButton = (event) => {
     setOperateType('add');
-    setSelectedPatient(undefined);
-    setFormData({});
+    setSelectedPatient(null);
+    setFormData(initialFormData);
   };
   const handleStarRating = (rating) => {
     console.log('Updating rating:', rating);
@@ -241,7 +235,7 @@ export const FeedBack = () => {
               </div>
             </div>
 
-            <div className="pb-8 rounded-md pt-4">
+            <div className="pb-8 rounded-md pt-4 flex column">
               <div className="px-6 py-6 rounded-md">
                 <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3">Patient Details</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
@@ -262,20 +256,21 @@ export const FeedBack = () => {
                   <CustomInput label="Email ID" value={formData?.email} onChange={handleInputChange} name="email" placeholder="Enter your email address" error={formError?.email} />
                 </div>
               </div>
-            </div>
 
-            <div className="pb-8 rounded-md pt-4">
-              <div className="px-6 py-6 rounded-md ">
-                <h2 className="text-2xl font-semibold text-primary-400  border-l-4 border-primary-400 pl-3 mb-2">Present set of Complaints</h2>
+              <div className="pb-8 rounded-md pt-4">
+                <div className="px-6 py-6 rounded-md ">
+                  <h2 className="text-2xl font-semibold text-primary-400  border-l-4 border-primary-400 pl-3 mb-2">Present set of Complaints</h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
-                    {formData?.complaints?.map((complaint, index) => (
-                      <div key={index}>
-                        <label className="block text-sm font-medium text-gray-700">{`Complaint ${index + 1}`}</label>
-                        <input type="text" value={complaint?.content} onChange={(e) => handleComplaintChange(index, e.target.value)} className="mt-1 p-2 block w-full border rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:outline-none" />
-                      </div>
-                    ))}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+                      {console.log(formData?.complaints)}
+                      {formData?.complaints?.map((complaint, index) => (
+                        <div key={index}>
+                          <label className="block text-sm font-medium text-gray-700">{`Complaint ${index + 1}`}</label>
+                          <input type="text" value={complaint?.content} onChange={(e) => handleComplaintChange(index, e.target.value)} className="mt-1 p-2 block w-full border rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:outline-none" />
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
