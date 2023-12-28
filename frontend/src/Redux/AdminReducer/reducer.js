@@ -23,6 +23,7 @@ const initialState = {
     getAllDoctorMessage: "",
     getAllDoctorData: {},
 
+
     deleteDoctorProcessing: false,
     deleteDoctorSuccess: false,
     deleteDoctorFail: false,

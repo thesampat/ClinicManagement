@@ -37,7 +37,7 @@ const submitComments = async (patientId, rating, comments, signature, setIsPorce
       signature,
       rating,
     };
-
+console.log(feedbackData);
     await axios.put(`${END_POINT}/feedback/${patientId}`, { comments: feedbackData });
     setIsPorcessing(false);
     setOperateType(null);
@@ -100,6 +100,7 @@ export const FeedBack = () => {
   const navigate = useNavigate();
   const [isProcessing, setIsPorcessing] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const [formErrorForUpdate, setFormErrorForUpdate] = useState(initialFormDataForUpdateError);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -109,6 +110,31 @@ export const FeedBack = () => {
     });
   };
 
+  const handleInputUpdateChange = (event) => {
+    const { name, value } = event.target;
+  
+    setFormDataForUpdate((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  
+    const updatedFormError = { ...formErrorForUpdate };
+    if (name === 'comments' && !value.trim()) {
+      updatedFormError.comments = 'Comments are required!';
+    } else {
+      updatedFormError.comments = '';
+    }
+  
+    if (name === 'Signature' && !value.trim()) {
+      updatedFormError.Signature = 'Signature is required!';
+    } else {
+      updatedFormError.Signature = '';
+    }
+  
+    setFormErrorForUpdate(updatedFormError);
+  };
+  
+  
   useEffect(() => {
     fetchItems('feedback/patients').then((res) => {
       setPatientList(res?.data);
@@ -195,11 +221,12 @@ export const FeedBack = () => {
   };
   const handleStarRating = (rating) => {
     console.log('Updating rating:', rating);
-    setFormData((prevData) => ({
+    setFormDataForUpdate((prevData) => ({
       ...prevData,
       CaseRating: rating,
     }));
   };
+  
 
   const handleComplaintChange = (index, value) => {
     const updatedComplaints = [...formData.complaints];
@@ -300,10 +327,15 @@ export const FeedBack = () => {
                       Rate Case
                     </label>
                     <div className="flex items-center">
-                      {[...Array(5)].map((_, index) => (
-                        <FaStar key={index} onClick={() => handleStarRating(index + 1)} className={`cursor-pointer h-5 w-5 ${index < formData?.CaseRating ? 'text-yellow-400 fas' : 'text-gray-300 far'}`} />
-                      ))}
-                    </div>
+  {[...Array(5)].map((_, index) => (
+    <FaStar
+      key={index}
+      onClick={() => handleStarRating(index + 1)}
+      className={`cursor-pointer h-5 w-5 ${index < FormDataForUpdate?.CaseRating ? 'text-yellow-400' : 'text-gray-300'}`}
+    />
+  ))}
+</div>
+
                   </div>
                 </div>
               </div>
@@ -311,10 +343,24 @@ export const FeedBack = () => {
             <div className="rounded-md">
               <div className="px-4 rounded-md ">
                 <div className="grid grid-cols-1">
-                  <CustomTextarea label="Comments" value={formData?.comments1} onChange={handleInputChange} name="comments1" placeholder="Enter any additional comments..." error={formError?.comments1} rows={10} />
+                <CustomTextarea
+  label="Comments"
+  value={FormDataForUpdate?.comments}
+  onChange={handleInputUpdateChange}
+  name="comments"
+  placeholder="Enter any additional comments..."
+  error={FormDataForUpdate?.comments}
+  rows={10}
+/>
 
-                  <CustomInput label="Signature" value={formData?.signature1} onChange={handleInputChange} name="signature" error={formError?.signature1} />
-                </div>
+<CustomInput
+  label="Signature"
+  value={FormDataForUpdate?.Signature}
+  onChange={handleInputUpdateChange}
+  name="Signature"
+  error={FormDataForUpdate?.Signature}
+/>
+</div>
               </div>
             </div>
             <div className="lg:w-80 mx-auto w-full px-5">
