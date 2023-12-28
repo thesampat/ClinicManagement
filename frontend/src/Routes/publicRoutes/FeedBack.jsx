@@ -37,7 +37,7 @@ const submitComments = async (patientId, rating, comments, signature, setIsPorce
       signature,
       rating,
     };
-console.log(feedbackData);
+    console.log(feedbackData);
     await axios.put(`${END_POINT}/feedback/${patientId}`, { comments: feedbackData });
     setIsPorcessing(false);
     setOperateType(null);
@@ -112,29 +112,28 @@ export const FeedBack = () => {
 
   const handleInputUpdateChange = (event) => {
     const { name, value } = event.target;
-  
+
     setFormDataForUpdate((prevData) => ({
       ...prevData,
       [name]: value,
     }));
-  
+
     const updatedFormError = { ...formErrorForUpdate };
     if (name === 'comments' && !value.trim()) {
       updatedFormError.comments = 'Comments are required!';
     } else {
       updatedFormError.comments = '';
     }
-  
+
     if (name === 'Signature' && !value.trim()) {
       updatedFormError.Signature = 'Signature is required!';
     } else {
       updatedFormError.Signature = '';
     }
-  
+
     setFormErrorForUpdate(updatedFormError);
   };
-  
-  
+
   useEffect(() => {
     fetchItems('feedback/patients').then((res) => {
       setPatientList(res?.data);
@@ -226,7 +225,6 @@ export const FeedBack = () => {
       CaseRating: rating,
     }));
   };
-  
 
   const handleComplaintChange = (index, value) => {
     const updatedComplaints = [...formData.complaints];
@@ -241,7 +239,7 @@ export const FeedBack = () => {
   return (
     <>
       <div className="w-full justify-between mx-auto w-full px-5 flex">
-        {operateType !== 'add' && <CustomSelect onChange={handleSelectChange} options={['', ...patientList?.map((e) => e?.FirstName)]} label="Patient" placeholder="-- Select Patient Reference --" type="text" value={patientList?.filter((p) => p?._id === selectedPatient)?.[0]?.FirstName} error={formError.reference} name="reference" />}
+        {operateType !== 'add' && <CustomSelect onChange={handleSelectChange} options={patientList?.map((e) => e?.FirstName)} label="Patient" placeholder="-- Select Patient Reference --" type="text" value={patientList?.filter((p) => p?._id === selectedPatient)?.[0]?.FirstName} error={formError.reference} name="reference" />}
         <div className="groupofButtons flex gap-10">
           {operateType !== 'add' && (
             <button className="w-fit p-3 mt-6 font-bold bg-primary-200 text-white h-12" onClick={handleAddButton}>
@@ -327,15 +325,10 @@ export const FeedBack = () => {
                       Rate Case
                     </label>
                     <div className="flex items-center">
-  {[...Array(5)].map((_, index) => (
-    <FaStar
-      key={index}
-      onClick={() => handleStarRating(index + 1)}
-      className={`cursor-pointer h-5 w-5 ${index < FormDataForUpdate?.CaseRating ? 'text-yellow-400' : 'text-gray-300'}`}
-    />
-  ))}
-</div>
-
+                      {[...Array(5)].map((_, index) => (
+                        <FaStar key={index} onClick={() => handleStarRating(index + 1)} className={`cursor-pointer h-5 w-5 ${index < FormDataForUpdate?.CaseRating ? 'text-yellow-400' : 'text-gray-300'}`} />
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -343,24 +336,10 @@ export const FeedBack = () => {
             <div className="rounded-md">
               <div className="px-4 rounded-md ">
                 <div className="grid grid-cols-1">
-                <CustomTextarea
-  label="Comments"
-  value={FormDataForUpdate?.comments}
-  onChange={handleInputUpdateChange}
-  name="comments"
-  placeholder="Enter any additional comments..."
-  error={FormDataForUpdate?.comments}
-  rows={10}
-/>
+                  <CustomTextarea label="Comments" value={FormDataForUpdate?.comments} onChange={handleInputUpdateChange} name="comments" placeholder="Enter any additional comments..." error={FormDataForUpdate?.comments} rows={10} />
 
-<CustomInput
-  label="Signature"
-  value={FormDataForUpdate?.Signature}
-  onChange={handleInputUpdateChange}
-  name="Signature"
-  error={FormDataForUpdate?.Signature}
-/>
-</div>
+                  <CustomInput label="Signature" value={FormDataForUpdate?.Signature} onChange={handleInputUpdateChange} name="Signature" error={FormDataForUpdate?.Signature} />
+                </div>
               </div>
             </div>
             <div className="lg:w-80 mx-auto w-full px-5">
