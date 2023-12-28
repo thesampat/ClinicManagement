@@ -22,7 +22,8 @@ const generateItemId = async () => {
 };
 
 const consultantRegisterBySuperAdmin = async (req, res) => {
-    const { name, email, password, fees, typesOfDoctor, pic, education_details, experience_details, location } = req.body;
+    const { name, email, password, fees,phone, typesOfDoctor, pic, education_details, experience_details, location, slotTimes, availableTime, availability } = req.body;
+    console.log(req.body);
     let consultantId
     const Role = "Consultant";
     if (!name || !email || !password) {
@@ -64,11 +65,15 @@ const consultantRegisterBySuperAdmin = async (req, res) => {
                     role: Role,
                     pic,
                     fees,
+                    phone,
                     typesOfDoctor,
                     consultantId,
                     education_details,
                     experience_details,
-                    location
+                    location,
+                    slotTimes,
+                    availableTime,
+                    availability
                 })
 
                 await setPermissionRoles(name, Role, newConsultant?._id)
@@ -170,11 +175,15 @@ const updateConsultantProfile = async (req, res) => {
         consultant.name = req.body.name || consultant.name
         consultant.email = req.body.email || consultant.email
         consultant.fees = req.body.fees || consultant.fees
+        consultant.phone = req.body.phone || consultant.phone
         consultant.typesOfDoctor = req.body.typesOfDoctor || consultant.typesOfDoctor
         consultant.education_details = req.body.education_details || consultant.education_details
         consultant.experience_details = req.body.experience_details || consultant.experience_details
         consultant.location = req.body.location || consultant.location
         consultant.phone = req.body.phone || consultant.phone
+        consultant.slotTimes = req.body.slotTimes || consultant.slotTimes
+        consultant.availableTime = req.body.availableTime || consultant.availableTime
+        consultant.availability = req.body.availability || consultant.availability
         const updatedConsultant = await consultant.save()
 
         res.json(updatedConsultant)
