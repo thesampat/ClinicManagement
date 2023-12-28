@@ -76,8 +76,10 @@ const FeedbackList = () => {
   };
   //jfenjd
   const LabelValuePair = ({ label, value }) => (
-    <div className="label-box flex gap-4">
-      <span className="label-text">{label}:</span>
+    <div className="label flex">
+      <div className="w-44">
+        <span className="label-text text-lg text-black font-semibold">{label}:</span>
+      </div>
       <p className="text-gray-600">
         {label === 'Content' ? (
           <>
@@ -101,12 +103,12 @@ const FeedbackList = () => {
         <div className="bg-primary-50 pb-8 rounded-md pt-4 border-2 border-primary-400 w-full">
           <div className="accordion-header flex justify-between items-center" onClick={handlePatientAccordionToggle}>
             <h2 className="text-2xl font-semibold text-primary-900 border-primary-400 pl-3">Patient Details</h2>
-            <div className={`toggle-symbol text-2xl font-semibold text-primary-900 border-primary-400 pl-3 ${isPatientAccordionOpen ? 'open' : ''}`}>&#9660;</div>
+            <button className={`toggle-symbol text-2xl font-semibold text-primary-900 border-primary-400 pe-10 ${isPatientAccordionOpen ? 'open' : ''}`}>&#9660;</button>
           </div>
           {isPatientAccordionOpen && (
             <>
-              <div className=" rounded-md pt-4">
-                <div className="px-6 py-6 rounded-md">
+              <div className=" rounded-md">
+                <div className="px-6 py-3 rounded-md">
                   <div className="grid grid-cols-3 gap-x-6">
                     <LabelValuePair label="Status" value={formData.Status} />
                     <LabelValuePair label="Case No" value={formData.CaseNo} />
@@ -114,24 +116,34 @@ const FeedbackList = () => {
                   </div>
                 </div>
               </div>
-              <div className=" rounded-md pt-4">
-                <div className="px-6 py-6 rounded-md">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-                    <LabelValuePair label="First Name" value={formData.FirstName} />
-                    <LabelValuePair label="Middle Name" value={formData.MiddleName} />
-                    <LabelValuePair label="Last Name" value={formData.LastName} />
-                    <LabelValuePair label="Date of Birth" value={formData.dateOfBirth} />
-                    <LabelValuePair label="Blood Group" value={formData.bloodGroup} />
-                    <LabelValuePair label="Gender" value={formData.gender} />
-                    <LabelValuePair label="Mobile Number" value={formData.mobile} />
-                    <LabelValuePair label="Marital Status" value={formData.maritalStatus} />
-                    <LabelValuePair label="Mother Tongue" value={formData.motherTongue} />
-                    <LabelValuePair label="State" value={formData.state} />
-                    <LabelValuePair label="Education" value={formData.education} />
-                    <LabelValuePair label="Address" value={formData.address} />
-                    <LabelValuePair label="Profession" value={formData.profession} />
-                    <LabelValuePair label="Industry" value={formData.industry} />
-                    <LabelValuePair label="Email ID" value={formData.email} />
+              <div className=" rounded-md">
+                <div className="px-6 py-3 rounded-md">
+                  <div className="grid grid-cols-2 gap-x-6">
+                    <div>
+                      <LabelValuePair label="First Name" value={formData.FirstName} />
+                      <LabelValuePair label="Middle Name" value={formData.MiddleName} />
+                      <LabelValuePair label="Last Name" value={formData.LastName} />
+                      <LabelValuePair label="Date of Birth" value={formData.dateOfBirth} />
+                      <LabelValuePair label="Blood Group" value={formData.bloodGroup} />
+                      <LabelValuePair label="Gender" value={formData.gender} />
+                      <LabelValuePair label="Mobile Number" value={formData.mobile} />
+                      <LabelValuePair label="Marital Status" value={formData.maritalStatus} />
+                      <LabelValuePair label="Mother Tongue" value={formData.motherTongue} />
+                      <LabelValuePair label="State" value={formData.state} />
+                      <LabelValuePair label="Education" value={formData.education} />
+                      <LabelValuePair label="Address" value={formData.address} />
+                      <LabelValuePair label="Profession" value={formData.profession} />
+                      <LabelValuePair label="Industry" value={formData.industry} />
+                      <LabelValuePair label="Email ID" value={formData.email} />
+                    </div>
+                    <div>
+                      <h4 className="text-xl text-black font-bold">Complaints</h4>
+                      <div className="complaintsList flex flex-col gap-2">
+                        {formData?.complaints?.map((e) => (
+                          <li htmlFor="">{e?.content}</li>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -150,9 +162,11 @@ const FeedbackList = () => {
                 <div key={index} className="m-3 rounded-md bg-gray-100 h-fit lg:px-6 w-50 p-5 bg-white">
                   <div className="headingTitle flex justify-between">
                     <div className="flex items-center gap-2">
-                      <label htmlFor="CaseMark" className="text-md">
-                        Rate Case
-                      </label>
+                      <div className="w-40">
+                        <label htmlFor="CaseMark" className="text-lg font-semibold text-black">
+                          Rate Case
+                        </label>
+                      </div>
                       {[...Array(5)].map((_, starIndex) => (
                         <FaStar key={starIndex} onClick={() => handleStarRating(starIndex + 1)} className={`cursor-pointer h-5 w-5 ${starIndex < comment.rating ? 'text-yellow-400 fas' : 'text-gray-300 far'}`} />
                       ))}

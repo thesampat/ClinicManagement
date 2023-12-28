@@ -200,7 +200,7 @@ export const FeedBack = () => {
 
     if (isValidInput) {
       setIsPorcessing(true);
-      submitComments(trimmedFormData, setIsPorcessing, setOperateType, navigate);
+      submitComments(selectedPatient, trimmedFormData.CaseRating, trimmedFormData.comments, trimmedFormData.Signature, setIsPorcessing, setOperateType, navigate);
       setSelectedPatient(null);
     }
   };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addNewAppointment, getAllDoctor, getAllPatient, getAllAppointment, getSingleDoctor ,getAllConsultant} from '../../Redux/AdminReducer/action';
+import { addNewAppointment, getAllDoctor, getAllPatient, getAllAppointment, getSingleDoctor, getAllConsultant, END_POINT } from '../../Redux/AdminReducer/action';
 import CustomSpinner from '../../Components/CommonComponents/CustomSpinner';
 import SelectInput from '../../Components/CommonComponents/SelectInput ';
 import CustomInput from '../../Components/CommonComponents/CustomInput';
@@ -9,6 +9,7 @@ import CustomBreadcrumbs from '../../Components/CommonComponents/CustomBreadcrum
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CalenderAndTimeSlot from '../../Components/CommonComponents/CustomAppointmentDateCalender';
+import axios from 'axios';
 
 // const ToolTip = () => (
 //   <p>
@@ -19,58 +20,73 @@ import CalenderAndTimeSlot from '../../Components/CommonComponents/CustomAppoint
 //   </p>
 // );
 
+const fetchItems = async (path) => {
+  try {
+    const result = await axios.get(`${END_POINT}/${path}`);
+    return result;
+  } catch (error) {
+    console.log(error);
+    toast.error('Something went wrong while fetching data');
+  }
+};
+
 const initialState = {
   doctor: '',
   patient: '',
   bookTimeSlot: '',
+  selectedRole: 'doctor',
+  online: false,
 };
 
 export default function AddAppointment() {
-  const { addAppointmentMessage, addAppointmentFail, addAppointmentSuccess, addAppointmentProcessing, getAllPatientData, getAllPatientSuccess, getAllDoctorData, getAllPatientProcessing, getAllDoctorProcessing, getAllAppointmentData,getAllConsultantData,getAllConsultantProcessing } = useSelector((state) => state.AdminReducer);
+  const { addAppointmentMessage, addAppointmentFail, addAppointmentSuccess, addAppointmentProcessing, getAllPatientData, getAllPatientSuccess, getAllDoctorData, getAllPatientProcessing, getAllDoctorProcessing, getAllAppointmentData, getAllConsultantData, getAllConsultantProcessing } = useSelector((state) => state.AdminReducer);
   const [query, setQuery] = useState({ search: '', page: 1, pageSize: 200 });
   const [formData, setFormData] = useState(initialState);
   const [formError, setFormError] = useState(initialState);
+  const [assistantDoctor, setAssistantDoctor] = useState([]);
 
   const dispatch = useDispatch();
 
-  // get Data
   useEffect(() => {
-    // Get all doctor list
-    dispatch(getAllDoctor(query));
-    dispatch(getAllConsultant(query));
-    // Get all patient list
-    dispatch(getAllPatient(query));
-  }, []);
+    const fetchData = async () => {
+      switch (formData?.selectedRole) {
+        case 'consultant':
+          dispatch(getAllConsultant(query));
+          break;
+        case 'assistantDoctor':
+          try {
+            fetchItems('assistantDoctor').then((e) => {
+              setAssistantDoctor(e?.data);
+            });
+          } catch (error) {
+            console.error('Error fetching assistant doctor:', error);
+          }
+          break;
+        default:
+          dispatch(getAllDoctor(query));
+          dispatch(getAllPatient(query));
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      // Cleanup logic if needed
+    };
+  }, [formData?.selectedRole, query]);
 
   useEffect(() => {
-    formData?.doctor && dispatch(getAllAppointment({ search: formData?.doctor?.id, page: 1, limit: 100 }));
-  }, [formData?.doctor?.id]);
+    dispatch(getAllAppointment({ search: formData?.doctor?.id, page: 1, limit: 100 }));
+  }, [formData?.doctor]);
 
-  useEffect(() => {
-    formData?.consultant && dispatch(getAllAppointment({ search: formData?.consultant?.id, page: 1, limit: 100 }));
-  }, [formData?.consultant?.id]);
-
-  // handel input change
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // Reset availableSlot when a doctor is selected
   useEffect(() => {
     setFormData({ ...formData, availableSlot: '' });
   }, [formData.doctor?.id]);
-  // Reset availableSlot when a consultant is selected
-  useEffect(() => {
-    setFormData({ ...formData, availableSlot: '' });
-  }, [formData.consultant?.id]);
-
-  // display toast messages
 
   useEffect(() => {
     if (addAppointmentSuccess && !addAppointmentProcessing) {
       toast.success(addAppointmentMessage, { position: toast.POSITION.TOP_RIGHT });
 
-      //  reset states
       setFormData(initialState);
       setFormError(initialState);
     }
@@ -79,18 +95,12 @@ export default function AddAppointment() {
     }
   }, [addAppointmentProcessing]);
 
-  // handel button Click
   const handelButtonClick = () => {
     let isValidInput = true;
     let updatedFormError = { formError };
 
-    //  validate doctor name
     if (!formData.doctor?.id) {
-      updatedFormError.doctor = 'Doctor Name is required!';
-      isValidInput = false;
-    }
-    if (!formData.consultant?.id) {
-      updatedFormError.consultant = 'consultant Name is required!';
+      updatedFormError.doctor = `${formData?.selectedRole} Name is required!`;
       isValidInput = false;
     }
     //  validate patient name
@@ -110,53 +120,62 @@ export default function AddAppointment() {
       updatedFormError.bookTimeSlot = 'time Slot is required!';
       isValidInput = false;
     }
-    
-        // Set role-specific properties
-        if (formData.selectedRole === 'consultant') {
-          formData.IsConsultant = true;
-        } else {
-          formData.IsConsultant = false;
-        }
-    
-        if (formData.selectedRole === 'assistantDoctor') {
-          formData.IsAssistantDoctor = true;
-        } else {
-          formData.IsAssistantDoctor = false;
-        }
-    
-        if (formData.selectedRole === 'doctor') {
-          formData.IsDoctor = true;
-        } else {
-          formData.IsDoctor = false;
-        }
-    
-        // Set IsOnline based on the checkbox
-        formData.IsOnline = formData.online;
-    
-    
-    // Update the formError state
+
+    // Set role-specific properties
+    if (formData.selectedRole === 'consultant') {
+      formData.IsConsultant = true;
+    } else {
+      formData.IsConsultant = false;
+    }
+
+    if (formData.selectedRole === 'assistantDoctor') {
+      formData.IsAssistantDoctor = true;
+    } else {
+      formData.IsAssistantDoctor = false;
+    }
+
+    if (formData.selectedRole === 'doctor') {
+      formData.IsDoctor = true;
+    } else {
+      formData.IsDoctor = false;
+    }
+    formData.IsOnline = formData.online;
+
     setFormError(updatedFormError);
-    // dispatch if no error found in form
+    console.log(updatedFormError);
+
     if (isValidInput) {
       dispatch(addNewAppointment(formData));
     }
   };
 
   useEffect(() => {
-    if (getAllDoctorData?.length > 0) {
-      let selectedDoctor = getAllDoctorData;
-      const { _id, name } = selectedDoctor?.[0];
-      setFormData((prev) => ({ ...prev, doctor: { id: _id, name: name } }));
-    }
-  }, [getAllDoctorData]);
+    let selectedDoctor;
 
-  useEffect(() => {
-    if (getAllConsultantData?.length > 0) {
-      let selectedConsultant = getAllConsultantData;
-      const { _id, name } = selectedConsultant?.[0];
-      setFormData((prev) => ({ ...prev, consultant: { id: _id, name: name } }));
+    switch (formData?.selectedRole) {
+      case 'consultant':
+        selectedDoctor = getAllConsultantData;
+        if (selectedDoctor?.length > 0) {
+          console.log(selectedDoctor, 'the consuletnat');
+          let { _id: consultantId, name: consultantName } = selectedDoctor?.[0];
+          setFormData((prev) => ({ ...prev, doctor: { id: consultantId, name: consultantName } }));
+        }
+        break;
+      case 'assistantDoctor':
+        selectedDoctor = assistantDoctor;
+        if (selectedDoctor?.length > 0) {
+          let { _id: assistantId, name: assistantName } = selectedDoctor?.[0];
+          setFormData((prev) => ({ ...prev, doctor: { id: assistantId, name: assistantName } }));
+        }
+        break;
+      default:
+        selectedDoctor = getAllDoctorData;
+        if (selectedDoctor?.length > 0) {
+          let { _id: defaultId, name: defaultName } = selectedDoctor?.[0] || {};
+          setFormData((prev) => ({ ...prev, doctor: { id: defaultId, name: defaultName } }));
+        }
     }
-  }, [getAllConsultantData]);
+  }, [getAllDoctorData, getAllConsultantData, assistantDoctor, formData?.selectedRole]);
 
   return (
     <>
@@ -173,9 +192,8 @@ export default function AddAppointment() {
               <div className="px-6 py-6 rounded-md ">
                 <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3 ">Add Appointment </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 ">
-                            {/* Select Role Dropdown */}
-   {/* Select Role Dropdown */}
-   <SelectInput
+                  {/* Select Role Dropdown */}
+                  <SelectInput
                     options={[
                       { value: 'doctor', label: 'Doctor' },
                       { value: 'consultant', label: 'Consultant' },
@@ -192,12 +210,7 @@ export default function AddAppointment() {
                   {/* Online or Offline Checkbox */}
                   <div className="flex items-center mt-10">
                     <label className="mr-2">Online</label>
-                    <input
-                      type="checkbox"
-                      checked={formData.online}
-                      onChange={() => setFormData((prev) => ({ ...prev, online: !prev.online }))}
-                      style={{ width: '1.5em', height: '1.5em' }}
-                    />
+                    <input type="checkbox" checked={formData.online} onChange={() => setFormData((prev) => ({ ...prev, online: !prev.online }))} style={{ width: '1.5em', height: '1.5em' }} />
                   </div>
 
                   {/* Render doctor dropdown and calendar when role is Doctor */}
@@ -222,31 +235,51 @@ export default function AddAppointment() {
                     </>
                   )}
 
-                  {/* Render consultant dropdown and calendar when role is Consultant */}
-                  {formData.selectedRole === 'consultant' && (
+                  {formData.selectedRole === 'assistantDoctor' && (
                     <>
                       <SelectInput
-                        options={getAllConsultantData.map((consultant) => ({
+                        options={assistantDoctor?.map((doctor) => ({
+                          value: doctor._id,
+                          label: doctor.name,
+                        }))}
+                        value={formData?.doctor?.id}
+                        onChange={(e) => {
+                          let selectedDoctor = assistantDoctor?.filter((i) => i?._id == e.target.value)?.[0];
+                          const { _id, name } = selectedDoctor;
+                          setFormData((prev) => ({ ...prev, doctor: { id: _id, name: name } }));
+                        }}
+                        placeholder="Select Assistant Doctor"
+                        label={'Select Assistant Doctor'}
+                        name={'doctor'}
+                        error={formError.doctor}
+                      />
+                    </>
+                  )}
+
+                  {/* Render consultant dropdown and calendar when role is Consultant */}
+                  {formData.selectedRole === 'consultant' && getAllConsultantData?.length > 0 && (
+                    <>
+                      <SelectInput
+                        options={getAllConsultantData?.map((consultant) => ({
                           value: consultant._id,
                           label: consultant.name,
                         }))}
-                        value={formData?.consultant?.id}
+                        value={formData?.doctor?.id}
                         onChange={(e) => {
-                          let selectedConsultant = getAllConsultantData?.filter((i) => i?._id == e.target.value)?.[0];
-                          const { _id, name } = selectedConsultant;
-                          setFormData((prev) => ({ ...prev, consultant: { id: _id, name: name } }));
+                          let selectedDoctor = getAllConsultantData?.filter((i) => i?._id == e.target.value)?.[0];
+                          const { _id, name } = selectedDoctor;
+                          setFormData((prev) => ({ ...prev, doctor: { id: _id, name: name } }));
                         }}
                         placeholder="Select Consultant"
                         label={'Select Consultant'}
-                        name={'Consultant'}
+                        name={'doctor'}
                         error={formError.Consultant}
                       />
                     </>
                   )}
 
-                  {/* select patient container */}
                   <SelectInput
-                    options={getAllPatientData.map((patient) => ({
+                    options={getAllPatientData?.map((patient) => ({
                       value: patient._id,
                       label: patient.firstName + ' ' + patient.surname,
                     }))}
@@ -263,25 +296,10 @@ export default function AddAppointment() {
                   />
                 </div>
 
-                {formData.selectedRole === 'doctor' && (
-                <CalenderAndTimeSlot
-                  selectedDoctor={getAllDoctorData.filter((doctor) => doctor._id == formData?.doctor?.id)}
-                  formData={formData}
-                  setFormData={setFormData}
-                  getAllAppointmentData={getAllAppointmentData}
-                />
-              )}
-
-              {/* Render consultant calendar when role is Consultant */}
-              {formData.selectedRole === 'consultant' && (
-                <CalenderAndTimeSlot
-                  selectedConsultant={getAllConsultantData.filter((consultant) => consultant._id == formData?.consultant?.id)}
-                  formData={formData}
-                  setFormData={setFormData}
-                  getAllAppointmentData={getAllAppointmentData}
-                />
-              )}
-               </div>
+                {formData.selectedRole === 'doctor' && <CalenderAndTimeSlot selectedDoctor={getAllDoctorData?.length > 0 && getAllDoctorData?.filter((doctor) => doctor._id == formData?.doctor?.id)} formData={formData} setFormData={setFormData} getAllAppointmentData={getAllAppointmentData} />}
+                {formData.selectedRole === 'consultant' && <CalenderAndTimeSlot selectedDoctor={getAllConsultantData?.length > 0 && getAllConsultantData?.filter((consultant) => consultant._id == formData?.doctor?.id)} formData={formData} setFormData={setFormData} getAllAppointmentData={getAllAppointmentData} />}
+                {formData.selectedRole === 'assistantDoctor' && <CalenderAndTimeSlot selectedDoctor={assistantDoctor?.length > 0 && assistantDoctor?.filter((assistantDoctor) => assistantDoctor._id == formData?.doctor?.id)} formData={formData} setFormData={setFormData} getAllAppointmentData={getAllAppointmentData} />}
+              </div>
 
               {/* handel add appointment  */}
               <div className="lg:w-80 mx-auto w-full px-5  ">
