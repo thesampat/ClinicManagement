@@ -1,5 +1,10 @@
 const mongoose = require("mongoose");
 
+const timeSlotSchema = new mongoose.Schema({
+    startTime: { type: String },
+    endTime: { type: String },
+});
+
 const consultantSchema = new mongoose.Schema({
     name: { type: String },
     email: { type: String },
@@ -24,6 +29,13 @@ const consultantSchema = new mongoose.Schema({
     resumeDoc: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'reports.file'
+    },
+    availability: {
+        type: Map,
+        of: {
+            a_status: { type: String }, // Status should be a String ("Available" or "Not Available")
+            timeSlots: [timeSlotSchema],
+        },
     },
     registrationDoc: {
         type: mongoose.Schema.Types.ObjectId,

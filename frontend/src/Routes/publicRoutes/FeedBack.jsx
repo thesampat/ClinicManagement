@@ -29,18 +29,24 @@ const createItem = async (data, navigate, setIsPorcessing, setSelectedPatient, s
   }
 };
 
-const submitComments = async (feedbackData, setIsPorcessing, setOperateType, navigate) => {
-  console.log(feedbackData, 'what is feedback data now');
-  // try {
-  //   await axios.put(`${END_POINT}/feedback/${feedbackData?.patient_id}`, { comments: feedbackData });
-  //   setIsPorcessing(false);
-  //   setOperateType(null);
-  //   toast.success('Comments submitted successfully');
-  //   navigate(`/web/afterAction`);
-  // } catch (error) {
-  //   toast.error('Failed to submit comments');
-  //   console.error(error);
-  // }
+const submitComments = async (patientId, rating, comments, signature, setIsPorcessing, setOperateType, navigate) => {
+  try {
+    const feedbackData = {
+      date: new Date().toISOString().slice(0, 10),
+      content: comments,
+      signature,
+      rating,
+    };
+    console.log(feedbackData);
+    await axios.put(`${END_POINT}/feedback/${patientId}`, { comments: feedbackData });
+    setIsPorcessing(false);
+    setOperateType(null);
+    toast.success('Comments submitted successfully');
+    navigate(`/web/afterAction`);
+  } catch (error) {
+    toast.error('Failed to submit comments');
+    console.error(error);
+  }
 };
 
 const fetchItems = async (path) => {
@@ -94,6 +100,7 @@ export const FeedBack = () => {
   const navigate = useNavigate();
   const [isProcessing, setIsPorcessing] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const [formErrorForUpdate, setFormErrorForUpdate] = useState(initialFormDataForUpdateError);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -101,6 +108,30 @@ export const FeedBack = () => {
       ...formData,
       [name]: value,
     });
+  };
+
+  const handleInputUpdateChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormDataForUpdate((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+
+    const updatedFormError = { ...formErrorForUpdate };
+    if (name === 'comments' && !value.trim()) {
+      updatedFormError.comments = 'Comments are required!';
+    } else {
+      updatedFormError.comments = '';
+    }
+
+    if (name === 'Signature' && !value.trim()) {
+      updatedFormError.Signature = 'Signature is required!';
+    } else {
+      updatedFormError.Signature = '';
+    }
+
+    setFormErrorForUpdate(updatedFormError);
   };
 
   useEffect(() => {
@@ -189,7 +220,7 @@ export const FeedBack = () => {
   };
   const handleStarRating = (rating) => {
     console.log('Updating rating:', rating);
-    setFormData((prevData) => ({
+    setFormDataForUpdate((prevData) => ({
       ...prevData,
       CaseRating: rating,
     }));
@@ -208,7 +239,7 @@ export const FeedBack = () => {
   return (
     <>
       <div className="w-full justify-between mx-auto w-full px-5 flex">
-        {operateType !== 'add' && <CustomSelect onChange={handleSelectChange} options={['', ...patientList?.map((e) => e?.FirstName)]} label="Patient" placeholder="-- Select Patient Reference --" type="text" value={patientList?.filter((p) => p?._id === selectedPatient)?.[0]?.FirstName} error={formError.reference} name="reference" />}
+        {operateType !== 'add' && <CustomSelect onChange={handleSelectChange} options={patientList?.map((e) => e?.FirstName)} label="Patient" placeholder="-- Select Patient Reference --" type="text" value={patientList?.filter((p) => p?._id === selectedPatient)?.[0]?.FirstName} error={formError.reference} name="reference" />}
         <div className="groupofButtons flex gap-10">
           {operateType !== 'add' && (
             <button className="w-fit p-3 mt-6 font-bold bg-primary-200 text-white h-12" onClick={handleAddButton}>
@@ -237,7 +268,7 @@ export const FeedBack = () => {
 
             <div className="pb-8 rounded-md pt-4 flex column">
               <div className="px-6 py-6 rounded-md">
-                <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3">Patient Details</h2>
+                <h2 className="text-2xl font-semibold text-primary-900">Patient Details</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
                   <CustomInput onChange={handleInputChange} label="First Name" placeholder="Enter First Name" type="text" value={formData.FirstName} error={formError.FirstName} name="FirstName" />
                   <CustomInput onChange={handleInputChange} label="Middle Name" placeholder="Enter Middle Name" type="text" value={formData.MiddleName} error={formError.MiddleName} name="MiddleName" />
@@ -296,7 +327,7 @@ export const FeedBack = () => {
                     </label>
                     <div className="flex items-center">
                       {[...Array(5)].map((_, index) => (
-                        <FaStar key={index} onClick={() => handleStarRating(index + 1)} className={`cursor-pointer h-5 w-5 ${index < formData?.CaseRating ? 'text-yellow-400 fas' : 'text-gray-300 far'}`} />
+                        <FaStar key={index} onClick={() => handleStarRating(index + 1)} className={`cursor-pointer h-5 w-5 ${index < FormDataForUpdate?.CaseRating ? 'text-yellow-400' : 'text-gray-300'}`} />
                       ))}
                     </div>
                   </div>
@@ -306,9 +337,9 @@ export const FeedBack = () => {
             <div className="rounded-md">
               <div className="px-4 rounded-md ">
                 <div className="grid grid-cols-1">
-                  <CustomTextarea label="Comments" value={formData?.comments1} onChange={handleInputChange} name="comments1" placeholder="Enter any additional comments..." error={formError?.comments1} rows={10} />
+                  <CustomTextarea label="Comments" value={FormDataForUpdate?.comments} onChange={handleInputUpdateChange} name="comments" placeholder="Enter any additional comments..." error={FormDataForUpdate?.comments} rows={10} />
 
-                  <CustomInput label="Signature" value={formData?.signature1} onChange={handleInputChange} name="signature" error={formError?.signature1} />
+                  <CustomInput label="Signature" value={FormDataForUpdate?.Signature} onChange={handleInputUpdateChange} name="Signature" error={FormDataForUpdate?.Signature} />
                 </div>
               </div>
             </div>

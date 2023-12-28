@@ -76,9 +76,9 @@ const FeedbackList = () => {
   };
   //jfenjd
   const LabelValuePair = ({ label, value }) => (
-    <div className="label-box flex">
+    <div className="label-box flex gap-4">
       <span className="label-text">{label}:</span>
-      <p style={{ backgroundColor: 'white', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '8px' }} className="text-gray-600">
+      <p className="text-gray-600">
         {label === 'Content' ? (
           <>
             {isExpanded ? value : `${value.substring(0, 50)}...`}
@@ -96,11 +96,11 @@ const FeedbackList = () => {
   );
 
   return (
-    <>
-      <div className={`p-20 flex flex-column ${isPatientAccordionOpen ? 'open' : ''}`}>
-        <div className="bg-primary-50 pb-8 rounded-md pt-4 border-2 border-primary-400">
+    <div className="m-3 rounded-md bg-slate-100 h-fit min-h-[100vh] px-12 w-full">
+      <div className={`p-5 flex flex-column ${isPatientAccordionOpen ? 'open' : ''}`}>
+        <div className="bg-primary-50 pb-8 rounded-md pt-4 border-2 border-primary-400 w-full">
           <div className="accordion-header flex justify-between items-center" onClick={handlePatientAccordionToggle}>
-            <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3">Patient Details</h2>
+            <h2 className="text-2xl font-semibold text-primary-900 border-primary-400 pl-3">Patient Details</h2>
             <div className={`toggle-symbol text-2xl font-semibold text-primary-900 border-primary-400 pl-3 ${isPatientAccordionOpen ? 'open' : ''}`}>&#9660;</div>
           </div>
           {isPatientAccordionOpen && (
@@ -139,16 +139,17 @@ const FeedbackList = () => {
           )}
         </div>
       </div>
-      <div className="p-20">
+      <div className="p-5">
         <div className="bg-primary-50 pb-8 rounded-md pt-4 border-2 border-primary-400">
-          <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3">Feedback</h2>
+          <h2 className="text-2xl font-semibold text-primary-900 border-primary-400 pl-3">Feedback</h2>
+          <span className="label-text font-semibold text-lg pl-3">Comments:</span>
+
           <div className="label-box max-h-96 overflow-y-auto">
-            <span className="label-text">Comments:</span>
             {Array.isArray(formData.comments) ? (
               formData.comments.map((comment, index) => (
                 <div key={index} className="m-3 rounded-md bg-gray-100 h-fit lg:px-6 w-50 p-5 bg-white">
                   <div className="headingTitle flex justify-between">
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-2">
                       <label htmlFor="CaseMark" className="text-md">
                         Rate Case
                       </label>
@@ -167,7 +168,7 @@ const FeedbackList = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
