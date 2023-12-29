@@ -161,6 +161,7 @@ export default function AddAppointment() {
           setFormData((prev) => ({ ...prev, doctor: { id: consultantId, name: consultantName } }));
         }
         break;
+
       case 'assistantDoctor':
         selectedDoctor = assistantDoctor;
         if (selectedDoctor?.length > 0) {
@@ -168,6 +169,7 @@ export default function AddAppointment() {
           setFormData((prev) => ({ ...prev, doctor: { id: assistantId, name: assistantName } }));
         }
         break;
+
       default:
         selectedDoctor = getAllDoctorData;
         if (selectedDoctor?.length > 0) {

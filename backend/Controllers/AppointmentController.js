@@ -11,6 +11,7 @@ const createAppointment = async (req, res) => {
       bookDate,
       bookTimeSlot,
       status,
+      IsOnline
     } = req.body;
 
 
@@ -27,6 +28,7 @@ const createAppointment = async (req, res) => {
     const appointment = new Appointment({
       patient,
       doctor,
+      IsOnline,
       date,
       bookDate: String(bookDate).slice(0, 10),
       bookTimeSlot,
