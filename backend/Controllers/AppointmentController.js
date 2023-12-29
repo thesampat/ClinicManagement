@@ -2,7 +2,6 @@ const { Appointment, appointmentStatusEnum } = require("../Models/AppointmentMod
 
 const createAppointment = async (req, res) => {
 
-
   try {
     const {
       patient,
@@ -11,9 +10,12 @@ const createAppointment = async (req, res) => {
       bookDate,
       bookTimeSlot,
       status,
-      IsOnline
+      IsOnline,
+      selectedRole,
+      IsDoctor,
+      IsConsultant,
+      IsAssistantDoctor
     } = req.body;
-
 
 
     let IsAppointmentExist = await Appointment.find({
@@ -32,7 +34,11 @@ const createAppointment = async (req, res) => {
       date,
       bookDate: String(bookDate).slice(0, 10),
       bookTimeSlot,
-      status
+      status,
+      selectedRole,
+      IsDoctor,
+      IsConsultant,
+      IsAssistantDoctor
     });
 
     await appointment.save();
@@ -43,6 +49,37 @@ const createAppointment = async (req, res) => {
     res.status(500).json({ error: "Appointment creation failed" });
   }
 };
+
+const updateAppointment = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const updateFields = req.body;
+
+    const existingAppointment = await Appointment.findById(appointmentId);
+    if (!existingAppointment) return res.status(404).json({ error: 'Appointment not found' });
+
+    if (updateFields.bookDate || updateFields.bookTimeSlot) {
+      const newBookDate = updateFields.bookDate || existingAppointment.bookDate;
+      const newBookTimeSlot = updateFields.bookTimeSlot || existingAppointment.bookTimeSlot;
+
+      const isTimeSlotAvailable = await Appointment.findOne({
+        _id: { $ne: appointmentId },
+        'status': { $ne: 'Cancelled' },
+        'bookTimeSlot._id': newBookTimeSlot?._id,
+        'bookDate': { $regex: `^${String(newBookDate)?.slice(0, 10)}` },
+      });
+
+      if (isTimeSlotAvailable) return res.status(400).json({ error: 'Time slot is already booked' });
+    }
+    Object.keys(updateFields).forEach(field => updateFields[field] !== undefined && (existingAppointment[field] = updateFields[field]));
+    await existingAppointment.save();
+    res.status(200).json({ message: 'Appointment updated successfully', appointment: existingAppointment });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Appointment update failed' });
+  }
+};
+
 
 const getAppointment = async (req, res) => {
   const { page = 1, limit = 10, displayType = undefined, patient = undefined, doctorName, cancelled = undefined } = req.query;
@@ -76,22 +113,19 @@ const updateStatusAppointment = async (req, res) => {
       return res.status(400).json({ error: "Invalid status value" });
     }
 
-    const appointment = await Appointment.findByIdAndUpdate(
-      appointmentId,
-      { status },
-      { new: true }
-    );
+    const appointment = await Appointment.deleteOne({ _id: appointmentId });
 
-    if (!appointment) {
+    if (appointment.deletedCount === 0) {
       return res.status(404).json({ error: "Appointment not found" });
     }
 
-    res.json(appointment);
+    res.json({ message: 'Appointment deleted successfully' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Appointment update failed" });
+    res.status(500).json({ error: "Appointment deletion failed" });
   }
 };
+
 
 
 const getFilteredAppointment = async (req, res) => {
@@ -127,4 +161,4 @@ const getFilteredAppointment = async (req, res) => {
 }
 
 
-module.exports = { createAppointment, getAppointment, updateStatusAppointment, getFilteredAppointment }
+module.exports = { createAppointment, getAppointment, updateStatusAppointment, getFilteredAppointment, updateAppointment }

@@ -29,7 +29,7 @@ export default function AppointmentList() {
   }, [query]);
 
   return (
-    <div className="flex justify-center flex-col mt-4 px-8 w-full ">
+    <div className="mt-4 px-8 w-full ">
       <div className="flex justify-between flex-wrap items-center ">
         {/* Breadcrumbs */}
         <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: 'appointments' }]} />
@@ -98,6 +98,14 @@ export default function AppointmentList() {
                               Prescription
                             </span>
                           )}
+                          <span
+                            onClick={() => {
+                              navigate(`/appointment/${item?._id}/${item?.doctor?.id}`);
+                            }}
+                            className="bg-red-300 cursor-pointer text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-gray-500"
+                          >
+                            Update
+                          </span>
                           {/* <DeleteConfirmatationModal
                         isSuccess={deletePatientSuccess}
                         isProcessing={deletePatientProcessing}

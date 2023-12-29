@@ -46,6 +46,7 @@ import AfterActionComponent from './publicRoutes/actionView';
 import NutritionManage from './AdminRoutes/alternative_therapies/nutritionAdmin';
 import NutritionList from './AdminRoutes/alternative_therapies/nutritionList';
 import FeedbackList from '../Routes/AdminRoutes/FeedbackList';
+import UpdateAppointment from './AdminRoutes/UpdateAppointment';
 
 export default function AllRoutes() {
   return (
@@ -97,6 +98,16 @@ export default function AllRoutes() {
               </PrivateRoute>
             }
           />
+
+          <Route
+            path="/appointment/:appointmentId/:doctor_id"
+            element={
+              <PrivateRoute allowedRoles={['SuperAdmin']}>
+                <UpdateAppointment />{' '}
+              </PrivateRoute>
+            }
+          />
+
           <Route
             path="/prescription"
             element={
@@ -265,7 +276,7 @@ export default function AllRoutes() {
               </PrivateRoute>
             }
           ></Route>
-            <Route
+          <Route
             path="feedback/:feedback_id"
             element={
               <PrivateRoute allowedRoles={['SuperAdmin']}>

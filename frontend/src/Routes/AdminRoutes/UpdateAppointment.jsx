@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addNewAppointment, getAllDoctor, getAllPatient, getAllAppointment, getSingleDoctor, getAllConsultant, END_POINT } from '../../Redux/AdminReducer/action';
+import { addNewAppointment, getAllDoctor, getAllPatient, getAllAppointment, getSingleDoctor, getAllConsultant, END_POINT, getJwtToken } from '../../Redux/AdminReducer/action';
 import CustomSpinner from '../../Components/CommonComponents/CustomSpinner';
 import SelectInput from '../../Components/CommonComponents/SelectInput ';
 import CustomInput from '../../Components/CommonComponents/CustomInput';
@@ -10,6 +10,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CalenderAndTimeSlot from '../../Components/CommonComponents/CustomAppointmentDateCalender';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 const fetchItems = async (path) => {
   try {
@@ -17,6 +18,19 @@ const fetchItems = async (path) => {
     return result;
   } catch (error) {
     console.log(error);
+    toast.error('Something went wrong while fetching data');
+  }
+};
+
+const changeAppointment = async (data, appointmentId) => {
+  try {
+    const result = await axios.put(`${END_POINT}/appointment/reSchedule/${appointmentId}`, data, {
+      headers: {
+        Authorization: getJwtToken(),
+      },
+    });
+    return result;
+  } catch (error) {
     toast.error('Something went wrong while fetching data');
   }
 };
@@ -30,14 +44,23 @@ const initialState = {
   IsDoctor: true,
 };
 
-export default function AddAppointment() {
+export default function UpdateAppointment() {
   const { addAppointmentMessage, addAppointmentFail, addAppointmentSuccess, addAppointmentProcessing, getAllPatientData, getAllPatientSuccess, getAllDoctorData, getAllPatientProcessing, getAllDoctorProcessing, getAllAppointmentData, getAllConsultantData, getAllConsultantProcessing } = useSelector((state) => state.AdminReducer);
   const [query, setQuery] = useState({ search: '', page: 1, pageSize: 200 });
   const [formData, setFormData] = useState(initialState);
   const [formError, setFormError] = useState(initialState);
   const [assistantDoctor, setAssistantDoctor] = useState([]);
+  const { appointmentId, doctor_id } = useParams();
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (getAllAppointmentData?.length > 0) {
+      let appintmentExisting = getAllAppointmentData?.filter((a) => a?._id === appointmentId)?.[0];
+
+      setFormData({ ...appintmentExisting, selectedRole: appintmentExisting.IsConsultant ? 'consultant' : appintmentExisting.IsAssistantDoctor ? 'assistantDoctor' : 'doctor' });
+    }
+  }, [getAllAppointmentData]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,8 +91,8 @@ export default function AddAppointment() {
   }, [formData?.selectedRole, query]);
 
   useEffect(() => {
-    dispatch(getAllAppointment({ search: formData?.doctor?.id, page: 1, limit: 100 }));
-  }, [formData?.doctor]);
+    dispatch(getAllAppointment({ search: doctor_id, page: 1, limit: 100 }));
+  }, [doctor_id]);
 
   useEffect(() => {
     setFormData({ ...formData, availableSlot: '' });
@@ -137,7 +160,12 @@ export default function AddAppointment() {
     console.log(updatedFormError);
 
     if (isValidInput) {
-      dispatch(addNewAppointment(formData));
+      changeAppointment(formData, appointmentId).then((e) => {
+        toast.success('Appointment update successfully');
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      });
     }
   };
 
@@ -287,17 +315,20 @@ export default function AddAppointment() {
                     label={'Select Patient'}
                     name={'patient'}
                     error={formError.patient}
+                    disabled={true}
                   />
                 </div>
 
-                {formData.selectedRole === 'doctor' && <CalenderAndTimeSlot selectedDoctor={getAllDoctorData?.length > 0 && getAllDoctorData?.filter((doctor) => doctor._id == formData?.doctor?.id)} formData={formData} setFormData={setFormData} getAllAppointmentData={getAllAppointmentData} />}
-                {formData.selectedRole === 'consultant' && <CalenderAndTimeSlot selectedDoctor={getAllConsultantData?.length > 0 && getAllConsultantData?.filter((consultant) => consultant._id == formData?.doctor?.id)} formData={formData} setFormData={setFormData} getAllAppointmentData={getAllAppointmentData} />}
-                {formData.selectedRole === 'assistantDoctor' && <CalenderAndTimeSlot selectedDoctor={assistantDoctor?.length > 0 && assistantDoctor?.filter((assistantDoctor) => assistantDoctor._id == formData?.doctor?.id)} formData={formData} setFormData={setFormData} getAllAppointmentData={getAllAppointmentData} />}
+                {formData.selectedRole === 'doctor' && <CalenderAndTimeSlot selectedDoctor={getAllDoctorData?.length > 0 && getAllDoctorData?.filter((doctor) => doctor._id === formData?.doctor?.id)} formData={formData} setFormData={setFormData} getAllAppointmentData={getAllAppointmentData?.filter((a) => a._id !== appointmentId)} />}
+
+                {formData.selectedRole === 'consultant' && <CalenderAndTimeSlot selectedDoctor={getAllConsultantData?.length > 0 && getAllConsultantData?.filter((consultant) => consultant._id === formData?.doctor?.id)} formData={formData} setFormData={setFormData} getAllAppointmentData={getAllAppointmentData?.filter((a) => a._id !== appointmentId)} />}
+
+                {formData.selectedRole === 'assistantDoctor' && <CalenderAndTimeSlot selectedDoctor={assistantDoctor?.length > 0 && assistantDoctor?.filter((assistantDoctor) => assistantDoctor._id === formData?.doctor?.id)} formData={formData} setFormData={setFormData} getAllAppointmentData={getAllAppointmentData?.filter((a) => a._id !== appointmentId)} />}
               </div>
 
               {/* handel add appointment  */}
               <div className="lg:w-80 mx-auto w-full px-5  ">
-                <CustomButton isProcessing={addAppointmentProcessing} onClick={handelButtonClick} label="Add Appointment" />
+                <CustomButton isProcessing={addAppointmentProcessing} onClick={handelButtonClick} label="Update Appointment" />
               </div>
             </div>
           </>
