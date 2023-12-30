@@ -7,10 +7,12 @@ import { IoLogOut } from 'react-icons/io5';
 import { GiChest, GiDoctorFace, GiPerson, GiPersonInBed, GiSergeant } from 'react-icons/gi';
 import { BsPerson } from 'react-icons/bs';
 import { IoMdLogOut } from 'react-icons/io';
+import { useSelector } from 'react-redux';
 
 const SidePanel = () => {
   const [isCollapsed, setCollapsed] = useState(false);
   const [currentPath, setCurrentPath] = useState('');
+  let loggedInUser = useSelector((state) => state.AuthReducer.userLogindata.data);
   const toggleCollapse = () => {
     setCollapsed(!isCollapsed);
     setCurrentPath(window.location.pathname);
@@ -55,16 +57,25 @@ const SidePanel = () => {
           </li>
         ))}
         <li className="flex items-center rounded-md w-100 mt-10">
-          <button
-            onClick={(e) => {
-              window.sessionStorage.clear();
-              window.location.reload();
-            }}
-            className="p-1 flex items-center px-2 rounded-md text-white bg-red-500 font-bold"
-          >
-            <IoMdLogOut />
-            {!isCollapsed && <span className="ml-3">Logout</span>}
-          </button>
+          <div className="ProfileName flex flex-col gap-2">
+            <div className="flex justify-center items-center">
+              <BsPerson className="h-12 w-12" />
+              <div className="flex flex-col">
+                <h4 className="font-semibold text-md leading-6 uppercase">{loggedInUser.name?.slice(0, 30)}</h4>
+                <span class="bg-blue-100 text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-white">{loggedInUser?.role}</span>
+              </div>
+            </div>
+            <button
+              onClick={(e) => {
+                window.sessionStorage.clear();
+                window.location.reload();
+              }}
+              className="p-1 flex items-center px-2 rounded-md text-white bg-red-500 font-bold"
+            >
+              <IoMdLogOut />
+              {!isCollapsed && <span className="ml-3">Logout</span>}
+            </button>
+          </div>
         </li>
       </ul>
     </div>

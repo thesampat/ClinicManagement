@@ -14,6 +14,10 @@ import ModalCustom from '../../Components/CommonComponents/ModalCustomPopup';
 import CustomTextarea from '../../Components/CommonComponents/CustomTextarea';
 import CustomImageInput from '../../Components/CommonComponents/CustomImageInput';
 import axios from 'axios';
+import CustomSelect from '../../Components/CommonComponents/CustomSelect';
+import { PatientRefrenceList, RefrenceList } from '../../Files/dropdownOptions';
+import CustomNameSuggestion from '../../Components/CommonComponents/CustomNameSuggestion';
+import diagnosis from '../../Files/diagnosis.json';
 
 const fetchSingleItem = async (id) => {
   try {
@@ -154,6 +158,11 @@ export default function EnquiryForm() {
     }
   };
 
+  const handleDiagnosis = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, purposeOfEnquiry: { [name]: value } }));
+  };
+
   return (
     <div className="m-3 rounded-md bg-slate-100 h-fit min-h-[100vh] lg:px-24 w-full p-10  bg-white">
       {Enquiry_Id !== 'addNew' ? <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: 'enquiry ' }, { title: 'enquiry List', url: '/table/enquiry/list' }, { title: 'Update enquiry' }]} /> : <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: 'enquiry' }, { title: 'Add New enquiry' }]} />}
@@ -166,7 +175,8 @@ export default function EnquiryForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 ">
               <CustomInput label={'Name'} name={'name'} type={'text'} value={formData?.name} onChange={handleInputChange} placeholder={'Enter Name.'} error={formError.name} />
               <CustomInput label={'Number'} name={'number'} type={'number'} value={formData?.number} onChange={handleInputChange} placeholder={'9999999999'} error={formError.number} />
-              <CustomInput label={'Reference'} name={'reference'} type={'text'} value={formData?.reference} onChange={handleInputChange} placeholder={'Enter Reference.'} error={formError.reference} />
+              <CustomSelect onChange={handleInputChange} options={RefrenceList} label="Reference" placeholder="-- Select Reference --" type="text" value={formData?.reference} error={formError?.reference} name="reference" />
+              {formData?.reference == 'Patient' && <CustomSelect onChange={handleInputChange} options={PatientRefrenceList} label="Patient Refrence" placeholder="-- Select Patient Reference --" type="text" value={formData?.patientReference} error={formError?.patientReference} name="patientReference" />}
             </div>
           </div>
 
@@ -178,6 +188,8 @@ export default function EnquiryForm() {
               <CustomTextarea label={'Conslusion'} name={'conslusion'} type={'text'} value={formData?.conslusion} onChange={handleInputChange} placeholder={'Enter Conslusion.'} error={formError.conslusion} />
             </div>
           </div>
+
+          <div></div>
 
           {/* create item button */}
           <div className="lg:w-80 mx-auto w-full px-5  ">

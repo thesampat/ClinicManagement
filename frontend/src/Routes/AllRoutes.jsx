@@ -71,6 +71,7 @@ export default function AllRoutes() {
             <Route path="feedback" element={<FeedBack />} />
             <Route path="popup" element={<Popup />} />
             <Route path="afterAction" element={<AfterActionComponent />} />
+            <Route path="aggrement" element={<AfterActionComponent />} />
           </Route>
 
           <Route

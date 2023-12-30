@@ -9,6 +9,11 @@ const createExternalAppointment = async (req, res) => {
             bookDate,
             bookTimeSlot,
             status,
+            IsOnline,
+            selectedRole,
+            IsDoctor,
+            IsConsultant,
+            IsAssistantDoctor
         } = req.body;
 
         // Check if the appointment already exists for the specified time slot and date
@@ -25,10 +30,15 @@ const createExternalAppointment = async (req, res) => {
         const appointment = new Appointment({
             patient,
             doctor,
+            IsOnline,
             date,
             bookDate: String(bookDate).slice(0, 10),
             bookTimeSlot,
-            status
+            status,
+            selectedRole,
+            IsDoctor,
+            IsConsultant,
+            IsAssistantDoctor
         });
 
         // Save the appointment to the database

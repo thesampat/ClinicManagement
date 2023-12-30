@@ -7,6 +7,10 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomTextarea from '../../Components/CommonComponents/CustomTextarea';
 import { addNewEnquiry } from '../../Redux/AdminReducer/action';
+import CustomSelect from '../../Components/CommonComponents/CustomSelect';
+import { PatientRefrenceList, RefrenceList } from '../../Files/dropdownOptions';
+import CustomNameSuggestion from '../../Components/CommonComponents/CustomNameSuggestion';
+import diagnosis from '../../Files/diagnosis.json';
 
 const initialState = {
   conslusion: '',
@@ -138,7 +142,7 @@ export default function AddEnquiry() {
 
           {/* handel add appointment  */}
           <div className="lg:w-80 mx-auto w-full px-5  ">
-            <CustomButton isProcessing={addEnquiryProcessing} onClick={handelButtonClick} label="Add Enquiry" />
+            <CustomSelect isProcessing={addEnquiryProcessing} onClick={handelButtonClick} label="Add Enquiry" />
           </div>
         </div>
       </div>
