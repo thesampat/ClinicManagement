@@ -86,35 +86,37 @@ export default function ConsultantList() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {getAllConsultantData.map((item, index) => (
-                  <tr key={item._id}>
-                    <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item.name || 'NA'}</td>
-                    <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item.email || 'NA'}</td>
-                    <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item.fees || 'NA'}</td>
-                    <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item.education || 'NA'}</td>
-                    <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item.typesOfDoctor || 'NA'}</td>
-                    <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">
-                      <span
-                        onClick={() => {
-                          dispatch(getSingleConsultant(item));
-                          navigate('/consultant/update');
-                        }}
-                        className="bg-gray-100 cursor-pointer text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-gray-500"
-                      >
-                        Modify
-                      </span>
-                      <DeleteConfirmatationModal
-                        isSuccess={deleteConsultantSuccess}
-                        isProcessing={deleteConsultantProcessing}
-                        deleteFunction={() => {
-                          dispatch(deleteConsultant(item._id));
-                        }}
-                        text={item.name}
-                        heading={'Delete Consultant,'}
-                      />
-                    </td>
-                  </tr>
-                ))}
+                {getAllConsultantData
+                  .fliter((c) => c.Exit_date)
+                  .map((item, index) => (
+                    <tr key={item._id}>
+                      <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item.name || 'NA'}</td>
+                      <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item.email || 'NA'}</td>
+                      <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item.fees || 'NA'}</td>
+                      <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item.education || 'NA'}</td>
+                      <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item.typesOfDoctor || 'NA'}</td>
+                      <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">
+                        <span
+                          onClick={() => {
+                            dispatch(getSingleConsultant(item));
+                            navigate('/consultant/update');
+                          }}
+                          className="bg-gray-100 cursor-pointer text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-gray-500"
+                        >
+                          Modify
+                        </span>
+                        <DeleteConfirmatationModal
+                          isSuccess={deleteConsultantSuccess}
+                          isProcessing={deleteConsultantProcessing}
+                          deleteFunction={() => {
+                            dispatch(deleteConsultant(item._id));
+                          }}
+                          text={item.name}
+                          heading={'Delete Consultant,'}
+                        />
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

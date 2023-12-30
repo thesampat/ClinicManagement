@@ -183,7 +183,7 @@ export default function EnquiryForm() {
           <div className="lg:w-80 mx-auto w-full px-5  ">
             <CustomButton onClick={handleForm} isProcessing={isProcessing} label={Enquiry_Id == 'addNew' ? 'Submit' : 'Save'} />
           </div>
-          <div className="lg:w-80 mx-auto w-full px-5  ">
+          {/* <div className="lg:w-80 mx-auto w-full px-5  ">
             <button
               onClick={() => {
                 setIsModalOpen(true);
@@ -192,7 +192,7 @@ export default function EnquiryForm() {
             >
               EXIT
             </button>
-          </div>
+          </div> */}
         </div>
       ) : (
         <CustomSpinner />
