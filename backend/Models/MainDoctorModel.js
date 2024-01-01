@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const superAdminSchema = new mongoose.Schema({
+const MainDoctorSchema = new mongoose.Schema({
     name: { type: String },
     email: { type: String },
     password: { type: String },
@@ -9,10 +9,10 @@ const superAdminSchema = new mongoose.Schema({
         default:
             "https://res.cloudinary.com/dmzzzl5jj/image/upload/v1673894892/avatar_gvyled.jpg",
     },
-    role: { type: String, enum: ["SuperAdmin"], required: true },
-    superAdminId: { type: String }
+    role: { type: String, enum: ["MainDoctor"], required: true },
+    MainDoctorId: { type: String }
 })
 
-const SuperAdmin = mongoose.model("SuperAdmin", superAdminSchema);
+const MainDoctor = mongoose.model("MainDoctor", MainDoctorSchema);
 
-module.exports = { SuperAdmin }
+module.exports = { MainDoctor }

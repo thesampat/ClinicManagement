@@ -23,8 +23,8 @@ const getHeadings = (sectionType) => {
       break;
 
     case 'enquiry':
-      main_head = ['name', 'number', 'reference', 'purposeOfEnquiry'];
-      custom_head = ['Name', 'number', 'reference', 'purpose of entry'];
+      main_head = ['name', 'number', 'reference', 'purposeOfEnquiry', 'createdAt', 'createdTime'];
+      custom_head = ['Name', 'number', 'reference', 'purpose of entry', 'date', 'time'];
       break;
 
     case 'assistantDoctor':

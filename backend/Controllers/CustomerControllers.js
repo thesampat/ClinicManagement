@@ -1,6 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const { Customer } = require("../Models/CustomerModel");
-const { SuperAdmin } = require("../Models/SuperAdminModel");
+const { SuperAdmin } = require("../Models/MainDoctorModel");
 require("dotenv").config();
 
 const generatePatientId = async () => {
@@ -135,12 +135,6 @@ const updateCustomerProfile = async (req, res) => {
     const superAdminId = req.user._id; // Assuming you have the SuperAdmin ID in the request
     const customerId = req.params.customerId; // Assuming you have the Customer ID in the request parameters
     const updateData = req.body; // Get the data from req.body
-
-    // Check if the user is a SuperAdmin
-    const superAdmin = await SuperAdmin.findById(superAdminId);
-    if (!superAdmin) {
-      return res.status(403).json({ error: 'Only SuperAdmins can update customers.' });
-    }
 
     // Find the Customer by ID and update its data
     const customer = await Customer.findByIdAndUpdate(customerId, updateData, {

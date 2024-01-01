@@ -3,7 +3,7 @@ require('dotenv').config();
 const cors = require('cors');
 
 const customerRoutes = require("./Routes/CustomerRoutes")
-const superAdminRoutes = require("./Routes/SuperAdminRoutes")
+const MainDoctorRoutes = require("./Routes/MainDoctorRoutes")
 const doctorsRoutes = require("./Routes/DoctorsRoutes")
 const receptionistRoutes = require("./Routes/ReceptionistRoutes")
 const consultantRoutes = require("./Routes/ConsultantRoutes")
@@ -48,7 +48,7 @@ app.get('/', (req, res) => {
 
 
 app.use("/customer", checkRolesPermissions, customerRoutes);
-app.use("/superAdmin", superAdminRoutes);
+app.use("/mainDoctor", MainDoctorRoutes);
 app.use("/doctor", doctorsRoutes);
 app.use("/assistantDoctor", assistantDoctor);
 app.use("/receptionist", receptionistRoutes);

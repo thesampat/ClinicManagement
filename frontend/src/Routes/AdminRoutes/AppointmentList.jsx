@@ -56,10 +56,10 @@ export default function AppointmentList() {
                 <tr className="text-left text-xs bg-primary-400 font-medium text-primary-50 uppercase tracking-wider">
                   <th className="px-4 py-3 border border-gray-300">Book Date</th>
                   <th className="px-4 py-3 border border-gray-300">Book Time</th>
-                  <th className="px-4 py-3 border border-gray-300">Doctor</th>
+                  {/* <th className="px-4 py-3 border border-gray-300">Doctor</th> */}
                   <th className="px-4 py-3 border border-gray-300">Patient Name</th>
-                  <th className="px-4 py-3 border border-gray-300">Contact Number</th>
-                  <th className="px-4 py-3 border border-gray-300">Status</th>
+                  {/* <th className="px-4 py-3 border border-gray-300">Contact Number</th>
+                  <th className="px-4 py-3 border border-gray-300">Status</th> */}
                   <th className="px-4 py-3 border border-gray-300">Actions</th>
                 </tr>
               </thead>
@@ -75,10 +75,10 @@ export default function AppointmentList() {
                         <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">
                           {item?.bookTimeSlot?.startTime} - {item?.bookTimeSlot?.endTime}
                         </td>
-                        <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item?.doctor?.name}</td>
+                        {/* <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item?.doctor?.name}</td> */}
                         <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item?.patient?.name}</td>
-                        <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item?.patient?.phone}</td>
-                        <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item?.status}</td>
+                        {/* <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item?.patient?.phone}</td> */}
+                        {/* <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">{item?.status}</td> */}
                         <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">
                           <span
                             onClick={() => {

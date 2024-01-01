@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { SuperAdmin } = require('../Models/SuperAdminModel');
+const { SuperAdmin } = require('../Models/MainDoctorModel');
 const { Receptionist } = require('../Models/ReceptionistModel');
 
 // Middleware to protect routes for super admins and receptionists

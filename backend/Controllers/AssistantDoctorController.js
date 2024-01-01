@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { SuperAdmin } = require("../Models/SuperAdminModel");
+const { SuperAdmin } = require("../Models/MainDoctorModel");
 const { AssistantDoctor } = require('../Models/AssitantDoctorModel');
 const { setPermissionRoles, getPermissions } = require("./Other");
 require("dotenv").config();

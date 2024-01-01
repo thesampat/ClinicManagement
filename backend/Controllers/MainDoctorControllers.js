@@ -1,22 +1,22 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { SuperAdmin } = require("../Models/SuperAdminModel");
+const { MainDoctor } = require("../Models/MainDoctorModel");
 const { getPermissions, setPermissionRoles } = require("./Other");
 require("dotenv").config();
 
-const superAdminRegister = async (req, res) => {
+const MainDoctorRegister = async (req, res) => {
 
-  const { name, email, superAdminId, password } = req.body;
+  const { name, email, MainDoctorId, password } = req.body;
 
-  const Role = "SuperAdmin";
+  const Role = "MainDoctor";
   if (!name || !email || !password) {
     return res.status(422).json({ error: "please add all fields !" });
   }
 
   try {
-    const auth_superadmin = await SuperAdmin.findOne({ email });
+    const auth_MainDoctor = await MainDoctor.findOne({ email });
 
-    if (auth_superadmin) {
+    if (auth_MainDoctor) {
       return res.status(403).send({ msg: "Super admin are already exists!" });
     } else {
       bcrypt.hash(password, 5, async function (err, hash) {
@@ -24,16 +24,16 @@ const superAdminRegister = async (req, res) => {
           return res.status(501).send(err);
         }
         try {
-          const new_superadmin = new SuperAdmin({
+          const new_MainDoctor = new MainDoctor({
             name,
             email,
             password: hash,
             role: Role,
-            superAdminId,
+            MainDoctorId,
           });
 
-          await setPermissionRoles(name, Role, new_superadmin?._id)
-          await new_superadmin.save();
+          await setPermissionRoles(name, Role, new_MainDoctor?._id)
+          await new_MainDoctor.save();
           return res.status(201).send({ msg: "Signup Successfully" });
         } catch (error) {
           return res.status(403).send(error);
@@ -45,7 +45,7 @@ const superAdminRegister = async (req, res) => {
   }
 };
 
-const superAdminLogin = async (req, res) => {
+const MainDoctorLogin = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -55,21 +55,21 @@ const superAdminLogin = async (req, res) => {
   }
 
   try {
-    const superadmin = await SuperAdmin.findOne({ email: email });
-    let permissions = await getPermissions(superadmin._id)
+    const MainDoctorRef = await MainDoctor.findOne({ email: email });
+    let permissions = await getPermissions(MainDoctor._id)
 
-    if (!superadmin) {
+    if (!MainDoctorRef) {
       return res.status(401).json({ error: "Invalid credentials." });
     }
 
-    bcrypt.compare(password, superadmin.password, (err, result) => {
+    bcrypt.compare(password, MainDoctorRef.password, (err, result) => {
       if (err) {
         return res.status(500).json({ error: "Server error." });
       }
 
       if (result) {
         const token = jwt.sign(
-          { superAdminId: superadmin._id },
+          { MainDoctorId: MainDoctorRef._id },
           process.env.SECRET_KEY,
           {
             expiresIn: "1h",
@@ -80,10 +80,10 @@ const superAdminLogin = async (req, res) => {
           message: "Super Admin Login successful!",
           token,
           data: {
-            _id: superadmin._id,
-            name: superadmin.name,
-            email: superadmin.email,
-            role: superadmin.role,
+            _id: MainDoctorRef._id,
+            name: MainDoctorRef.name,
+            email: MainDoctorRef.email,
+            role: MainDoctorRef.role,
           },
         });
       } else {
@@ -91,8 +91,9 @@ const superAdminLogin = async (req, res) => {
       }
     });
   } catch (error) {
+    console.log(error)
     return res.status(500).json({ error: "Server error." });
   }
 };
 
-module.exports = { superAdminRegister, superAdminLogin };
+module.exports = { MainDoctorRegister, MainDoctorLogin };

@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Consultant } = require("../Models/ConsultantModel");
-const { SuperAdmin } = require("../Models/SuperAdminModel");
+const { SuperAdmin } = require("../Models/MainDoctorModel");
 const { setPermissionRoles, getPermissions } = require("./Other");
 require("dotenv").config();
 
@@ -22,7 +22,7 @@ const generateItemId = async () => {
 };
 
 const consultantRegisterBySuperAdmin = async (req, res) => {
-    const { name, email, password, fees,phone, typesOfDoctor, pic, education_details, experience_details, location, slotTimes, availableTime, availability } = req.body;
+    const { name, email, password, fees, phone, typesOfDoctor, pic, education_details, experience_details, location, slotTimes, availableTime, availability } = req.body;
     console.log(req.body);
     let consultantId
     const Role = "Consultant";

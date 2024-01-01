@@ -46,7 +46,7 @@ export default function Login() {
     }
 
     // dispatch login function as per the selected user role.
-    if (userRole === 'superAdmin') {
+    if (userRole === 'mainDoctor') {
       dispatch(mainDoctorLogin(userInput));
     } else if (userRole === 'receptionist') {
       dispatch(receptionistLogin(userInput));
@@ -102,7 +102,7 @@ export default function Login() {
         </label>
         <select id="role" value={userRole} onChange={(e) => setUserRole(e.target.value)} className="w-full px-4 py-2 border border-primary-300 text-primary-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500">
           <option value={''}>Select Role</option>
-          <option value="superAdmin">Main Doctor</option>
+          <option value="mainDoctor">Main Doctor</option>
           <option value="doctor">Doctor</option>
           <option value="receptionist">Receptionist</option>
           <option value="consultant">Consultant</option>

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { SuperAdmin } = require("../Models/SuperAdminModel")
+const { SuperAdmin } = require("../Models/MainDoctorModel")
 
 const protectSuperAdmin = (req, res, next) => {
     const { authorization } = req.headers;

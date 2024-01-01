@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Doctor } = require("../Models/DoctorsModel");
-const { SuperAdmin } = require("../Models/SuperAdminModel");
+const { SuperAdmin } = require("../Models/MainDoctorModel");
 const { createUserRolePermission } = require("./RoleAndPermissionController");
 const { UserRolePermissionModel } = require("../Models/UserRolesPermission");
 const { setPermissionRoles, getPermissions } = require("./Other");

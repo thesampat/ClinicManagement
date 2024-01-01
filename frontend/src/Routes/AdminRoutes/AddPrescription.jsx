@@ -44,12 +44,12 @@ const AddPrescription = () => {
   const [formData, setFormData] = useState(null);
   const updateFormRef = useRef([]);
   let { patientId } = useParams();
+  const { userLogindata } = useSelector((state) => state.AuthReducer);
 
-  const [formError, setFormError] = useState(initialFormData);
+  const [formError, setFormError] = useState({ ...initialFormData, ReceivedBy: userLogindata?.data?.name });
   const formDataRef = useRef([formData]);
   const [paginate, setpaginate] = useState({ page: 1, pageSize: 10 });
   let { singlePatientData, updatePrescriptionProcessing, updatePrescriptionSuccess, updatePrescriptionFail, updatePrescriptionMessage, getAllPrescriptionData } = useSelector((state) => state.AdminReducer);
-  const { userLogindata } = useSelector((state) => state.AuthReducer);
   const scrollContainerRef = useRef(null);
   const [patientUpdate, setPatientUpdate] = useState(null);
   const patientUpdateRef = useRef(null);
@@ -93,6 +93,7 @@ const AddPrescription = () => {
   }, []);
 
   useEffect(() => {
+    console.log(userLogindata, 'the User Login Data');
     let query = { patient: patientId, doctor: userLogindata?.data?._id, ...paginate };
     dispatch(getAllPatientPrescription(query));
   }, [visibleDate, userLogindata, paginate]);
@@ -164,7 +165,6 @@ const AddPrescription = () => {
     }
   };
 
-  console.log(formData, 'what is nnow');
   const handelPriceTable = (event) => {
     let { name, value, id: ukey } = event.target;
 
@@ -221,20 +221,23 @@ const AddPrescription = () => {
     setPatientUpdate((prev) => ({ ...prev, [name]: checked }));
     patientUpdateRef.current = { ...patientUpdateRef.current, [name]: checked };
   };
+
   return (
     <div className="m-3 rounded-md bg-gray-100 h-fit lg:px-6 w-full p-5 bg-white">
-      <CustomBreadcrumbs
-        data={[
-          { title: 'Dashboard', url: '/dashboard' },
-          { title: 'Prescription List', url: '/prescription' },
-        ]}
-      />
-      {/* 908751182725 */}
+      <button
+        onClick={(e) => {
+          navigate(-1);
+        }}
+        className="bg-blue-800 rounded-lg font-semibold text-white p-2 px-3"
+      >
+        Back
+      </button>
+
       <div className="headingTitle flex justify-between">
         <button
           onClick={() => {
             dispatch(getSinglePatient(singlePatientData));
-            navigate('/Patients/update');
+            navigate(`/Patients/${singlePatientData?._id}`);
           }}
         >
           <h3 className="font-bold text-md">
@@ -282,7 +285,7 @@ const AddPrescription = () => {
               } else {
                 if (formData?.filter((e) => e.Date === visibleDate)?.length === 0) {
                   setFormData((prev) => [
-                    { ...initialFormData, customerId: singlePatientData?._id, paitendId: singlePatientData?.customerId, doctorId: userLogindata?.data?._id, Date: visibleDate },
+                    { ...initialFormData, customerId: singlePatientData?._id, paitendId: singlePatientData?.customerId, doctorId: userLogindata?.data?._id, Date: visibleDate, ReceivedBy: userLogindata?.data?.name },
                     ...prev, // Spread the previous items after the new one
                   ]);
                 }

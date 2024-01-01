@@ -15,7 +15,7 @@ const mainDoctorSignup = (userInput) => async (dispatch) => {
   dispatch({ type: types.MAIN_DOCTOR_SIGNUP_PROCESS });
 
   try {
-    const res = await axios.post(`${END_POINT}/superAdmin`, userInput);
+    const res = await axios.post(`${END_POINT}/mainDoctor`, userInput);
 
     dispatch({ type: types.MAIN_DOCTOR_SIGNUP_SUCCESS, payload: res.data });
   } catch (err) {
@@ -30,7 +30,7 @@ const mainDoctorLogin = (userInput) => async (dispatch) => {
   dispatch({ type: types.USER_LOGIN_PROCESS });
 
   try {
-    const res = await axios.post(`${END_POINT}/superAdmin/login`, userInput);
+    const res = await axios.post(`${END_POINT}/mainDoctor/login`, userInput);
     // console.log("ok ", res)
     dispatch({ type: types.USER_LOGIN_SUCCESS, payload: res.data });
     sessionStorage.setItem("clinic-application-jwt", JSON.stringify({ data: res.data.data, token: res.data.token }))

@@ -239,7 +239,7 @@ export default function ConsultantForm() {
           <div className="lg:w-80 mx-auto w-full px-5  ">
             <CustomButton onClick={handleForm} isProcessing={isProcessing} label={consultant_id == 'addNew' ? 'Submit' : 'Save'} />
           </div>
-          <div className="lg:w-80 mx-auto w-full px-5  ">
+          {/* <div className="lg:w-80 mx-auto w-full px-5  ">
             <button
               onClick={() => {
                 setIsModalOpen(true);
@@ -248,7 +248,7 @@ export default function ConsultantForm() {
             >
               EXIT
             </button>
-          </div>
+          </div> */}
         </div>
       ) : (
         <CustomSpinner />
