@@ -115,7 +115,6 @@ export default function Table() {
       )}
       <hr className="bg-black h-1 w-full my-5" />
       <div className="flex justify-between flex-wrap items-center ">
-        <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: getTitle(listType) }, { title: `View All ${getTitle(listType)}` }]} />
         <div className=" -mt-5 mb-2">
           <CustomInput
             label={''}
@@ -125,7 +124,7 @@ export default function Table() {
             onChange={(e) => {
               setQuery({ ...query, search: e.target.value, page: 1 });
             }}
-            placeholder={"Search Doctor's."}
+            placeholder={`Search ${getTitle(listType)}`}
           />
         </div>
       </div>

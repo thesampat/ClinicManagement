@@ -156,8 +156,14 @@ export default function AssistantDoctorForm() {
 
   return (
     <div className="m-3 rounded-md bg-slate-100 h-fit min-h-[100vh] lg:px-24 w-full p-10">
-      {AssistantDoctor_Id !== 'addNew' ? <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: 'Assitant Doctor ' }, { title: 'Assitant Doctor List', url: '/table/assistantDoctor/list' }, { title: 'Update Assitant Doctor' }]} /> : <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: 'Assitant Doctor' }, { title: 'Add New assistantDoctor' }]} />}
-
+      <button
+        onClick={(e) => {
+          navigate(-1);
+        }}
+        className="bg-blue-800 rounded-lg font-semibold text-white p-2 px-3"
+      >
+        Back
+      </button>
       {formData !== null ? (
         <div className="pt-4">
           {/* Personal Information */}

@@ -219,7 +219,14 @@ export default function CustomerForm() {
 
   return (
     <div className="m-3 rounded-md bg-slate-100 h-fit min-h-[100vh] lg:px-24 w-full p-10">
-      {patientId !== 'addNew' ? <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: 'customer ' }, { title: 'customer List', url: '/table/customer/list' }, { title: 'Update customer' }]} /> : <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: 'customer' }, { title: 'Add New customer' }]} />}
+      <button
+        onClick={(e) => {
+          navigate(-1);
+        }}
+        className="bg-blue-800 rounded-lg font-semibold text-white p-2 px-3"
+      >
+        Back
+      </button>
 
       {formData !== null ? (
         <div className="pb-8 rounded-md pt-4">

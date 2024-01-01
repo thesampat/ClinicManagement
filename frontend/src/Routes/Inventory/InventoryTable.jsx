@@ -75,11 +75,11 @@ export default function InventoryTable({ listType }) {
 
   useEffect(() => {
     setTableData(null);
-    listType === 'inventory' && fetchData(`inventory/inventory/?`, query).then((data) => setTableData(data?.data));
-    listType === 'Distributors' && fetchData(`inventory/distributors/?`, query).then((data) => setTableData(data?.data));
-    listType === 'Order' && fetchData(`inventory/orders/?`, query).then((data) => setTableData(data?.data));
-    listType === 'Returns' && fetchData(`inventory/returns/?`, query).then((data) => setTableData(data?.data));
-    listType === 'medicineDetections' && fetchData(`inventory/inventory/?minQuantity=${query?.minQuantity || undefined}`, query).then((data) => setTableData(data?.data));
+    listType === 'inventory' && fetchData(`inventory/inventory/?search=${query?.search}`, query).then((data) => setTableData(data?.data));
+    listType === 'Distributors' && fetchData(`inventory/distributors/?search=${query?.search}`, query).then((data) => setTableData(data?.data));
+    listType === 'Order' && fetchData(`inventory/orders/?search=${query?.search}`, query).then((data) => setTableData(data?.data));
+    listType === 'Returns' && fetchData(`inventory/returns/?search=${query?.search}`, query).then((data) => setTableData(data?.data));
+    listType === 'medicineDetections' && fetchData(`inventory/inventory/?search=${query?.search}`, query).then((data) => setTableData(data?.data));
   }, [listType, query]);
 
   return (
@@ -101,18 +101,6 @@ export default function InventoryTable({ listType }) {
               setQuery({ ...query, search: e.target.value, page: 1 });
             }}
             placeholder={'Search'}
-          />
-        </div>
-        <div className="mt-5 mb-2 flex">
-          <CustomInput
-            label={'Quantity'}
-            name="quantity"
-            type={'text'}
-            value={query.minQuantity}
-            onChange={(e) => {
-              setQuery({ ...query, minQuantity: e.target.value, page: 1 });
-            }}
-            placeholder={'Type Quantity'}
           />
         </div>
       </div>

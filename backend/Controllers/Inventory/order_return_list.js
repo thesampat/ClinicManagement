@@ -39,6 +39,8 @@ const getReturnOrderEmailTemplate = (returnOrder, originalOrder, distributor_use
 
 
 const createReturnOrder = async (req, res) => {
+
+
     let { damage, order, date } = req.body;
     try {
         let order_object = await OrderListModel.findOne({ order });
@@ -58,6 +60,18 @@ const createReturnOrder = async (req, res) => {
 
 // Get all orders
 const getAllReturnOrders = async (req, res) => {
+
+    const { page, limit, search = '' } = req.query;
+    const skip = page ? (parseInt(page) - 1) * (limit ? parseInt(limit) : 10) : 0;
+    const pageSize = limit ? parseInt(limit) : 10;
+
+    const query = {
+        '$or': [
+            { nameOfMedicine: { $regex: new RegExp(search, 'i') } },
+            { company: { $regex: new RegExp(search, 'i') } }]
+    }
+
+
     try {
         const orders = await OrderReturnModel.find();
         res.status(200).json(orders);

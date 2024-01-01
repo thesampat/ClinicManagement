@@ -25,20 +25,19 @@ const createInventoryItem = async (req, res) => {
 // Get all inventory items
 const getAllInventoryItems = async (req, res) => {
     try {
-        const { minQuantity = 'undefined', page, pageSize } = req.query;
+        const { page, pageSize, search = '' } = req.query;
 
-        const query = {};
+        const searchAsInt = parseInt(search);
 
-        // Handle minQuantity separately if it exists in req.query
-        if (minQuantity !== 'undefined') {
-            const minQuantityValue = parseInt(minQuantity);
-            if (!isNaN(minQuantityValue)) {
-                query.quantity = { $lte: minQuantityValue };
-            } else {
-                // Handle the case where minQuantity is not a valid integer
-                return res.status(400).json({ error: 'minQuantity must be a valid integer' });
-            }
-        }
+        const query = {
+            $or: [
+                { nameOfMedicine: { $regex: new RegExp(search, 'i') } },
+                { company: { $regex: new RegExp(search, 'i') } },
+                { hsnCode: { $regex: new RegExp(search, 'i') } },
+                searchAsInt ? { quantity: { $lte: searchAsInt } } : null,
+            ].filter(Boolean), // Remove null values from the $or array
+        };
+
 
         let skip = page ? (parseInt(page) - 1) * (pageSize ? parseInt(pageSize) : 10) : 0;
         const limit = pageSize ? parseInt(pageSize) : 10;

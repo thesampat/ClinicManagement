@@ -17,26 +17,43 @@ const getAllDistributors = async (req, res) => {
         const { search, page, pageSize, qtype } = req.query;
         let secondQuery = {}
 
-        const query = {};
+        let query = {};
 
-        const searchObject = JSON.parse(decodeURIComponent(search || '{}'));
 
-        if (Object.keys(searchObject)?.length > 0) {
-            Object.keys(searchObject).forEach((field) => {
-                query[field] = searchObject[field];
 
-                if (field == 'companies.name') {
-                    secondQuery['companies'] = 0
-                }
+        if (typeof search == 'string') {
+            query = {
+                $or: [
+                    { companyName: { $regex: new RegExp(search, 'i') } },
+                    { ownerName: { $regex: new RegExp(search, 'i') } },
+                    {
+                        companies: {
+                            $elemMatch: {
+                                $regex: new RegExp(search, 'i')
+                            }
+                        }
+                    }
+                ].filter(Boolean), // Remove null values from the $or array
+            };
+        }
+        else {
+            const searchObject = JSON.parse(decodeURIComponent(search || '{}'));
 
-            });
+            if (Object.keys(searchObject)?.length > 0) {
+                Object.keys(searchObject).forEach((field) => {
+                    query[field] = searchObject[field];
+
+                    if (field == 'companies.name') {
+                        secondQuery['companies'] = 0
+                    }
+
+                });
+            }
         }
 
         if (qtype == 'list') {
             secondQuery['companies'] = 0
         }
-
-        console.log(query, secondQuery)
 
         const skip = page ? (parseInt(page) - 1) * (pageSize ? parseInt(pageSize) : 10) : 0;
         const limit = pageSize ? parseInt(pageSize) : 10;
@@ -51,6 +68,7 @@ const getAllDistributors = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 
 // Get a specific distributor by ID

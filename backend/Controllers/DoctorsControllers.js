@@ -105,7 +105,7 @@ const doctorLogin = async (req, res) => {
                     { doctorId: doctor._id, permissions: userAccess?.permissions, role: userAccess?.role },
                     process.env.SECRET_KEY,
                     {
-                        expiresIn: "1h",
+                        expiresIn: "2h",
                     }
                 );
 
@@ -164,7 +164,6 @@ const updateDoctorProfile = async (req, res) => {
         throw new Error("Doctor not found!");
     }
 }
-
 const getAllDoctor = async (req, res) => {
     try {
         const { page = 1, limit = 10, search = '' } = req.query;
@@ -173,13 +172,13 @@ const getAllDoctor = async (req, res) => {
         // Define a query object to filter based on search term
         const query = {
             $or: [
-                { name: { $regex: search, $options: 'i' } }, // Case-insensitive search by name
-                { email: { $regex: search, $optioxns: 'i' } }, // Case-insensitive search by email
-                { typesOfDoctor: { $regex: search, $options: 'i' } }, // Case-insensitive search by typesOfDoctor
+                { name: { $regex: search, $options: 'i' } },
+                { email: { $regex: search, $options: 'i' } },
+                { typesOfDoctor: { $regex: search, $options: 'i' } }
             ],
         };
 
-        const doctors = await Doctor.find()
+        const doctors = await Doctor.find(query)
             .skip(skip)
             .limit(parseInt(limit));
 
@@ -187,7 +186,7 @@ const getAllDoctor = async (req, res) => {
     } catch (error) {
         return res.status(500).send(error);
     }
-}
+};
 
 const deleteDoctorById = async (req, res) => {
 

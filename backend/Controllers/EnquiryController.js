@@ -11,17 +11,21 @@ const createEnquiry = async (req, res) => {
 }
 
 const getAllEnquiry = async (req, res) => {
-  const { page, limit } = req.query
+  const { page, limit, search = '' } = req.query;
   const skip = page ? (parseInt(page) - 1) * (limit ? parseInt(limit) : 10) : 0;
-  let pageSize = limit ? parseInt(limit) : 10;
+  const pageSize = limit ? parseInt(limit) : 10;
+
+  const query = { name: { $regex: new RegExp(search, 'i') } };
 
   try {
-    const enquiry = await Enquiry.find().skip(skip).limit(pageSize);
-    res.status(200).json(enquiry);
+    const enquiries = await Enquiry.find(query).skip(skip).limit(pageSize);
+    res.status(200).json(enquiries);
   } catch (error) {
-    res.status(500).json({ error: "Error fetching enquiry" });
+    console.error(error);
+    res.status(500).json({ error: "Error fetching enquiries" });
   }
-}
+};
+
 
 const getEnquiryById = async (req, res) => {
   try {

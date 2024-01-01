@@ -21,19 +21,24 @@ const getAllFeedbackPatients = async (req, res) => {
 
 const getAllFeedback = async (req, res) => {
 
-    const { page, limit } = req.query
-
-    const skip = page ? (parseInt(page) - 1) * (limit ? parseInt(limit) : 10) : 0;
-    let pageSize = limit ? parseInt(limit) : 10;
-
-    console.log('wheere in let', skip, pageSize)
-
-
     try {
-        const feedback = await Feedback.find().skip(skip).limit(pageSize);
-        res.status(200).json(feedback);
+        const { page = 1, limit = 10, search = '' } = req.query;
+        const skip = (page - 1) * limit;
+
+        // Define a query object to filter based on search term
+        const query = {
+            $or: [
+                { FirstName: { $regex: search, $options: 'i' } }, // Case-insensitive search by name
+            ],
+        };
+
+        const feedback = await Feedback.find(query)
+            .skip(skip)
+            .limit(parseInt(limit));
+
+        return res.status(200).json(feedback);
     } catch (error) {
-        res.status(500).json({ error: "Error fetching feedback" });
+        return res.status(500).json({ message: "Internal Server Error" });
     }
 }
 

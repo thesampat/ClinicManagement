@@ -52,6 +52,7 @@ const FeedbackList = () => {
   const [isPatientAccordionOpen, setIsPatientAccordionOpen] = useState(true);
   const { feedback_id } = useParams();
   const [isExpanded, setIsExpanded] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchItems(`feedback/${feedback_id}`).then((res) => {
@@ -98,7 +99,15 @@ const FeedbackList = () => {
   );
 
   return (
-    <div className="m-3 rounded-md bg-slate-100 h-fit min-h-[100vh] px-12 w-full">
+    <div className="m-3 rounded-md bg-slate-100 h-fit min-h-[100vh] px-12 w-full py-10">
+      <button
+        onClick={(e) => {
+          navigate(-1);
+        }}
+        className="bg-blue-800 rounded-lg font-semibold text-white p-2 px-3"
+      >
+        Back
+      </button>
       <div className={`p-5 flex flex-column ${isPatientAccordionOpen ? 'open' : ''}`}>
         <div className="bg-primary-50 pb-8 rounded-md pt-4 border-2 border-primary-400 w-full">
           <div className="accordion-header flex justify-between items-center" onClick={handlePatientAccordionToggle}>

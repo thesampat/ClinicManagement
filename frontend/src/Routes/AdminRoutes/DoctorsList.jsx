@@ -94,9 +94,6 @@ export default function DoctorsList() {
   return (
     <div className="px-8 pt-24 min-h-[100vh] h-fit py-8">
       <div className="flex justify-between flex-wrap items-center ">
-        {/* Breadcrumbs */}
-        <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: 'Doctor' }, { title: 'View All Doctor' }]} />
-
         {/* search input box */}
         <div className=" -mt-5 mb-2">
           <CustomInput

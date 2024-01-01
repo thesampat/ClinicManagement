@@ -177,7 +177,14 @@ export default function ConsultantForm() {
 
   return (
     <div className="m-3 rounded-md bg-slate-100 h-fit min-h-[100vh] lg:px-24 w-full p-10  bg-white">
-      {consultant_id !== 'addNew' ? <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: 'Consultant ' }, { title: 'Consultant List', url: '/table/consultant/list' }, { title: 'Update consultant' }]} /> : <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: 'Consultant' }, { title: 'Add New Consultant' }]} />}
+      <button
+        onClick={(e) => {
+          navigate(-1);
+        }}
+        className="bg-blue-800 rounded-lg font-semibold text-white p-2 px-3"
+      >
+        Back
+      </button>
 
       {formData !== null ? (
         <div className="pb-8 pt-4">

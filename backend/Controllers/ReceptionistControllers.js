@@ -174,7 +174,7 @@ const getAllReceptionist = async (req, res) => {
             ],
         };
 
-        const receptionists = await Receptionist.find()
+        const receptionists = await Receptionist.find(query)
             .skip(skip)
             .limit(parseInt(limit));
 

@@ -174,7 +174,14 @@ export default function ReceptionistForm() {
 
   return (
     <div className="m-3 rounded-md bg-slate-100 h-fit min-h-[100vh] lg:px-24 w-full p-10  bg-white">
-      {receptionist_Id !== 'addNew' ? <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: 'Receptionist ' }, { title: 'Receptionist List', url: '/table/receptionist/list' }, { title: 'Update Receptionist' }]} /> : <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: 'Receptionist' }, { title: 'Add New Receptionist' }]} />}
+      <button
+        onClick={(e) => {
+          navigate(-1);
+        }}
+        className="bg-blue-800 rounded-lg font-semibold text-white p-2 px-3"
+      >
+        Back
+      </button>
 
       {formData !== null ? (
         <div className="pb-8">

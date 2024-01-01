@@ -6,7 +6,7 @@ const { protectSuperAdminAndReceptionist } = require("../Middlewares/commonMiddl
 const router = express.Router();
 
 router.route('/').post(protectSuperAdminAndReceptionist, createEnquiry);
-router.route('/').get(protectSuperAdminAndReceptionist, getAllEnquiry);
+router.route('/').get(getAllEnquiry);
 router.route('/:id').get(protectSuperAdminAndReceptionist, getEnquiryById);
 router.route('/:id').patch(protectSuperAdminAndReceptionist, updateEnquiryById);
 router.route('/:id').delete(protectSuperAdminAndReceptionist, deleteEnquiryById);

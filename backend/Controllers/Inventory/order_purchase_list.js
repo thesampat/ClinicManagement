@@ -82,15 +82,28 @@ const createOrder = async (req, res) => {
     }
 };
 
-// Get all orders
+
 const getAllOrders = async (req, res) => {
+    const { page, limit, search = '' } = req.query;
+    const skip = page ? (parseInt(page) - 1) * (limit ? parseInt(limit) : 10) : 0;
+    const pageSize = limit ? parseInt(limit) : 10;
+
+    const query = {
+        '$or': [
+            { nameOfMedicine: { $regex: new RegExp(search, 'i') } },
+            { company: { $regex: new RegExp(search, 'i') } }]
+    }
+
+
     try {
-        const orders = await OrderListModel.find();
-        res.status(200).json(orders);
+        const enquiries = await OrderListModel.find(query).skip(skip).limit(pageSize);
+        res.status(200).json(enquiries);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error(error);
+        res.status(500).json({ error: "Error fetching enquiries" });
     }
 };
+
 
 // Get a specific order by ID
 const getOrderById = async (req, res) => {

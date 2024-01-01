@@ -165,7 +165,14 @@ export default function EnquiryForm() {
 
   return (
     <div className="m-3 rounded-md bg-slate-100 h-fit min-h-[100vh] lg:px-24 w-full p-10  bg-white">
-      {Enquiry_Id !== 'addNew' ? <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: 'enquiry ' }, { title: 'enquiry List', url: '/table/enquiry/list' }, { title: 'Update enquiry' }]} /> : <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/dashboard' }, { title: 'enquiry' }, { title: 'Add New enquiry' }]} />}
+      <button
+        onClick={(e) => {
+          navigate(-1);
+        }}
+        className="bg-blue-800 rounded-lg font-semibold text-white p-2 px-3"
+      >
+        Back
+      </button>
 
       {formData !== null ? (
         <div className="pb-8 pt-4 ">
