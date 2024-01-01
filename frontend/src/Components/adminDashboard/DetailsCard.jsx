@@ -7,9 +7,10 @@ export default function DetailsCard({ title, value, icon }) {
     <>
       <button
         onClick={(e) => {
-          let appointment = title?.split(' ');
-          if (appointment?.[1] == "Appointment's") {
-            navigate(`/appointment/list/${appointment?.[0]}`);
+          console.log('ey', title);
+          let appointment = title;
+          if (appointment == "Appointment's") {
+            navigate(`/appointment/list`);
           }
         }}
         className="flex justify-between items-center w-[280px] shadow-md bg-white rounded-lg py-6 px-4 hover:bg-blue-300"

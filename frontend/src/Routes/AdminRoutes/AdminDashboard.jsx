@@ -68,11 +68,7 @@ export default function AdminDashboard() {
 
       {/* header card */}
       <div className="flex flex-wrap gap-10">
-        <DetailsCard title={'Total Revenue'} value={''} icon={<BsCurrencyRupee size={'25px'} />} />
-        <DetailsCard title={"Total Appointment's"} value={''} icon={<BsCalendarCheckFill size={'25px'} />} />
-        {/* <DetailsCard title={"Today's Appointment's"} value={'4'} icon={<IoToday size={'25px'} />} />
-        <DetailsCard title={"Tomorrow Appointment's"} value={'2'} icon={<BsFillCalendar2PlusFill size={'25px'} />} />
-        <DetailsCard title={"Future Appointment's"} value={'28'} icon={<IoCalendarSharp size={'25px'} />} /> */}
+        <DetailsCard title={"Appointment's"} value={''} icon={<BsCalendarCheckFill size={'25px'} />} />
       </div>
 
       <div className="DataTables grid grid-cols-3 text-center gap-5 mt-5">
@@ -114,8 +110,7 @@ const GenerateTable = ({ headers, data, title }) => {
                   <tr key={rowIndex}>
                     {row?.slice(0, 3).map((cell, cellIndex) => (
                       <td key={cellIndex} className={`py-2 px-4 border-b border-gray-200 text-sm ${!row[3] ? 'bg-yellow-100' : 'bg-gray-50'}`}>
-                        {console.log(cellIndex, row[cellIndex])}
-                        {<button onClick={(e) => row?.[3] && navigate(`/admin/dashboard/prescription/add/${row?.[3]}`)}>{cellIndex === 2 ? format(new Date(row[cellIndex]), 'dd/MM/yyyy') : row[cellIndex]}</button>}
+                        {<button onClick={(e) => row?.[3] && navigate(`/prescription/add/${row?.[3]}`)}>{cellIndex === 2 ? format(new Date(row[cellIndex]), 'dd/MM/yyyy') : row[cellIndex]}</button>}
                       </td>
                     ))}
                   </tr>

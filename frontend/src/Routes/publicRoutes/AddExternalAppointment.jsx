@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addNewAppointment, getAllDoctor, getAllPatient, getAllAppointment, getSingleDoctor, getAllConsultant, END_POINT } from '../../Redux/AdminReducer/action';
+import { getAllDoctor_External, addNewAppointment, getAllDoctor, getAllPatient, getAllAppointment, getSingleDoctor, getAllConsultant, END_POINT, getAllAppointment_External, addNewPatient } from '../../Redux/AdminReducer/action';
 import CustomSpinner from '../../Components/CommonComponents/CustomSpinner';
 import SelectInput from '../../Components/CommonComponents/SelectInput ';
 import CustomInput from '../../Components/CommonComponents/CustomInput';
@@ -22,9 +22,19 @@ const fetchItems = async (path) => {
   }
 };
 
+const createItem = async (path, data) => {
+  try {
+    const result = await axios.post(`${END_POINT}/${path}`, data);
+    return result;
+  } catch (error) {
+    console.log(error);
+    toast.error('Something went wrong while fetching data');
+  }
+};
+
 const initialState = {
   doctor: '',
-  patient: '',
+  patient: { id: undefined, name: '' },
   bookTimeSlot: '',
   selectedRole: 'doctor',
   IsOnline: false,
@@ -56,8 +66,8 @@ export default function AddAppointment() {
           }
           break;
         default:
-          dispatch(getAllDoctor(query));
           dispatch(getAllPatient(query));
+          dispatch(getAllDoctor_External(query));
       }
     };
 
@@ -69,7 +79,7 @@ export default function AddAppointment() {
   }, [formData?.selectedRole, query]);
 
   useEffect(() => {
-    dispatch(getAllAppointment({ search: formData?.doctor?.id, page: 1, limit: 100 }));
+    dispatch(getAllAppointment_External({ search: formData?.doctor?.id, page: 1, limit: 100 })).then((e) => {});
   }, [formData?.doctor]);
 
   useEffect(() => {
@@ -90,16 +100,24 @@ export default function AddAppointment() {
 
   const handelButtonClick = () => {
     let isValidInput = true;
-    let updatedFormError = { formError };
+    let updatedFormError = { ...formError };
 
     if (!formData.doctor?.name) {
       updatedFormError.doctor = `${formData?.selectedRole} Name is required!`;
       isValidInput = false;
     }
-    //  validate patient name
-    if (!formData.patient?.name) {
-      updatedFormError.patient = 'Patient Name is required!';
+
+    if (!formData.patient || !formData.patient.name) {
+      updatedFormError.patient.name = 'Patient Name is required!';
       isValidInput = false;
+    } else {
+      if (formData?.patient?.id === undefined) {
+        const nameParts = formData.patient.name.split(' ');
+        if (nameParts.length !== 2) {
+          updatedFormError.patient.name = 'Invalid format for Patient Name. Please provide both first name and surname.';
+          isValidInput = false;
+        }
+      }
     }
 
     // Validate date
@@ -135,10 +153,24 @@ export default function AddAppointment() {
     formData.IsOnline = formData.IsOnline;
 
     setFormError(updatedFormError);
-    console.log(updatedFormError, formData);
 
     if (isValidInput) {
-      // dispatch(addNewAppointment(formData));
+      if (formData?.patient?.id === undefined) {
+        let names = formData?.patient?.name?.split(' ');
+        createItem('public/customer/', { firstName: names?.[0], surname: names?.[1], mobile: formData?.patient?.phone }).then((e) => {
+          let data = e.data?.customer;
+          let updateData = { ...formData };
+          updateData.patient.name = names?.[0];
+          updateData.patient.surname = names?.[1];
+          updateData.patient.id = data?._id;
+
+          console.log(updateData, 'the data here');
+
+          if (updateData?.patient.id !== undefined) {
+            dispatch(addNewAppointment(updateData));
+          }
+        });
+      }
     }
   };
 
@@ -149,7 +181,6 @@ export default function AddAppointment() {
       case 'consultant':
         selectedDoctor = getAllConsultantData;
         if (selectedDoctor?.length > 0) {
-          console.log(selectedDoctor, 'the consuletnat');
           let { _id: consultantId, name: consultantName } = selectedDoctor?.[0];
           setFormData((prev) => ({ ...prev, doctor: { id: consultantId, name: consultantName } }));
         }
@@ -273,46 +304,34 @@ export default function AddAppointment() {
                     </>
                   )}
 
-                  {/* <CustomInput
-                    label="Patient Name"
-                    placeholder="Enter Patient Name"
-                    onChange={(e) => {
-                      
-                    }}
-                    value={formData?.patient?.name}
-                    type="text"
-                    name="patientName"
-                    error={formError?.patient?.name}
-                  /> */}
                   <CustomNameSuggestion
                     onChange={(e) => {
                       let selectedPatient = getAllPatientData?.filter((p) => `${p?.firstName} ${p?.surname}` == e.target.value)?.[0];
                       if (selectedPatient !== undefined) {
                         setFormData((prev) => ({ ...prev, patient: { id: selectedPatient?._id, name: selectedPatient?.firstName, phone: selectedPatient?.mobile, surname: selectedPatient?.surname } }));
                       } else {
-                        setFormData((prev) => ({ ...prev, patient: { name: e.target.value } }));
+                        setFormData((prev) => ({ ...prev, patient: { name: e.target.value, phone: '' } }));
                       }
                     }}
                     options={getAllPatientData?.map((p) => `${p?.firstName} ${p?.surname}`)}
-                    label={'Patient'}
+                    label={'Patient [firstname lastname]'}
                     value={getAllPatientData?.filter((p) => p?._id == formData?.patient?.id)?.[0]?.firstName}
                     error={formError?.patient?.name}
                     name="name"
                     placeholder="-- Select Or Enter Patient --"
                   />
-                  {formData?.patient?.phone?.length >= 10 && (
-                    <CustomInput
-                      label="Patient Contact"
-                      placeholder="Enter Contact Number"
-                      onChange={(e) => {
-                        setFormData((prev) => ({ ...prev, patient: { ...prev.patient, phone: e.target.value } }));
-                      }}
-                      value={formData?.patient.phone}
-                      type="text"
-                      name="phoneNumber"
-                      error={formError?.patient?.phone}
-                    />
-                  )}
+
+                  <CustomInput
+                    label="Patient Contact"
+                    placeholder="Enter Contact Number"
+                    onChange={(e) => {
+                      setFormData((prev) => ({ ...prev, patient: { ...prev.patient, phone: e.target.value } }));
+                    }}
+                    value={formData?.patient.phone}
+                    type="text"
+                    name="phoneNumber"
+                    error={formError?.patient?.phone}
+                  />
                 </div>
 
                 {formData.selectedRole === 'doctor' && <CalenderAndTimeSlot selectedDoctor={getAllDoctorData?.length > 0 && getAllDoctorData?.filter((doctor) => doctor._id == formData?.doctor?.id)} formData={formData} setFormData={setFormData} getAllAppointmentData={getAllAppointmentData} />}

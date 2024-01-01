@@ -171,7 +171,7 @@ export default function AllRoutes() {
             }
           />
           <Route
-            path="/appointment/list/:listType"
+            path="/appointment/list"
             element={
               <PrivateRoute allowedRoles={['SuperAdmin']}>
                 <AppointmentList />{' '}
