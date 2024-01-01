@@ -9,7 +9,8 @@ if (process.env.NODE_ENV === 'development') {
     END_POINT = "http://127.0.0.1:5000"
 }
 else if (process.env.NODE_ENV === 'production') {
-    END_POINT = "https://api.adityahomoeopathicclinic.com"
+    // END_POINT = "https://api.adityahomoeopathicclinic.com"
+    END_POINT = "https://clinic-management-1nq8-sam890s-projects.vercel.app/"
 }
 else {
     END_POINT = "https://clinic-management-1nq8-sam890s-projects.vercel.app/"
