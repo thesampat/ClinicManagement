@@ -102,7 +102,7 @@ const doctorLogin = async (req, res) => {
             if (result) {
 
                 const token = jwt.sign(
-                    { doctorId: doctor._id, permissions: userAccess?.permissions, role: userAccess?.role },
+                    { id: doctor._id, permissions: userAccess?.permissions, role: userAccess?.role },
                     process.env.SECRET_KEY,
                     {
                         expiresIn: "2h",

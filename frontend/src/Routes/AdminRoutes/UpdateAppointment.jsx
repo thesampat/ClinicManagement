@@ -176,7 +176,6 @@ export default function UpdateAppointment() {
       case 'consultant':
         selectedDoctor = getAllConsultantData;
         if (selectedDoctor?.length > 0) {
-          console.log(selectedDoctor, 'the consuletnat');
           let { _id: consultantId, name: consultantName } = selectedDoctor?.[0];
           setFormData((prev) => ({ ...prev, doctor: { id: consultantId, name: consultantName } }));
         }

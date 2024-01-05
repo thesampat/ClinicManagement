@@ -84,17 +84,14 @@ const updateAppointment = async (req, res) => {
 const getAppointment = async (req, res) => {
   const { page = 1, limit = 10, displayType = undefined, patient = undefined, doctorName, cancelled = undefined } = req.query;
   const skip = (page - 1) * limit;
-
+  const postQuery = req.accessFilter || {}
+  let query = { ...postQuery }
 
   try {
-    const query = doctorName ? { 'doctor.id': doctorName } : {}; // Create a query object
-
     if (patient !== 'undefined') {
       query['patient.name'] = { $regex: new RegExp(patient, 'i') };
     }
     query['status'] = 'Booked'
-
-
 
     const appointments = await Appointment.find(query).sort({ bookDate: -1 }).skip(skip).limit(limit);
     res.json(appointments);
@@ -129,14 +126,14 @@ const updateStatusAppointment = async (req, res) => {
 
 
 const getFilteredAppointment = async (req, res) => {
+
   try {
     const { startDate, endDate, page, pageSize } = req.query;
     const { search } = req.body;
 
-    const query = {};
+    const postQuery = req.accessFilter || {}
+    const query = { ...postQuery };
 
-
-    // Add custom filters from request body
     if (search && typeof search === 'object') {
       Object.keys(search).forEach((field) => {
         query[field] = search[field];
@@ -145,7 +142,6 @@ const getFilteredAppointment = async (req, res) => {
 
     const skip = page ? (parseInt(page) - 1) * (pageSize ? parseInt(pageSize) : 10) : 0;
     const limit = pageSize ? parseInt(pageSize) : 10;
-
 
     const appointments = await Appointment.find(query)
       .sort({ bookDate: -1 })

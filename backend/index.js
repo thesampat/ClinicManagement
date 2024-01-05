@@ -59,7 +59,7 @@ app.use("/enquiry", checkRolesPermissions, enquiryRoutes);
 app.use("/public/customer", checkRolesPermissions, createCustomerByExternal);
 app.use("/public/appointment", checkRolesPermissions, createExternalAppointment)
 app.use("/incomeExpense", IncomeAndExpensesRouter)
-app.use("/inventory", checkRolesPermissions, inventory)
+app.use("/inventory", inventory)
 app.use("/configAccess", checkRolesPermissions, RolesPermissionRoutes)
 app.use("/admin", adminRouter)
 app.use("/feedback", feedbackRoutes);

@@ -109,14 +109,14 @@ export default function AllRoutes() {
             }
           />
 
-          <Route
+          {/* <Route
             path="/prescription"
             element={
               <PrivateRoute allowedRoles={['SuperAdmin', 'Doctor']}>
                 <Prescription />{' '}
               </PrivateRoute>
             }
-          />
+          /> */}
 
           <Route
             path="/prescription/add/:patientId"

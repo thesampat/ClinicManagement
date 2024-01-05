@@ -23,8 +23,8 @@ const getHeadings = (sectionType) => {
       break;
 
     case 'enquiry':
-      main_head = ['name', 'number', 'reference', 'purposeOfEnquiry', 'createdAt', 'createdTime'];
-      custom_head = ['Name', 'number', 'reference', 'purpose of entry', 'date', 'time'];
+      main_head = ['name', 'number', 'reference', 'createdAt', 'createdTime'];
+      custom_head = ['Name', 'number', 'reference', 'date', 'time'];
       break;
 
     case 'assistantDoctor':
@@ -39,6 +39,11 @@ const getHeadings = (sectionType) => {
     case 'feedback':
       main_head = ['FirstName', 'state', 'mobile', 'education'];
       custom_head = ['Name', 'State', 'Mobile', 'Education'];
+      break;
+
+    case 'prescription':
+      main_head = ['firstName', 'surname', 'mobile'];
+      custom_head = ['First Name', 'Last Name', 'Mobile'];
       break;
   }
 

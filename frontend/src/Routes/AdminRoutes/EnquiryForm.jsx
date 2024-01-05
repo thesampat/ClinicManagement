@@ -4,7 +4,7 @@ import CustomInput from '../../Components/CommonComponents/CustomInput';
 import CustomButton from '../../Components/CommonComponents/CustomButton';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { UploadFiles, getJwtToken } from '../../Redux/AdminReducer/action';
 import { useNavigate, useParams } from 'react-router-dom';
 import { UploadFile, END_POINT, RemoveFile, UploadImages, DeleteImages } from '../../Redux/AdminReducer/action';
@@ -18,6 +18,7 @@ import CustomSelect from '../../Components/CommonComponents/CustomSelect';
 import { PatientRefrenceList, RefrenceList } from '../../Files/dropdownOptions';
 import CustomNameSuggestion from '../../Components/CommonComponents/CustomNameSuggestion';
 import diagnosis from '../../Files/diagnosis.json';
+import SelectInput from '../../Components/CommonComponents/SelectInput ';
 
 const fetchSingleItem = async (id) => {
   try {
@@ -75,6 +76,8 @@ const initialFormData = {
   location: '',
   number: '',
   name: '',
+  createdAt: '',
+  createdTime: '',
 };
 
 const initialFormError = initialFormData;
@@ -87,8 +90,7 @@ export default function EnquiryForm() {
   const navigate = useNavigate();
   const { Enquiry_Id } = useParams();
   const [isProcessing, setIsPorcessing] = useState(false);
-  const dispatch = useDispatch();
-  const [profile_image_res, set_profile_image_res] = useState('');
+  let loggedInUser = useSelector((state) => state.AuthReducer.userLogindata.data);
 
   useEffect(() => {
     if (Enquiry_Id === 'addNew') {
@@ -160,7 +162,7 @@ export default function EnquiryForm() {
 
   const handleDiagnosis = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, purposeOfEnquiry: { [name]: value } }));
+    setFormData((prev) => ({ ...prev, purposeOfEnquiry: { ...prev?.purposeOfEnquiry, [name]: value } }));
   };
 
   return (
@@ -181,7 +183,7 @@ export default function EnquiryForm() {
             <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3 ">Personal Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 ">
               <CustomInput label={'Name'} name={'name'} type={'text'} value={formData?.name} onChange={handleInputChange} placeholder={'Enter Name.'} error={formError.name} />
-              <CustomInput label={'Number'} name={'number'} type={'number'} value={formData?.number} onChange={handleInputChange} placeholder={'9999999999'} error={formError.number} />
+              <CustomInput label={'Number'} name={'number'} type={'tel'} value={formData?.number} onChange={handleInputChange} placeholder={'9999999999'} error={formError.number} />
               <CustomSelect onChange={handleInputChange} options={RefrenceList} label="Reference" placeholder="-- Select Reference --" type="text" value={formData?.reference} error={formError?.reference} name="reference" />
               {formData?.reference == 'Patient' && <CustomSelect onChange={handleInputChange} options={PatientRefrenceList} label="Patient Refrence" placeholder="-- Select Patient Reference --" type="text" value={formData?.patientReference} error={formError?.patientReference} name="patientReference" />}
             </div>
@@ -190,28 +192,25 @@ export default function EnquiryForm() {
           <div className="px-6 py-6 rounded-md ">
             <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3 "> Enquiry Details </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 ">
+              <CustomInput label={'Enquiry Time'} name={'createdTime'} type={'time'} value={formData?.createdTime} onChange={handleInputChange} error={formError.createItem} />
+              <CustomInput label={'Enquiry ate'} name={'createdAt'} type={'date'} value={formData?.createdAt} onChange={handleInputChange} error={formError.createdAt} />
               <CustomInput label={'Location'} name={'location'} type={'text'} value={formData?.location} onChange={handleInputChange} placeholder={'Enter Your Location.'} error={formError.location} />
-              <CustomInput label={'Purpose Of Enquiry'} name={'purposeOfEnquiry'} type={'text'} value={formData?.purposeOfEnquiry} onChange={handleInputChange} placeholder={'Enter Purpose Of Enquiry.'} error={formError.purposeOfEnquiry} />
-              <CustomTextarea label={'Conslusion'} name={'conslusion'} type={'text'} value={formData?.conslusion} onChange={handleInputChange} placeholder={'Enter Conslusion.'} error={formError.conslusion} />
             </div>
           </div>
 
-          <div></div>
+          <div className="px-6 py-6 rounded-md ">
+            {formData?.purposeOfEnquiry !== undefined && loggedInUser?.role === 'MainDoctor' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6">
+                <CustomNameSuggestion onChange={handleDiagnosis} options={diagnosis?.map((d) => Object.keys(d || {})[0])} label={'Primary Diagnosis'} value={formData?.purposeOfEnquiry.Primary} error={formError?.purposeOfEnquiry?.Primary} name="Primary" placeholder="-- Enter Primary Diagnosis --" />
+                <CustomNameSuggestion onChange={handleDiagnosis} options={diagnosis.find((diagnosisItem) => formData?.purposeOfEnquiry?.Primary in diagnosisItem)?.[formData?.purposeOfEnquiry?.Primary] || []} label={'Primary Sub Diagnosis'} value={formData?.purposeOfEnquiry?.sub} error={formError?.diagnosis?.sub} name="sub" placeholder="-- Enter Primary Sub Diagnosis --" />
+                <CustomSelect onChange={handleInputChange} options={['Converted', 'Not-Converted']} label={'Conslusion'} value={formData?.conslusion} error={formError?.conslusion} name="conslusion" placeholder="-- Select Conslusion --" />
+              </div>
+            )}
+          </div>
 
-          {/* create item button */}
           <div className="lg:w-80 mx-auto w-full px-5  ">
             <CustomButton onClick={handleForm} isProcessing={isProcessing} label={Enquiry_Id == 'addNew' ? 'Submit' : 'Save'} />
           </div>
-          {/* <div className="lg:w-80 mx-auto w-full px-5  ">
-            <button
-              onClick={() => {
-                setIsModalOpen(true);
-              }}
-              className={`w-full mt-6 font-bold bg-red-600  hover:bg-red-700 focus:ring-red-300 text-white py-2.5 rounded-lg transition duration-300 ease-in-out`}
-            >
-              EXIT
-            </button>
-          </div> */}
         </div>
       ) : (
         <CustomSpinner />

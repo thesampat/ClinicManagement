@@ -92,7 +92,6 @@ const AssistantDoctorLogin = async (req, res) => {
             return res.status(401).json({ error: "Invalid credentials." });
         }
 
-        console.log(password, doctor.password)
         bcrypt.compare(password, doctor.password, (err, result) => {
             if (err) {
                 return res.status(500).json({ error: "Server error." });
@@ -100,7 +99,7 @@ const AssistantDoctorLogin = async (req, res) => {
 
             if (result) {
                 const token = jwt.sign(
-                    { doctorId: doctor._id, permissions: userAccess?.permissions, role: userAccess?.role },
+                    { id: doctor._id, permissions: userAccess?.permissions, role: userAccess?.role },
                     process.env.SECRET_KEY,
                     {
                         expiresIn: "1h",

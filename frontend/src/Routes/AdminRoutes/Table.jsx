@@ -61,6 +61,8 @@ const getTitle = (listType) => {
     return 'nutrition';
   } else if (listType === 'feedback') {
     return 'feedback';
+  } else if (listType === 'prescription') {
+    return 'prescription';
   } else {
     return 'Default Title';
   }
@@ -92,6 +94,7 @@ export default function Table() {
     listType === 'assistantDoctor' && fetchData('assistantDoctor/?', query).then((data) => setTableData(data?.data));
     listType === 'nutrition' && fetchData('nutrition/?', query).then((data) => setTableData(data?.data));
     listType === 'feedback' && fetchData('feedback/?', query).then((data) => setTableData(data?.data));
+    listType === 'prescription' && fetchData('customer/?', query).then((data) => setTableData(data?.data));
   }, [listType, query]);
 
   useEffect(() => {
@@ -102,7 +105,7 @@ export default function Table() {
       });
   }, [listType, query]);
 
-  const excludedUrls = ['/feedback', '/someotherurl'];
+  const excludedUrls = ['/feedback', '/someotherurl', '/prescription'];
 
   const shouldDisplayButton = !excludedUrls.includes(location.pathname);
 
@@ -161,7 +164,11 @@ export default function Table() {
                       <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">
                         <span
                           onClick={() => {
-                            navigate(`/${listType}/${item?._id}`);
+                            if (listType !== 'prescription') {
+                              navigate(`/${listType}/${item?._id}`);
+                            } else {
+                              navigate(`/${listType}/add/${item?._id}`);
+                            }
                           }}
                           className="bg-gray-100 cursor-pointer text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-gray-500"
                         >

@@ -5,8 +5,6 @@ const CustomNameSuggestion = ({ label, options = [], onChange, value, name, plac
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef();
 
-  console.log(label, options, 'what are these ow');
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {

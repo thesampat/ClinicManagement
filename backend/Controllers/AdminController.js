@@ -65,7 +65,7 @@ const adminLogin = async (req, res) => {
 
             if (result) {
                 const token = jwt.sign(
-                    { adminId: admin._id },
+                    { id: admin._id },
                     process.env.SECRET_KEY,
                     {
                         expiresIn: "1h",

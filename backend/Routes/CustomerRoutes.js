@@ -5,10 +5,10 @@ const { protectSuperAdminAndReceptionist } = require("../Middlewares/commonMiddl
 
 const router = express.Router();
 
-router.route('/').post(protectSuperAdminAndReceptionist, createCustomerBySuperAdmin);
+router.route('/').post(createCustomerBySuperAdmin);
 router.route('/').get(getAllCustomer);
-router.route('/updateProfile/:customerId').put(protectSuperAdminAndReceptionist, updateCustomerProfile)
-router.route('/:id').delete(protectSuperAdminAndReceptionist, deleteCustomerById)
+router.route('/updateProfile/:customerId').put(updateCustomerProfile)
+router.route('/:id').delete(deleteCustomerById)
 router.route('/:id').get(getSinglePatient)
 
 

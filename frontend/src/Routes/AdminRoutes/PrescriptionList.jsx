@@ -14,7 +14,7 @@ import * as types from '../../Redux/AdminReducer/actionTypes';
 
 export default function PrescriptionList() {
   // Redux selectors to access state
-  const { getAllPatientProcessing, getAllPatientSuccess, getAllPatientFail, getAllPatientMessage, getAllPatientData, deletePatientMessage, deletePatientFail, deletePatientSuccess, deletePatientProcessing } = useSelector((state) => state.AdminReducer);
+  const { getAllPatientProcessing, getAllPatientSuccess, getAllPatientData, deletePatientMessage, deletePatientFail, deletePatientSuccess, deletePatientProcessing } = useSelector((state) => state.AdminReducer);
   const dispatch = useDispatch();
   const [query, setQuery] = useState({ search: '', page: 1, limit: 10 });
   const debounceTimer = useRef(null);

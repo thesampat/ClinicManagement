@@ -515,7 +515,7 @@ const getAllAppointment = (data, listType) => async (dispatch) => {
     dispatch({ type: types.GET_ALL_APPOINTMENT_PROCESSING });
 
     try {
-        const result = await axios.get(`${END_POINT}/appointment?doctorName=${data.search}&page=${data.page}&limit=${data.limit}&displayType=${listType}&patient=${data?.patient}`, {
+        const result = await axios.get(`${END_POINT}/appointment/?doctorName=${data.search}&page=${data.page}&limit=${data.limit}&displayType=${listType}&patient=${data?.patient}`, {
             headers: {
                 Authorization: getJwtToken()
             }

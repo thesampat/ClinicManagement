@@ -21,7 +21,7 @@ const VisualizeBoard = () => {
   Chart.register(CategoryScale);
 
   return (
-    <div className="px-2 pt-20 min-h-[100vh] h-fit py-8">
+    <div className="px-2 pt-20 min-h-[100vh] h-fit py-8 w-full">
       <div className="MainCharts text-center">
         {/* <h1 className="text-3xl font-bold">Charts</h1> */}
         <div className="ChartsScreen p-2 grid grid-cols-2  justify-center bg-white h-screen rounded-md gap-2 overflow-scroll">

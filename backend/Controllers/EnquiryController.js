@@ -1,3 +1,4 @@
+const { Mongoose, default: mongoose } = require("mongoose");
 const { Enquiry } = require("../Models/EnquiryModel");
 
 const createEnquiry = async (req, res) => {
@@ -26,18 +27,21 @@ const getAllEnquiry = async (req, res) => {
   }
 };
 
-
 const getEnquiryById = async (req, res) => {
+  const { id } = req.params;
   try {
-    const enquiry = await Enquiry.findById(req.params.id);
+    const enquiry = await Enquiry.findOne({ _id: mongoose.Types.ObjectId(id) });
+
     if (!enquiry) {
       return res.status(404).json({ message: "Enquiry not found" });
     }
+
     res.json(enquiry);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};
+
 
 const updateEnquiryById = async (req, res) => {
   try {

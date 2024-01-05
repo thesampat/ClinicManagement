@@ -13,6 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { getHeadings } from './customTableFuctions';
+import UploadMedicineModal from '../../Components/CommonComponents/UploadMedicinesPopup';
 
 const fetchData = async (path, data) => {
   try {
@@ -23,6 +24,23 @@ const fetchData = async (path, data) => {
     });
     return result;
   } catch (error) {
+    console.log('Check Error', error);
+  }
+};
+
+const uploadBulk = async (path, data) => {
+  try {
+    const result = await axios.post(`${END_POINT}/${path}`, data, {
+      headers: {
+        Authorization: getJwtToken(),
+      },
+    });
+    toast.success('Files uploaded');
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  } catch (error) {
+    toast.error('Filed to upload files');
     console.log('Check Error', error);
   }
 };
@@ -66,6 +84,7 @@ export default function InventoryTable({ listType }) {
   const [query, setQuery] = useState({ search: '', page: 1, limit: 10, minQuantity: undefined });
   let tableHeading;
   const { inventory_item_id, section } = useParams();
+  const [uploadMedicinePopup, setuploadMedicinePopup] = useState(false);
   let letModifedHeading;
   const navigate = useNavigate();
 
@@ -88,6 +107,23 @@ export default function InventoryTable({ listType }) {
         <button onClick={(e) => navigate(`${section}/addNew`)} className="p-2 bg-black text-white rounded fond-semibold">
           Add {getTitle(listType)}
         </button>
+      )}
+      {listType === 'medicineDetections' && (
+        <div className="flex gap-3 justify-between">
+          <button onClick={(e) => setuploadMedicinePopup(true)} className="p-2 bg-black text-white rounded fond-semibold">
+            Upload Medicines
+          </button>
+          <div>
+            <DeleteConfirmatationModal
+              deleteFunction={() => {
+                deleteData(`inventory/inventory/delete/bulk`, 'Medicine');
+              }}
+              text={'Medicines'}
+              heading={'Delete All Medicines'}
+              name="Delete All Medicines"
+            />
+          </div>
+        </div>
       )}
       <hr className="bg-black h-1 w-full my-5" />
       <div className="flex justify-between flex-wrap items-center ">
@@ -212,6 +248,15 @@ export default function InventoryTable({ listType }) {
           />
         </div>
       </div>
+      <UploadMedicineModal
+        isOpen={uploadMedicinePopup}
+        onClose={() => setuploadMedicinePopup(false)}
+        onUpload={(selectedFile) => {
+          console.log('the selcted file', selectedFile);
+          uploadBulk('inventory/inventory/upload/bulk', selectedFile?.data);
+        }}
+        onDownloadTemplate={() => {}}
+      />
       <ToastContainer />
     </div>
   );

@@ -138,7 +138,7 @@ const consultantLogin = async (req, res) => {
 
             if (result) {
                 const token = jwt.sign(
-                    { consultantId: consultant._id, permissions: userAccess?.permissions, role: userAccess?.role },
+                    { id: consultant._id, permissions: userAccess?.permissions, role: userAccess?.role },
                     process.env.SECRET_KEY,
                     {
                         expiresIn: "1h",

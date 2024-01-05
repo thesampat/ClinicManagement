@@ -103,10 +103,40 @@ const deleteInventoryItemById = async (req, res) => {
     }
 };
 
+const dropInventoryCollection = async (req, res) => {
+    try {
+        await InventoryList.collection.drop()
+        res.status(200).json({ message: 'Inventory collection dropped successfully.' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const uploadBulkInventory = async (req, res) => {
+    try {
+        const bulkInventoryItems = await Promise.all(req.body.map(async (item) => {
+            const itemId = await generateItemId();
+            return { 'medicine_id': itemId, ...item };
+        }));
+
+        // if (bulkInventoryItems.length > 16) {
+        //     return res.status(400).json({ error: 'Bulk upload exceeds the maximum limit of 16 items.' });
+        // }
+
+        const newInventoryItems = await InventoryList.create(bulkInventoryItems);
+        res.status(201).json('uploaded');
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
 module.exports = {
     createInventoryItem,
     getAllInventoryItems,
     getInventoryItemById,
     updateInventoryItemById,
     deleteInventoryItemById,
+    uploadBulkInventory,
+    dropInventoryCollection
 };

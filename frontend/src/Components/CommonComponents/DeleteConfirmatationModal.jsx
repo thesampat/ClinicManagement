@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-export default function DeleteConfirmatationModal({ text, heading, deleteFunction, isProcessing, isSuccess }) {
+export default function DeleteConfirmatationModal({ text, heading, deleteFunction, isProcessing, isSuccess, name = 'Delete' }) {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export default function DeleteConfirmatationModal({ text, heading, deleteFunctio
   return (
     <>
       <span className="bg-red-100 cursor-pointer text-red-800 text-xs font-medium px-2.5 py-0.5 rounded border border-red-400" onClick={() => setShowModal(true)}>
-        Delete
+        {name}
       </span>
       {showModal ? (
         <>

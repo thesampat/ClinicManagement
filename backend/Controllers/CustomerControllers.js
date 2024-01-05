@@ -132,13 +132,13 @@ const createCustomerBySuperAdmin = async (req, res) => {
 
 const updateCustomerProfile = async (req, res) => {
   try {
-    const superAdminId = req.user._id; // Assuming you have the SuperAdmin ID in the request
-    const customerId = req.params.customerId; // Assuming you have the Customer ID in the request parameters
-    const updateData = req.body; // Get the data from req.body
+    const superAdminId = req?.user?._id;
+    const customerId = req.params.customerId;
+    const updateData = req.body;
 
     // Find the Customer by ID and update its data
     const customer = await Customer.findByIdAndUpdate(customerId, updateData, {
-      new: true, // Return the updated Customer object
+      new: true,
     });
 
     if (!customer) {
@@ -170,6 +170,7 @@ const getAllCustomer = async (req, res) => {
     const search = req.query.search ? {
       $or: [
         { firstName: { $regex: req.query.search, $options: 'i' } },
+        { surname: { $regex: req.query.search, $options: 'i' } },
         { email: { $regex: req.query.search, $options: 'i' } },
         { mobile: { $regex: req.query.search, $options: 'i' } },
       ]

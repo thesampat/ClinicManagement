@@ -107,7 +107,7 @@ const receptionistLogin = async (req, res) => {
 
             if (result) {
                 const token = jwt.sign(
-                    { receptionistId: receptionist._id, permissions: permissions?.permissions, role: permissions?.role },
+                    { id: receptionist._id, permissions: permissions?.permissions, role: permissions?.role },
                     process.env.SECRET_KEY,
                     {
                         expiresIn: "1h",

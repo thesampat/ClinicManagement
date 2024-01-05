@@ -23,7 +23,6 @@ const createPrescription = async (req, res) => {
                 }
             } else {
 
-                console.log(customerId, data?.doctorId)
                 const prescription = new Prescription({
                     PrescriptionId: `${paitendId}${String(Date)?.replaceAll('-', '')}`,
                     Date,
@@ -47,9 +46,8 @@ const createPrescription = async (req, res) => {
                     paid: data?.paid || 0,
                     PatientStatus: data?.PatientStatus || '',
                     Patient_Type: data?.Patient_Type || ''
-
-
                 });
+
                 await prescription.save();
                 results.push({ status: 201, message: 'Prescription created successfully.' });
             }
@@ -115,14 +113,6 @@ const getFilteredPrescription = async (req, res) => {
         const { search } = req.body;
 
         const query = {};
-
-        // if (doctorId) {
-        //     query.doctor = doctorId;
-        // }
-
-        // if (patientId) {
-        //     query.patient = patientId;
-        // }
 
         if (startDate && endDate) {
             query.Date = {

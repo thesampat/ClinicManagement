@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomInput from '../Components/CommonComponents/CustomInput';
 import CustomButton from '../Components/CommonComponents/CustomButton';
-import { checkLoggedIn, consultantLogin, doctorLogin, mainDoctorLogin, receptionistLogin } from '../Redux/AuthReducer/action';
+import { checkLoggedIn, consultantLogin, doctorLogin, mainDoctorLogin, receptionistLogin, assistantDoctorLogin } from '../Redux/AuthReducer/action';
 
 export default function Login() {
   const userLoginMessage = useSelector((state) => state.AuthReducer.userLoginMessage);
@@ -54,6 +54,8 @@ export default function Login() {
       dispatch(consultantLogin(userInput));
     } else if (userRole === 'doctor') {
       dispatch(doctorLogin(userInput));
+    } else if (userRole === 'assistantDoctor') {
+      dispatch(assistantDoctorLogin(userInput));
     }
   };
 
@@ -103,6 +105,7 @@ export default function Login() {
         <select id="role" value={userRole} onChange={(e) => setUserRole(e.target.value)} className="w-full px-4 py-2 border border-primary-300 text-primary-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500">
           <option value={''}>Select Role</option>
           <option value="mainDoctor">Main Doctor</option>
+          <option value="assistantDoctor">Assistant Doctor</option>
           <option value="doctor">Doctor</option>
           <option value="receptionist">Receptionist</option>
           <option value="consultant">Consultant</option>

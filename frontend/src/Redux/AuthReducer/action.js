@@ -44,6 +44,25 @@ const mainDoctorLogin = (userInput) => async (dispatch) => {
   }
 };
 
+
+const assistantDoctorLogin = (userInput) => async (dispatch) => {
+  dispatch({ type: types.USER_LOGIN_PROCESS });
+
+  try {
+    const res = await axios.post(`${END_POINT}/assistantDoctor/login`, userInput);
+    // console.log("ok ", res)
+    dispatch({ type: types.USER_LOGIN_SUCCESS, payload: res.data });
+    sessionStorage.setItem("clinic-application-jwt", JSON.stringify({ data: res.data.data, token: res.data.token }))
+
+  } catch (err) {
+    // console.log("ok ", err)
+    dispatch({
+      type: types.USER_LOGIN_FAILURE,
+      payload: err.response.data.error,
+    });
+  }
+};
+
 //  doctor login
 const doctorLogin = (userInput) => async (dispatch) => {
   dispatch({ type: types.USER_LOGIN_PROCESS });
@@ -117,4 +136,4 @@ const checkLoggedIn = () => async (dispatch) => {
 };
 
 
-export { mainDoctorLogin, mainDoctorSignup, doctorLogin, receptionistLogin, consultantLogin, checkLoggedIn };
+export { mainDoctorLogin, mainDoctorSignup, doctorLogin, receptionistLogin, consultantLogin, checkLoggedIn, assistantDoctorLogin };

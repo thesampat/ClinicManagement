@@ -69,7 +69,7 @@ const MainDoctorLogin = async (req, res) => {
 
       if (result) {
         const token = jwt.sign(
-          { MainDoctorId: MainDoctorRef._id },
+          { id: MainDoctorRef._id, permissions: MainDoctorRef?.permissions, role: MainDoctorRef?.role },
           process.env.SECRET_KEY,
           {
             expiresIn: "1h",
@@ -77,7 +77,7 @@ const MainDoctorLogin = async (req, res) => {
         );
 
         return res.status(200).json({
-          message: "Super Admin Login successful!",
+          message: "Main Doctor Login successful!",
           token,
           data: {
             _id: MainDoctorRef._id,
