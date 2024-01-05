@@ -88,19 +88,17 @@ const receptionistLogin = async (req, res) => {
             .json({ error: "Please provide email and password." });
     }
 
-
     try {
-        const receptionist = await Receptionist.findOne({ email: email })
-        let permissions = await getPermissions(receptionist._id)
+        const receptionist = await Receptionist.findOne({ email });
 
         if (!receptionist) {
-            console.log('Hcek')
+            console.log('Check');
             return res.status(401).json({ error: "Invalid credentials." });
         }
 
+        let permissions = await getPermissions(receptionist._id);
 
         bcrypt.compare(password, receptionist.password, (err, result) => {
-
             if (err) {
                 return res.status(500).json({ error: "Server error." });
             }
@@ -112,7 +110,7 @@ const receptionistLogin = async (req, res) => {
                     {
                         expiresIn: "1h",
                     }
-                )
+                );
 
                 return res.status(200).json({
                     message: "Receptionist Login Successful!",
@@ -124,16 +122,17 @@ const receptionistLogin = async (req, res) => {
                         role: receptionist.role,
                         pic: receptionist.pic
                     }
-                })
+                });
             } else {
                 return res.status(401).json({ error: "Invalid credentials." });
             }
-        })
+        });
     } catch (error) {
-        console.log(error)
+        console.log(error);
         return res.status(500).json({ error: "Server error." });
     }
-}
+};
+
 
 const updateReceptionistProfile = async (req, res) => {
     const { receptionistId } = req.params

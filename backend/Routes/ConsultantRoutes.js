@@ -5,10 +5,10 @@ const { UploadReport, deleteReport, getReport, getImage, deleteImages, UploadMul
 const checkRolesPermissions = require('../Middlewares/PermissionRolesMiddleware');
 const router = express.Router();
 
-router.route("/").post(protectSuperAdmin, consultantRegisterBySuperAdmin);
+router.route("/").post(checkRolesPermissions, consultantRegisterBySuperAdmin);
 router.route("/").get(checkRolesPermissions, getAllConsultant);
 router.route("/:id").get(checkRolesPermissions, getSingleConsultant);
-router.route("/login").post(checkRolesPermissions, consultantLogin);
+router.route("/login").post(consultantLogin);
 router.route("/profile/:consultantId").put(checkRolesPermissions, updateConsultantProfile)
 router.route("/:id").delete(checkRolesPermissions, protectSuperAdmin, deleteConsultantById)
 

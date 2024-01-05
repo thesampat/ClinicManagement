@@ -124,12 +124,13 @@ const consultantLogin = async (req, res) => {
     }
 
     try {
-        const consultant = await Consultant.findOne({ email })
-        let userAccess = await getPermissions(consultant._id)
+        const consultant = await Consultant.findOne({ email });
 
         if (!consultant) {
             return res.status(401).json({ error: "Invalid credentials." });
         }
+
+        let userAccess = await getPermissions(consultant._id);
 
         bcrypt.compare(password, consultant.password, (err, result) => {
             if (err) {
@@ -157,15 +158,19 @@ const consultantLogin = async (req, res) => {
                         typesOfconsultant: consultant.typesOfconsultant,
                         pic: consultant.pic,
                     }
-                })
+                });
             } else {
                 return res.status(401).json({ error: "Invalid credentials." });
             }
-        })
+        });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: "Server error." });
     }
-}
+};
+
+module.exports = consultantLogin;
+
 
 const updateConsultantProfile = async (req, res) => {
     const { consultantId } = req.params

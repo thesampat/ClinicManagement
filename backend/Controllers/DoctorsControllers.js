@@ -87,20 +87,20 @@ const doctorLogin = async (req, res) => {
     }
 
     try {
-        const doctor = await Doctor.findOne({ email })
-        let userAccess = await getPermissions(doctor._id)
+        const doctor = await Doctor.findOne({ email });
 
         if (!doctor) {
-            return res.status(401).json({ error: "Invalid credentials." });
+            return res.status(401).json({ error: "Invalid credentials" });
         }
 
-        bcrypt.compare(password, doctor.password, async (err, result) => {
+        let userAccess = await getPermissions(doctor._id);
+
+        bcrypt.compare(password, doctor.password, (err, result) => {
             if (err) {
                 return res.status(500).json({ error: "Server error." });
             }
 
             if (result) {
-
                 const token = jwt.sign(
                     { id: doctor._id, permissions: userAccess?.permissions, role: userAccess?.role },
                     process.env.SECRET_KEY,
@@ -121,15 +121,16 @@ const doctorLogin = async (req, res) => {
                         typesOfDoctor: doctor.typesOfDoctor,
                         pic: doctor.pic,
                     }
-                })
+                });
             } else {
                 return res.status(401).json({ error: "Invalid credentials." });
             }
-        })
+        });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ error: "Server error." });
     }
-}
+};
 
 
 

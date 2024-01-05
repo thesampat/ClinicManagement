@@ -65,7 +65,7 @@ const assistantDoctorRegisterBySuperAdmin = async (req, res) => {
                 return res.status(201).send({ msg: 'Assistant doctor registered successfully.', data: newDoctorRes?._id });
             } catch (error) {
                 console.log(error)
-                return res.status(403).send(error);
+                return res.status(403).send('error');
             }
         })
 
@@ -85,12 +85,13 @@ const AssistantDoctorLogin = async (req, res) => {
     }
 
     try {
-        const doctor = await AssistantDoctor.findOne({ email })
-        let userAccess = await getPermissions(doctor._id)
+        const doctor = await AssistantDoctor.findOne({ email });
 
         if (!doctor) {
             return res.status(401).json({ error: "Invalid credentials." });
         }
+
+        let userAccess = await getPermissions(doctor._id);
 
         bcrypt.compare(password, doctor.password, (err, result) => {
             if (err) {
@@ -118,16 +119,16 @@ const AssistantDoctorLogin = async (req, res) => {
                         typesOfDoctor: doctor.typesOfDoctor,
                         pic: doctor.pic,
                     }
-                })
+                });
             } else {
                 return res.status(401).json({ error: "Invalid credentials." });
             }
-        })
+        });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ error: "Server error." });
     }
-}
-
+};
 
 
 const updateAssistantDoctor = async (req, res) => {

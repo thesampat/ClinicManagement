@@ -16,6 +16,7 @@ const inventory = require("./Routes/InventoryRoutes")
 const adminRouter = require('./Routes/AdminRoutes')
 const RolesPermissionRoutes = require('./Routes/RoleAndPermission')
 const feedbackRoutes = require("./Routes/feedbackRoutes");
+const resetPassword = require("./Controllers/ResetPasswords")
 
 // Alternative Theripies
 const nutrition = require('./Routes/Alternative_Therapies/nutritionRoutes')
@@ -63,6 +64,7 @@ app.use("/inventory", inventory)
 app.use("/configAccess", checkRolesPermissions, RolesPermissionRoutes)
 app.use("/admin", adminRouter)
 app.use("/feedback", feedbackRoutes);
+app.use("/resetPassword", resetPassword);
 
 
 // AlterNative Theripies Routes
