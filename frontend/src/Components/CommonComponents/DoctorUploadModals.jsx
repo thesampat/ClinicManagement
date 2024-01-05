@@ -21,14 +21,14 @@ const ImageUploadModal = ({ isOpen, closeModal, onImageUpload }) => {
 
   return (
     isOpen && (
-      <div className="fixed inset-0 flex items-center justify-center z-50" style={{ backdropFilter: 'blur(10px)' }}>
-        <div className="modal bg-white p-6 rounded-lg">
-          <button className="close-button" onClick={closeModal}>
+      <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-lg bg-gray-800 bg-opacity-50">
+        <div className="modal bg-white p-6 rounded-lg shadow-md">
+          <button className="text-gray-600 hover:text-gray-800 close-button" onClick={closeModal}>
             Close
           </button>
           <h2 className="text-lg font-semibold mb-2">Upload Images</h2>
-          <input type="file" onChange={handleFileChange} multiple={true} />
-          <button onClick={handleUpload} className="btn-primary">
+          <input type="file" onChange={handleFileChange} multiple={true} className="w-full border border-gray-300 p-2 rounded-md mt-2 focus:ring focus:border-blue-300" />
+          <button onClick={handleUpload} className="w-full p-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300 mt-2">
             Upload
           </button>
         </div>
@@ -55,14 +55,14 @@ const FileUploadModal = ({ isOpen, closeModal, onFileUpload }) => {
 
   return (
     isOpen && (
-      <div className="fixed inset-0 flex items-center justify-center z-50" style={{ backdropFilter: 'blur(10px)' }}>
-        <div className="modal bg-white p-6 rounded-lg border-black">
-          <button className="close-button" onClick={closeModal}>
+      <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-lg bg-gray-800 bg-opacity-50">
+        <div className="modal bg-white p-6 rounded-lg shadow-md border-black">
+          <button className="text-gray-600 hover:text-gray-800 close-button" onClick={closeModal}>
             Close
           </button>
           <h2 className="text-lg font-semibold mb-2">Upload File</h2>
-          <input type="file" onChange={handleFileChange} />
-          <button onClick={handleUpload} className="btn-primary">
+          <input type="file" onChange={handleFileChange} className="w-full border border-gray-300 p-2 rounded-md mt-2 focus:ring focus:border-blue-300" />
+          <button onClick={handleUpload} className="w-full p-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300 mt-2">
             Upload
           </button>
         </div>
@@ -90,14 +90,14 @@ const MultipleFileUploads = ({ isOpen, closeModal, onFileUpload }) => {
 
   return (
     isOpen && (
-      <div className="fixed inset-0 flex items-center justify-center z-50" style={{ backdropFilter: 'blur(10px)' }}>
-        <div className="modal bg-white p-6 rounded-lg border-black">
-          <button className="close-button" onClick={closeModal}>
+      <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-lg bg-gray-800 bg-opacity-50">
+        <div className="modal bg-white p-6 rounded-lg shadow-md border-black">
+          <button className="text-gray-600 hover:text-gray-800 close-button" onClick={closeModal}>
             Close
           </button>
           <h2 className="text-lg font-semibold mb-2">Upload Files</h2>
-          <input type="file" onChange={handleFileChange} multiple />
-          <button onClick={handleUpload} className="btn-primary">
+          <input type="file" onChange={handleFileChange} multiple className="w-full border border-gray-300 p-2 rounded-md mt-2 focus:ring focus:border-blue-300" />
+          <button onClick={handleUpload} className="w-full p-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300 mt-2">
             Upload
           </button>
         </div>
