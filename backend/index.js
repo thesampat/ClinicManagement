@@ -61,11 +61,10 @@ app.use("/public/customer", checkRolesPermissions, createCustomerByExternal);
 app.use("/public/appointment", checkRolesPermissions, createExternalAppointment)
 app.use("/incomeExpense", IncomeAndExpensesRouter)
 app.use("/inventory", inventory)
-app.use("/configAccess", checkRolesPermissions, RolesPermissionRoutes)
+app.use("/configAccess", RolesPermissionRoutes)
 app.use("/admin", adminRouter)
 app.use("/feedback", feedbackRoutes);
 app.use("/resetPassword", resetPassword);
-
 
 // AlterNative Theripies Routes
 app.use('/nutrition', nutrition)

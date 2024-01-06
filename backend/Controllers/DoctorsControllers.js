@@ -18,15 +18,6 @@ const doctorRegisterBySuperAdmin = async (req, res) => {
     }
 
     try {
-        const requestId = req.superadmin._id
-        // console.log(requestId)
-        const requester = await SuperAdmin.findById(requestId);
-
-        if (!requester || requester.role !== 'SuperAdmin') {
-            return res.status(403).json({ error: 'Only SuperAdmins can register doctors.' });
-        }
-
-
 
         const authDoctor = await Doctor.findOne({ email })
         if (authDoctor) {
@@ -204,7 +195,6 @@ const deleteDoctorById = async (req, res) => {
 }
 
 const getSingleDoctor = async (req, res) => {
-
     try {
         const doctor = await Doctor.findById(req.params.id)
         res.status(200).send(doctor)

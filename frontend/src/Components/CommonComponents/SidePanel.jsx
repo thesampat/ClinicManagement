@@ -2,16 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Link, NavLink, useMatches } from 'react-router-dom';
 import { AiFillAccountBook, AiOutlineHome, AiOutlineInfoCircle, AiOutlineMail } from 'react-icons/ai';
 import AdminDashboard from '../../Routes/AdminRoutes/AdminDashboard';
-import { GrContact, GrDashboard, GrLogout, GrUserWorker } from 'react-icons/gr';
+import { GrContact, GrDashboard, GrLogout, GrPowerReset, GrUserWorker } from 'react-icons/gr';
 import { IoLogOut } from 'react-icons/io5';
 import { GiChest, GiDoctorFace, GiPerson, GiPersonInBed, GiSergeant } from 'react-icons/gi';
 import { BsPerson } from 'react-icons/bs';
 import { IoMdLogOut } from 'react-icons/io';
 import { useSelector } from 'react-redux';
+import ResetPasswordPopup from '../../Routes/AdminRoutes/ResetPassword';
 
 const SidePanel = () => {
   const [isCollapsed, setCollapsed] = useState(false);
   const [currentPath, setCurrentPath] = useState('');
+  const [isResetPasswordOpen, setResetPasswordOpen] = useState(false);
   let loggedInUser = useSelector((state) => state.AuthReducer.userLogindata.data);
   const toggleCollapse = () => {
     setCollapsed(!isCollapsed);
@@ -26,7 +28,7 @@ const SidePanel = () => {
     { id: 4, text: 'Receptionist', to: '/receptionist', icon: <BsPerson /> },
     { id: 5, text: 'Consultant', to: '/consultant', icon: <AiOutlineMail /> },
     { id: 6, text: 'Enqiury', to: '/enquiry', icon: <GrContact /> },
-    { id: 7, text: 'Income & Expn', to: '/income_expenses', icon: <AiFillAccountBook /> },
+    // { id: 7, text: 'Income & Expn', to: '/income_expenses', icon: <AiFillAccountBook /> },
     { id: 8, text: 'Inventory', to: '/main/inventory/inventory/addNew', icon: <GiChest /> },
     { id: 9, text: 'Nutrition', to: '/nutrition', icon: <GiChest /> },
     { id: 10, text: 'feedback', to: '/feedback', icon: <GiChest /> },
@@ -75,13 +77,16 @@ const SidePanel = () => {
               <IoMdLogOut />
               {!isCollapsed && <span className="ml-3">Logout</span>}
             </button>
+            <button onClick={(e) => setResetPasswordOpen(true)} className="p-1 flex items-center px-2 rounded-md text-black bg-blue-500 font-bold">
+              <GrPowerReset className="text-white" />
+              {!isCollapsed && <span className="ml-3">Reset Password</span>}
+            </button>
           </div>
         </li>
       </ul>
+      <ResetPasswordPopup isOpen={isResetPasswordOpen} onClose={() => setResetPasswordOpen(false)} />
     </div>
   );
 };
-
-// Your Main and AllRoutes components here...
 
 export default SidePanel;

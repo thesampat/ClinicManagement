@@ -39,14 +39,6 @@ const consultantRegisterBySuperAdmin = async (req, res) => {
     }
 
     try {
-        const requestId = req.superadmin._id
-        // console.log(requestId)
-        const requester = await SuperAdmin.findById(requestId);
-
-        if (!requester || requester.role !== 'SuperAdmin') {
-            return res.status(403).json({ error: 'Only SuperAdmins can register doctors.' });
-        }
-
         const authConsultant = await Consultant.findOne({ email })
         if (authConsultant) {
             return res.status(403).send({ msg: 'Consultant is already registered.' });

@@ -1,6 +1,5 @@
 const express = require('express');
 const { getSingleDoctor, doctorRegisterBySuperAdmin, doctorLogin, updateDoctorProfile, deleteDoctorById, getAllDoctor } = require("../Controllers/DoctorsControllers")
-const { protectSuperAdmin } = require("../Middlewares/requireLoginSuperAdmin");
 const { getAllDoctor_External } = require('../Controllers/Public/ExternalDoctorController');
 const { UploadReport, deleteReport, getReport, getImage, deleteImages, UploadMultipleDocs } = require('../Controllers/DoctorUploads');
 const checkRolesPermissions = require('../Middlewares/PermissionRolesMiddleware');
@@ -10,10 +9,10 @@ const router = express.Router();
 
 router.route('/login').post(doctorLogin)
 router.route("/profile/:doctorId").put(checkRolesPermissions, updateDoctorProfile)
-router.route("/:id").delete(checkRolesPermissions, protectSuperAdmin, deleteDoctorById)
+router.route("/:id").delete(checkRolesPermissions, deleteDoctorById)
 router.route("/:id").get(checkRolesPermissions, getSingleDoctor)
 router.route('/').get(checkRolesPermissions, getAllDoctor);
-router.route('/').post(checkRolesPermissions, protectSuperAdmin, doctorRegisterBySuperAdmin)
+router.route('/').post(checkRolesPermissions, doctorRegisterBySuperAdmin)
 
 router.route('/external/doctor').get(getAllDoctor_External)
 

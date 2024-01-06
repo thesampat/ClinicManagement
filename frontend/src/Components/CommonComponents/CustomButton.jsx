@@ -1,8 +1,8 @@
 import React from 'react';
 
-export default function CustomButton({ label, onClick, isProcessing, color }) {
+export default function CustomButton({ label, onClick, isProcessing, color = 'primary-200', width = '32' }) {
   return (
-    <button onClick={onClick} disabled={isProcessing} className={`w-full mt-6 font-bold bg-primary-200 ${isProcessing ? 'cursor-not-allowed opacity-70' : 'hover:bg-primary-300 focus:ring-primary-300'} text-white py-2.5 rounded-lg transition duration-300 ease-in-out`}>
+    <button onClick={onClick} disabled={isProcessing} className={`w-${width} mt-6 font-bold bg-${color} ${isProcessing ? 'cursor-not-allowed opacity-70' : 'hover:bg-primary-300 focus:ring-primary-300'} text-white py-2.5 rounded-lg transition duration-300 ease-in-out`}>
       {isProcessing ? (
         <div className="flex items-center justify-center">
           <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

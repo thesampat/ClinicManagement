@@ -1,5 +1,4 @@
 const express = require('express');
-const { protectSuperAdmin } = require('../Middlewares/requireLoginSuperAdmin');
 const { consultantRegisterBySuperAdmin, consultantLogin, updateConsultantProfile, deleteConsultantById, getAllConsultant, getSingleConsultant } = require('../Controllers/ConsultantControllers');
 const { UploadReport, deleteReport, getReport, getImage, deleteImages, UploadMultipleDocs } = require('../Controllers/CustomUploadModals');
 const checkRolesPermissions = require('../Middlewares/PermissionRolesMiddleware');
@@ -10,7 +9,7 @@ router.route("/").get(checkRolesPermissions, getAllConsultant);
 router.route("/:id").get(checkRolesPermissions, getSingleConsultant);
 router.route("/login").post(consultantLogin);
 router.route("/profile/:consultantId").put(checkRolesPermissions, updateConsultantProfile)
-router.route("/:id").delete(checkRolesPermissions, protectSuperAdmin, deleteConsultantById)
+router.route("/:id").delete(checkRolesPermissions, deleteConsultantById)
 
 
 

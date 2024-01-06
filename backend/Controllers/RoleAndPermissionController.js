@@ -28,6 +28,19 @@ const getAllUserRolePermissions = async (req, res) => {
     }
 };
 
+const getAllUsers = async (req, res) => {
+    try {
+        const userRolePermissions = await UserRolePermissionModel.find(
+            { role: { $ne: "MainDoctor" } },
+            { _id: 1, role: 1, username: 1 }
+        ).exec();
+
+        res.json(userRolePermissions);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 // Get user role and permissions entry by username
 const getUserRolePermissionByUsername = async (req, res) => {
 
@@ -92,4 +105,5 @@ module.exports = {
     getUserRolePermissionByUsername,
     updateUserRolePermission,
     deleteUserRolePermission,
+    getAllUsers
 };

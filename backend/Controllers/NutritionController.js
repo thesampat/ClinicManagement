@@ -20,6 +20,7 @@ const getAllNutritionRecords = async (req, res) => {
 }
 
 const getNutritionRecordById = async (req, res) => {
+    term
     const { id } = req.params;
     try {
         const record = await Nutrition.findById(id);

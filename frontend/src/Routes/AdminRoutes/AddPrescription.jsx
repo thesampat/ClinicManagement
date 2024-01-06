@@ -47,7 +47,7 @@ const AddPrescription = () => {
   const { userLogindata } = useSelector((state) => state.AuthReducer);
 
   const [formError, setFormError] = useState({ ...initialFormData, ReceivedBy: userLogindata?.data?.name });
-  const formDataRef = useRef([formData]);
+  const formDataRef = useRef([{ ...formData }]);
   const [paginate, setpaginate] = useState({ page: 1, pageSize: 10 });
   let { singlePatientData, updatePrescriptionProcessing, updatePrescriptionSuccess, updatePrescriptionFail, updatePrescriptionMessage, getAllPrescriptionData } = useSelector((state) => state.AdminReducer);
   const scrollContainerRef = useRef(null);
@@ -93,7 +93,6 @@ const AddPrescription = () => {
   }, []);
 
   useEffect(() => {
-    console.log(userLogindata, 'the User Login Data');
     let query = { patient: patientId, doctor: userLogindata?.data?._id, ...paginate };
     dispatch(getAllPatientPrescription(query));
   }, [visibleDate, userLogindata, paginate]);
@@ -144,24 +143,19 @@ const AddPrescription = () => {
   const handelInputChange = (event) => {
     const { name, value, id: ukey } = event?.target;
 
-    // Update the formData state
     setFormData((prev) => prev?.map((item) => (item?.Date === ukey ? { ...item, [name]: value } : item)));
 
-    // Update the updateForm state
     const updatedForm = updateFormRef.current;
     const itemId = formData.find((item) => item.Date === ukey);
 
     if (itemId?._id) {
-      // If the item with the same Date exists, update it
       let updatedFormCopy = updatedForm?.length == 0 && updatedForm.push({ Date: itemId?.Date, [name]: value, _id: itemId?._id, customerId: singlePatientData?._id, paitendId: singlePatientData?.customerId, doctorId: userLogindata?.data?._id });
       updatedFormCopy = updatedForm.map((item) => (item.Date === ukey ? { ...item, [name]: value, _id: itemId?._id } : { Date: itemId?.Date, [name]: value, _id: itemId?._id }));
       updateFormRef.current = updatedFormCopy;
     } else {
-      // If the item with the same Date doesn't exist, add a new item
       let NewFormCopy = updatedForm?.length == 0 && updatedForm.push({ Date: itemId?.Date, [name]: value, customerId: singlePatientData?._id, paitendId: singlePatientData?.customerId, doctorId: userLogindata?.data?._id });
       NewFormCopy = updatedForm.map((item) => item.Date === ukey && { ...item, [name]: value });
       updateFormRef.current = NewFormCopy;
-      // updateFormRef.current = [...updatedForm, { Date: ukey, [name]: value, customerId: singlePatientData?._id, paitendId: singlePatientData?.customerId, doctorId: userLogindata?.data?._id }];
     }
   };
 
@@ -281,13 +275,10 @@ const AddPrescription = () => {
               e.preventDefault();
 
               if (formData == null) {
-                setFormData([{ ...initialFormData, customerId: singlePatientData?._id, paitendId: singlePatientData?.customerId, doctorId: userLogindata?.data?._id, Date: visibleDate }]);
+                setFormData([{ ...initialFormData, customerId: singlePatientData?._id, paitendId: singlePatientData?.customerId, doctorId: userLogindata?.data?._id, Date: visibleDate, ReceivedBy: userLogindata?.data?.name }]);
               } else {
                 if (formData?.filter((e) => e.Date === visibleDate)?.length === 0) {
-                  setFormData((prev) => [
-                    { ...initialFormData, customerId: singlePatientData?._id, paitendId: singlePatientData?.customerId, doctorId: userLogindata?.data?._id, Date: visibleDate, ReceivedBy: userLogindata?.data?.name },
-                    ...prev, // Spread the previous items after the new one
-                  ]);
+                  setFormData((prev) => [{ ...initialFormData, customerId: singlePatientData?._id, paitendId: singlePatientData?.customerId, doctorId: userLogindata?.data?._id, Date: visibleDate, ReceivedBy: userLogindata?.data?.name }, ...prev]);
                 }
               }
             }}
