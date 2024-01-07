@@ -32,7 +32,7 @@ const getAllUsers = async (req, res) => {
     try {
         const userRolePermissions = await UserRolePermissionModel.find(
             { role: { $ne: "MainDoctor" } },
-            { _id: 1, role: 1, username: 1 }
+            { user_id: 1, role: 1, username: 1, _id: 0 }
         ).exec();
 
         res.json(userRolePermissions);

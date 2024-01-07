@@ -125,11 +125,12 @@ router.post('/forgotPassword/:userId/:roleId', async (req, res) => {
         try {
             user = await userModel.findById(userId);
         } catch (error) {
-            res.status(400).send('Something went wrong')
+            console.log(error)
+            res.status(500).send('Something went wrong')
         }
 
         if (!user) {
-            return res.status(404).json({ error: 'User not found.' });
+            return res.status(500).send('User not found');
         }
 
 

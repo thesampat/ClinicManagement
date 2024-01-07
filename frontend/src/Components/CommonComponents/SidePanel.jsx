@@ -2,18 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { Link, NavLink, useMatches } from 'react-router-dom';
 import { AiFillAccountBook, AiOutlineHome, AiOutlineInfoCircle, AiOutlineMail } from 'react-icons/ai';
 import AdminDashboard from '../../Routes/AdminRoutes/AdminDashboard';
-import { GrContact, GrDashboard, GrLogout, GrPowerReset, GrUserWorker } from 'react-icons/gr';
+import { GrContact, GrContactInfo, GrDashboard, GrLogout, GrPowerReset, GrUserWorker } from 'react-icons/gr';
 import { IoLogOut } from 'react-icons/io5';
 import { GiChest, GiDoctorFace, GiPerson, GiPersonInBed, GiSergeant } from 'react-icons/gi';
 import { BsPerson } from 'react-icons/bs';
 import { IoMdLogOut } from 'react-icons/io';
 import { useSelector } from 'react-redux';
 import ResetPasswordPopup from '../../Routes/AdminRoutes/ResetPassword';
+import ContactUsPopup from '../../Routes/AdminRoutes/ContactUsEmail';
 
 const SidePanel = () => {
   const [isCollapsed, setCollapsed] = useState(false);
   const [currentPath, setCurrentPath] = useState('');
   const [isResetPasswordOpen, setResetPasswordOpen] = useState(false);
+  const [popupContactUs, setPopupContactUs] = useState(false);
   let loggedInUser = useSelector((state) => state.AuthReducer.userLogindata.data);
   const toggleCollapse = () => {
     setCollapsed(!isCollapsed);
@@ -58,33 +60,46 @@ const SidePanel = () => {
             </NavLink>
           </li>
         ))}
-        <li className="flex items-center rounded-md w-100 mt-10">
-          <div className="ProfileName flex flex-col gap-2">
-            <div className="flex justify-center items-center">
-              <BsPerson className="h-12 w-12" />
-              <div className="flex flex-col">
-                <h4 className="font-semibold text-md leading-6 uppercase">{loggedInUser.name?.slice(0, 30)}</h4>
-                <span class="bg-blue-100 text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-white">{loggedInUser?.role}</span>
+        {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="200" height="80">
+        ShiVen
+        <text x="10" y="50" font-family="Verdana, sans-serif" font-size="30" font-weight="bold" fill="black" className="uppercase">
+          ShiVen
+        </text>
+      </svg> */}
+        {!isCollapsed && (
+          <li className="flex items-center rounded-md w-100 mt-10">
+            <div className="ProfileName flex flex-col gap-2">
+              <div className="flex justify-center items-center">
+                <BsPerson className="h-12 w-12" />
+                <div className="flex flex-col">
+                  <h4 className="font-semibold text-md leading-6 uppercase">{loggedInUser.name?.slice(0, 30)}</h4>
+                  <span class="bg-blue-100 text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-white">{loggedInUser?.role}</span>
+                </div>
               </div>
+              <button
+                onClick={(e) => {
+                  window.sessionStorage.clear();
+                  window.location.reload();
+                }}
+                className="p-1 flex items-center px-2 rounded-md text-white bg-red-500 font-bold"
+              >
+                <IoMdLogOut />
+                {!isCollapsed && <span className="ml-3">Logout</span>}
+              </button>
+              <button onClick={(e) => setResetPasswordOpen(true)} className="p-1 flex items-center px-2 rounded-md text-black bg-blue-500 font-bold">
+                <GrPowerReset className="text-white" />
+                {!isCollapsed && <span className="ml-3">Reset Password</span>}
+              </button>
+              <button onClick={(e) => setPopupContactUs(true)} className="p-1 flex items-center px-2 rounded-md text-black bg-yellow-500 font-bold">
+                <GrContactInfo className="text-white" />
+                {!isCollapsed && <span className="ml-3">Contact Us</span>}
+              </button>
             </div>
-            <button
-              onClick={(e) => {
-                window.sessionStorage.clear();
-                window.location.reload();
-              }}
-              className="p-1 flex items-center px-2 rounded-md text-white bg-red-500 font-bold"
-            >
-              <IoMdLogOut />
-              {!isCollapsed && <span className="ml-3">Logout</span>}
-            </button>
-            <button onClick={(e) => setResetPasswordOpen(true)} className="p-1 flex items-center px-2 rounded-md text-black bg-blue-500 font-bold">
-              <GrPowerReset className="text-white" />
-              {!isCollapsed && <span className="ml-3">Reset Password</span>}
-            </button>
-          </div>
-        </li>
+          </li>
+        )}
       </ul>
       <ResetPasswordPopup isOpen={isResetPasswordOpen} onClose={() => setResetPasswordOpen(false)} />
+      <ContactUsPopup isOpen={popupContactUs} onClose={() => setPopupContactUs(false)} />
     </div>
   );
 };

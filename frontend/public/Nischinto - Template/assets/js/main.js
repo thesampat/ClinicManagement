@@ -161,16 +161,16 @@
   --------------------------------------------------------------*/
   function onePageNavigation() {
     // Click To Go Top
-    $('.st-smooth-move').on('click', function () {
-      var thisAttr = $(this).attr('href');
-      if ($(thisAttr).length) {
-        var scrollPoint = $(thisAttr).offset().top - 10;
-        $('body,html').animate({
-          scrollTop: scrollPoint
-        }, 800);
-      }
-      return false;
-    });
+    // $('.st-smooth-move').on('click', function () {
+    //   var thisAttr = $(this).attr('href');
+    //   if ($(thisAttr).length) {
+    //     var scrollPoint = $(thisAttr).offset().top - 10;
+    //     $('body,html').animate({
+    //       scrollTop: scrollPoint
+    //     }, 800);
+    //   }
+    //   return false;
+    // });
 
     // One Page Active Class
     var topLimit = 300,

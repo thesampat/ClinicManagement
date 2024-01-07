@@ -154,9 +154,6 @@ const AdminNavbar = () => {
           <div className=" space-x-2 hidden md:inline-block">
             {Object.keys(dropdownData).map((category, index) => (
               <div key={index} className="relative inline-block text-left">
-                {/* navbar element button */}
-                {/* large screen dropdown */}
-                {/* <Dropdown label={category} items={dropdownData[category]} active={activeDropdown === category} onItemClick={closeDropdownAndSidebar} /> */}
                 <CustomDropdown label={category} items={dropdownData[category]} />
               </div>
             ))}

@@ -13,6 +13,7 @@ import * as types from '../../Redux/AdminReducer/actionTypes';
 import CustomSpinner from '../../Components/CommonComponents/CustomSpinner';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
+import { ToastContainer } from 'react-toastify';
 
 export default function AdminDashboard() {
   let [onlineAp, setOnlineAp] = useState(null);
@@ -59,10 +60,9 @@ export default function AdminDashboard() {
   return (
     <div className="m-3 rounded-md bg-slate-100 px-8 min-h-[100vh] h-fit py-8 w-full">
       {/* navigatation */}
-      <div className="flex flex-wrap justify-between items-baseline mb-4">
-        {/*  Breadcrumbs */}
-        <CustomBreadcrumbs data={[{ title: 'Dashboard', url: '/admin/dashboard' }]} />
-
+      <div className="font-bold text-2xl text-black">{process.env?.REACT_APP_Clinic_Name}</div>
+      <div className="flex flex-wrap justify-between items-baseline mb-4 mt-1">
+        <div></div>
         <NavigationButtons />
       </div>
 
@@ -128,6 +128,7 @@ const GenerateTable = ({ headers, data, title }) => {
           <CustomSpinner height={20} />
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };

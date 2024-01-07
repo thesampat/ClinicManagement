@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import CustomInput from '../Components/CommonComponents/CustomInput';
 import CustomButton from '../Components/CommonComponents/CustomButton';
 import { checkLoggedIn, consultantLogin, doctorLogin, mainDoctorLogin, receptionistLogin, assistantDoctorLogin } from '../Redux/AuthReducer/action';
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 
 export default function Login() {
   const userLoginMessage = useSelector((state) => state.AuthReducer.userLoginMessage);
@@ -17,6 +18,11 @@ export default function Login() {
   const [userRole, setUserRole] = useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handlePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   // handel custom input change
   const handelCustomInputChange = (e) => {
@@ -68,54 +74,67 @@ export default function Login() {
   useEffect(() => {
     // if login success
     if (!userLoginProcess && userLoginSuccess) {
-      toast.success(userLoginMessage, { position: toast.POSITION.TOP_RIGHT });
+      // toast.success(userLoginMessage, { position: toast.POSITION.TOP_RIGHT });
 
       //  redirect to home page
       window.location.pathname == '/login' && navigate('/dashboard');
     }
 
     // if login fail
-    else if (!userLoginProcess && userLoginFail) {
-      toast.error(userLoginMessage, { position: toast.POSITION.TOP_RIGHT });
-    }
+    // else if (!userLoginProcess && userLoginFail) {
+    //   // toast.error(userLoginMessage, { position: toast.POSITION.TOP_RIGHT });
+    // }
   }, [userLoginProcess, userLoginSuccess, userLoginFail]);
 
   return (
-    <div className="bg-blue-200 flex items-center justify-center min-h-screen">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96 border border-gray-300">
-        {/* heading */}
-        <p className="text-center mb-4 text-2xl font-bold ">Login to continue.</p>
+    <div className="bg-blue-200">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="200" height="80">
+        ShiVen
+        <text x="10" y="50" font-family="Verdana, sans-serif" font-size="30" font-weight="bold" fill="black" className="uppercase">
+          ShiVen
+        </text>
+      </svg>
 
-        {/* email input */}
-        <label htmlFor="email" className="block mt-4 text-sm font-medium text-primary-900 mb-1">
-          Email
-        </label>
-        <input id="email" type="text" name="email" value={userInput.email} onChange={handelCustomInputChange} placeholder="Enter Email!" className="w-full px-4 py-2 border border-primary-300 text-primary-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500" />
+      <div className="bg-blue-200 flex flex-col items-center justify-center min-h-screen">
+        <div className="bg-white p-8 rounded-lg shadow-lg w-96 border border-gray-300">
+          {/* heading */}
+          <p className="text-center mb-4 text-2xl font-bold ">Login to continue.</p>
 
-        {/* password input */}
-        <label htmlFor="password" className="block mt-4 text-sm font-medium text-primary-900 mb-1">
-          Password
-        </label>
-        <input id="password" type="password" name="password" value={userInput.password} onChange={handelCustomInputChange} placeholder="Enter Your Password" className="w-full px-4 py-2 border border-primary-300 text-primary-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500" />
+          {/* email input */}
+          <label htmlFor="email" className="block mt-4 text-sm font-medium text-primary-900 mb-1">
+            Email
+          </label>
+          <input id="email" type="text" name="email" value={userInput.email} onChange={handelCustomInputChange} placeholder="Enter Email!" className="w-full px-4 py-2 border border-primary-300 text-primary-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500" />
 
-        {/* select user role */}
-        <label htmlFor="role" className="block mt-4 text-sm font-medium text-primary-900 mb-1">
-          Select Role
-        </label>
-        <select id="role" value={userRole} onChange={(e) => setUserRole(e.target.value)} className="w-full px-4 py-2 border border-primary-300 text-primary-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500">
-          <option value={''}>Select Role</option>
-          <option value="mainDoctor">Main Doctor</option>
-          <option value="assistantDoctor">Assistant Doctor</option>
-          <option value="doctor">Doctor</option>
-          <option value="receptionist">Receptionist</option>
-          <option value="consultant">Consultant</option>
-        </select>
+          {/* password input */}
+          <label htmlFor="password" className="block mt-4 text-sm font-medium text-primary-900 mb-1">
+            Password
+          </label>
+          <div className="relative">
+            <input id="password" type={showPassword ? 'text' : 'password'} name="password" value={userInput.password} onChange={handelCustomInputChange} placeholder="Enter Your Password" className="w-full px-4 py-2 border border-primary-300 text-primary-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500" />
+            <span className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer" onClick={handlePasswordVisibility}>
+              {showPassword ? <AiFillEyeInvisible className="h-5 w-5 text-primary-500" /> : <AiFillEye className="h-5 w-5 text-primary-500" />}
+            </span>
+          </div>
 
-        {/* login button */}
-        <CustomButton onClick={handelCustomButtonClick} isProcessing={userLoginProcess} label="Login" />
+          {/* select user role */}
+          <label htmlFor="role" className="block mt-4 text-sm font-medium text-primary-900 mb-1">
+            Select Role
+          </label>
+          <select id="role" value={userRole} onChange={(e) => setUserRole(e.target.value)} className="w-full px-4 py-2 border border-primary-300 text-primary-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500">
+            <option value={''}>Select Role</option>
+            <option value="mainDoctor">Main Doctor</option>
+            <option value="assistantDoctor">Assistant Doctor</option>
+            <option value="doctor">Doctor</option>
+            <option value="receptionist">Receptionist</option>
+            <option value="consultant">Consultant</option>
+          </select>
 
-        {/* redirect to login page */}
-        {/* {
+          {/* login button */}
+          <CustomButton onClick={handelCustomButtonClick} isProcessing={userLoginProcess} label="Login" />
+
+          {/* redirect to login page */}
+          {/* {
           <p className="mt-4">
             {' '}
             Signup As Main Doctor,{' '}
@@ -129,9 +148,10 @@ export default function Login() {
             </span>{' '}
           </p>
         } */}
-      </div>
+        </div>
 
-      <ToastContainer />
+        <ToastContainer />
+      </div>
     </div>
   );
 }
