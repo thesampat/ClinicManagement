@@ -45,9 +45,6 @@ app.get('/', (req, res) => {
 })
 
 
-
-
-
 app.use("/customer", checkRolesPermissions, customerRoutes);
 app.use("/mainDoctor", MainDoctorRoutes);
 app.use("/doctor", doctorsRoutes);
