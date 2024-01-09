@@ -5,17 +5,19 @@ import { toast } from 'react-toastify'
 import { useLocation } from "react-router-dom";
 
 let END_POINT
-if (process.env.NODE_ENV === 'development') {
-    END_POINT = "http://127.0.0.1:5000"
-}
-else if (process.env.NODE_ENV === 'production') {
-    // END_POINT = "https://api.adityahomoeopathicclinic.com"
-    END_POINT = "http://shivenclinics.com/api"
-}
-else {
-    END_POINT = "https://clinic-management-1nq8-sam890s-projects.vercel.app/"
-}
+// if (process.env.NODE_ENV === 'development') {
+//     END_POINT = "http://127.0.0.1:5000"
+// }
+// else if (process.env.NODE_ENV === 'production') {
+//     // END_POINT = "https://api.adityahomoeopathicclinic.com"
+//     END_POINT = "http://shivenclinics.com/api"
+// }
+// else {
+//     END_POINT = "https://clinic-management-1nq8-sam890s-projects.vercel.app/"
+// }
 
+
+END_POINT = `https://${window.location.host}/api`
 
 // jwtToken
 const getJwtToken = () => {
