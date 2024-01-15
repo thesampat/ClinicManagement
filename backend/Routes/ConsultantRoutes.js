@@ -5,7 +5,7 @@ const checkRolesPermissions = require('../Middlewares/PermissionRolesMiddleware'
 const router = express.Router();
 
 router.route("/").post(checkRolesPermissions, consultantRegisterBySuperAdmin);
-router.route("/").get(checkRolesPermissions, getAllConsultant);
+router.route("/").get(getAllConsultant);
 router.route("/:id").get(checkRolesPermissions, getSingleConsultant);
 router.route("/login").post(consultantLogin);
 router.route("/profile/:consultantId").put(checkRolesPermissions, updateConsultantProfile)

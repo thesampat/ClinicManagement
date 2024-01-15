@@ -71,7 +71,7 @@ const updateItem = async (data, setIsPorcessing) => {
 
 const initialFormData = {
   conslusion: '',
-  purposeOfEnquiry: '',
+  purposeOfEnquiry: {Primary:'', sub:''},
   reference: '',
   location: '',
   number: '',
@@ -201,8 +201,8 @@ export default function EnquiryForm() {
           <div className="px-6 py-6 rounded-md ">
             {formData?.purposeOfEnquiry !== undefined && loggedInUser?.role === 'MainDoctor' && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6">
-                <CustomNameSuggestion onChange={handleDiagnosis} options={diagnosis?.map((d) => Object.keys(d || {})[0])} label={'Primary Diagnosis'} value={formData?.purposeOfEnquiry.Primary} error={formError?.purposeOfEnquiry?.Primary} name="Primary" placeholder="-- Enter Primary Diagnosis --" />
-                <CustomNameSuggestion onChange={handleDiagnosis} options={diagnosis.find((diagnosisItem) => formData?.purposeOfEnquiry?.Primary in diagnosisItem)?.[formData?.purposeOfEnquiry?.Primary] || []} label={'Primary Sub Diagnosis'} value={formData?.purposeOfEnquiry?.sub} error={formError?.diagnosis?.sub} name="sub" placeholder="-- Enter Primary Sub Diagnosis --" />
+                <CustomNameSuggestion onChange={handleDiagnosis} options={diagnosis?.map((d) => Object.keys(d || {})[0])} label={'Primary Diagnosis'} value={formData?.purposeOfEnquiry?.Primary} error={formError?.purposeOfEnquiry?.Primary} name="Primary" placeholder="-- Enter Primary Diagnosis --" />
+                <CustomNameSuggestion onChange={handleDiagnosis} options={diagnosis.find((diagnosisItem) => formData?.purposeOfEnquiry?.Primary in diagnosisItem)?.[formData?.purposeOfEnquiry?.Primary] || []} label={'Primary Sub Diagnosis'} value={formData?.purposeOfEnquiry?.sub||''} name="sub" placeholder="-- Enter Primary Sub Diagnosis --" />
                 <CustomSelect onChange={handleInputChange} options={['Converted', 'Not-Converted']} label={'Conslusion'} value={formData?.conslusion} error={formError?.conslusion} name="conslusion" placeholder="-- Select Conslusion --" />
               </div>
             )}

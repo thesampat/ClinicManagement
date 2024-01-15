@@ -45,17 +45,17 @@ app.get('/', (req, res) => {
 })
 
 
-app.use("/customer", checkRolesPermissions, customerRoutes);
+app.use("/customer", customerRoutes);
 app.use("/mainDoctor", MainDoctorRoutes);
 app.use("/doctor", doctorsRoutes);
 app.use("/assistantDoctor", assistantDoctor);
 app.use("/receptionist", receptionistRoutes);
 app.use("/consultant", consultantRoutes);
-app.use("/appointment", checkRolesPermissions, appointmentRoutes);
-app.use("/prescription", checkRolesPermissions, prescriptionRoutes);
-app.use("/enquiry", checkRolesPermissions, enquiryRoutes);
-app.use("/public/customer", checkRolesPermissions, createCustomerByExternal);
-app.use("/public/appointment", checkRolesPermissions, createExternalAppointment)
+app.use("/appointment", appointmentRoutes);
+app.use("/prescription", prescriptionRoutes);
+app.use("/enquiry", enquiryRoutes);
+app.use("/public/customer", createCustomerByExternal);
+app.use("/public/appointment",createExternalAppointment)
 app.use("/incomeExpense", IncomeAndExpensesRouter)
 app.use("/inventory", inventory)
 app.use("/configAccess", RolesPermissionRoutes)

@@ -32,7 +32,7 @@ const SidePanel = () => {
     { id: 6, text: 'Enqiury', to: '/enquiry', icon: <GrContact /> },
     // { id: 7, text: 'Income & Expn', to: '/income_expenses', icon: <AiFillAccountBook /> },
     { id: 8, text: 'Inventory', to: '/main/inventory/inventory/addNew', icon: <GiChest /> },
-    { id: 9, text: 'Nutrition', to: '/nutrition', icon: <GiChest /> },
+    // { id: 9, text: 'Nutrition', to: '/nutrition', icon: <GiChest /> },
     { id: 10, text: 'feedback', to: '/feedback', icon: <GiChest /> },
   ];
 
@@ -73,7 +73,7 @@ const SidePanel = () => {
                 <BsPerson className="h-12 w-12" />
                 <div className="flex flex-col">
                   <h4 className="font-semibold text-md leading-6 uppercase">{loggedInUser.name?.slice(0, 30)}</h4>
-                  <span class="bg-blue-100 text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-white">{loggedInUser?.role}</span>
+                  <span class="bg-blue-500 text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-white">{loggedInUser?.role}</span>
                 </div>
               </div>
               <button

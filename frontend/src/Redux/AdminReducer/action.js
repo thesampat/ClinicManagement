@@ -17,7 +17,8 @@ let END_POINT
 // }
 
 
-END_POINT = `https://${window.location.host}/api`
+// END_POINT = `https://${window.location.host}/api`
+END_POINT = `http://127.0.0.1:5000`
 
 // jwtToken
 const getJwtToken = () => {
@@ -111,6 +112,7 @@ const getAllDoctor_External = (data) => async (dispatch) => {
     try {
         const result = await axios.get(`${END_POINT}/doctor/external/doctor/?search=${data.search}&page=${data.page}&limit=${data.limit}`, {
         });
+
         // successfully added
         dispatch({ type: types.GET_ALL_DOCTOR_SUCCESS, payload: result.data });
 

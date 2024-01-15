@@ -10,7 +10,7 @@ router.route('/login').post(AssistantDoctorLogin)
 router.route("/profile/:doctorId").put(checkRolesPermissions, updateAssistantDoctor)
 router.route("/:id").delete(checkRolesPermissions, deleteAssistantDoctorById)
 router.route("/:id").get(checkRolesPermissions, getSingleAssistantDoctor)
-router.route('/').get(checkRolesPermissions, getAllAssistantDoctor);
+router.route('/').get(getAllAssistantDoctor);
 router.route('/').post(checkRolesPermissions, assistantDoctorRegisterBySuperAdmin)
 
 router.route('/upload/:itemId/:uploadType').post(checkRolesPermissions, UploadReport)

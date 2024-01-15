@@ -1,7 +1,6 @@
 [
     {
         "Bone Ailments": [
-            "January",
             "Cervical Spondylitis",
             "Lumbar Spondylitis",
             "Gout",
@@ -15,7 +14,6 @@
     },
     {
         "Female Aliments": [
-            "February",
             "Irregular Period",
             "Fibroid",
             "Infertility [Difficulty in pregnancy]",
@@ -27,7 +25,6 @@
     },
     {
         "Mental ailments": [
-            "March",
             "Schizophrenia",
             "Stress",
             "OCD",
@@ -40,7 +37,6 @@
     },
     {
         "Beauty Enhancement": [
-            "April",
             "Hair Loss",
             "Greying of Hair",
             "Dandruff",
@@ -54,7 +50,6 @@
     },
     {
         "Skin Ailments": [
-            "May",
             "Eczema",
             "Psoriasis",
             "Dermatitis",
@@ -76,7 +71,6 @@
     },
     {
         "Kidney Disorder": [
-            "June",
             "Kidney Stone",
             "UTI",
             "Burning in Urine",
@@ -87,7 +81,6 @@
     },
     {
         "Respiratory Ailments": [
-            "July",
             "Bronchitis",
             "Tonsils Infection",
             "Sinus Infection",
@@ -104,7 +97,6 @@
     },
     {
         "Lifestyle Disorders": [
-            "August",
             "Obesity (Overweight)",
             "Diabetes",
             "Thyroid Disorder",
@@ -119,7 +111,6 @@
     },
     {
         "Heart Ailments": [
-            "September",
             "B.P.",
             "Heart Blockages",
             "Cholesterol",
@@ -128,7 +119,6 @@
     },
     {
         "Brain Ailments": [
-            "October",
             "Brain Infarct ",
             "Brain Haemorrhage",
             "Haematoma of Brain",
@@ -137,7 +127,6 @@
     },
     {
         "Children Aliments": [
-            "November",
             "Late Learning to Walk",
             "Late Learning to Talk",
             "Stammering",
@@ -154,7 +143,6 @@
     },
     {
         "Digestive Disorder": [
-            "December",
             "Acidity",
             "Constipation",
             "Piles",
