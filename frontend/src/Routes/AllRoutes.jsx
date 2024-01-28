@@ -50,66 +50,67 @@ import UpdateAppointment from './AdminRoutes/UpdateAppointment';
 
 export default function AllRoutes() {
   return (
-    <Routes>
-      {!window.location.pathname.startsWith('/public') && (
-        <>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/signup" element={<MainDoctorSignup />} />
-          <Route path="login" element={<Login />} />
+    <>
+      <Routes>
+        {!window.location.pathname.startsWith('/public') && (
+          <>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/signup" element={<MainDoctorSignup />} />
+            <Route path="login" element={<Login />} />
 
-          {/* for size pages */}
-          <Route path="web" element={<Webpages />}>
-            <Route path="classical_homeopathy" element={<Classical_Homeopathy />} />
-            <Route path="treatmentPackage/:treatmentType" element={<TreatmentPackage />} />
-            <Route path="alternative_therapies/:threapyType" element={<ThearapyPackage />} />
-            <Route path="health_packages/:packageType" element={<HealthPackage />} />
-            <Route path="testimonials/:testimonialType" element={<Testimonials />} />
-            <Route path="online_clinic/:ocType" element={<OnlineClinic />} />
-            <Route path="online_clinic/:ocType" element={<OnlineClinic />} />
-            <Route path="contact_us" element={<ContactUs />} />
-            <Route path="privacy_policy" element={<PrivacyPolicy />} />
-            <Route path="feedback" element={<FeedBack />} />
-            <Route path="popup" element={<Popup />} />
-            <Route path="afterAction" element={<AfterActionComponent />} />
-            <Route path="aggrement" element={<AfterActionComponent />} />
-          </Route>
+            {/* for size pages */}
+            <Route path="web" element={<Webpages />}>
+              <Route path="classical_homeopathy" element={<Classical_Homeopathy />} />
+              <Route path="treatmentPackage/:treatmentType" element={<TreatmentPackage />} />
+              <Route path="alternative_therapies/:threapyType" element={<ThearapyPackage />} />
+              <Route path="health_packages/:packageType" element={<HealthPackage />} />
+              <Route path="testimonials/:testimonialType" element={<Testimonials />} />
+              <Route path="online_clinic/:ocType" element={<OnlineClinic />} />
+              <Route path="online_clinic/:ocType" element={<OnlineClinic />} />
+              <Route path="contact_us" element={<ContactUs />} />
+              <Route path="privacy_policy" element={<PrivacyPolicy />} />
+              <Route path="feedback" element={<FeedBack />} />
+              <Route path="popup" element={<Popup />} />
+              <Route path="afterAction" element={<AfterActionComponent />} />
+              <Route path="aggrement" element={<AfterActionComponent />} />
+            </Route>
 
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                {' '}
-                <AdminDashboard />{' '}
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/enquiry/:Enquiry_Id"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <EnquiryForm />{' '}
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/appointment"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <AddAppointment />{' '}
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  {' '}
+                  <AdminDashboard />{' '}
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/enquiry/:Enquiry_Id"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <EnquiryForm />{' '}
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/appointment"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <AddAppointment />{' '}
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path="/appointment/:appointmentId/:doctor_id"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <UpdateAppointment />{' '}
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="/appointment/:appointmentId/:doctor_id"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <UpdateAppointment />{' '}
+                </PrivateRoute>
+              }
+            />
 
-          {/* <Route
+            {/* <Route
             path="/prescription"
             element={
               <PrivateRoute allowedRoles={['SuperAdmin', 'Doctor']}>
@@ -118,180 +119,181 @@ export default function AllRoutes() {
             }
           /> */}
 
-          <Route
-            path="/prescription/add/:patientId"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <AddPrescription />{' '}
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="/prescription/add/:patientId"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <AddPrescription />{' '}
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path="/doctors/:Doctor_Id"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <DoctorForm />{' '}
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="/doctors/:Doctor_Id"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <DoctorForm />{' '}
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path="/assistantDoctor/:AssistantDoctor_Id"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <AssistantDoctorForm />{' '}
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="/assistantDoctor/:AssistantDoctor_Id"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <AssistantDoctorForm />{' '}
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path="/patients/:patientId"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <CustomerForm />{' '}
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/:listType"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <Table />{' '}
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="/patients/:patientId"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <CustomerForm />{' '}
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/:listType"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <Table />{' '}
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path="/receptionist/:receptionist_Id"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <ReceptionistForm />{' '}
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/appointment/list"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <AppointmentList />{' '}
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/transaction"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <Transaction />{' '}
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/consultant/:consultant_id"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <ConsultantForm />{' '}
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="/receptionist/:receptionist_Id"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <ReceptionistForm />{' '}
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/appointment/list"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <AppointmentList />{' '}
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/transaction"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <Transaction />{' '}
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/consultant/:consultant_id"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <ConsultantForm />{' '}
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path="/graphs"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <VisualizeBoard />{' '}
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="/graphs"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <VisualizeBoard />{' '}
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path="/income_expenses"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <IncomeExpense />{' '}
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="/income_expenses"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <IncomeExpense />{' '}
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path="main/inventory/:section/:inventory_item_id"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <InventoryPanel />{' '}
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="main/inventory/:section/:inventory_item_id"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <InventoryPanel />{' '}
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path="main/inventory/:section"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <InventoryPanel />{' '}
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="main/inventory/:section"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <InventoryPanel />{' '}
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path="main/inventory/:section/Order/:inventory_item_id/:medicine_id"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <OrderForm />{' '}
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="main/inventory/:section/Order/:inventory_item_id/:medicine_id"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <OrderForm />{' '}
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path="main/inventory/:section/Returns/:inventory_item_id/:order_id"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <ReturnForm />{' '}
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="main/inventory/:section/Returns/:inventory_item_id/:order_id"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <ReturnForm />{' '}
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path="main/inventory/:section/Distributors/:inventory_item_id"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <DistributorForm />{' '}
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="main/inventory/:section/Distributors/:inventory_item_id"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <DistributorForm />{' '}
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path="main/inventory/:section/Distributors/companies/:company_name/:company_id"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <DistributorCompaniesList />{' '}
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="main/inventory/:section/Distributors/companies/:company_name/:company_id"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <DistributorCompaniesList />{' '}
+                </PrivateRoute>
+              }
+            />
 
-          {/* //alternative_therapies */}
+            {/* //alternative_therapies */}
 
-          <Route
-            path="nutrition/:nutrition_id"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <NutritionManage />{' '}
-              </PrivateRoute>
-            }
-          ></Route>
-          <Route
-            path="feedback/:feedback_id"
-            element={
-              <PrivateRoute allowedRoles={['SuperAdmin']}>
-                <FeedbackList />{' '}
-              </PrivateRoute>
-            }
-          ></Route>
-        </>
-      )}
+            <Route
+              path="nutrition/:nutrition_id"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <NutritionManage />{' '}
+                </PrivateRoute>
+              }
+            ></Route>
+            <Route
+              path="feedback/:feedback_id"
+              element={
+                <PrivateRoute allowedRoles={['SuperAdmin']}>
+                  <FeedbackList />{' '}
+                </PrivateRoute>
+              }
+            ></Route>
+          </>
+        )}
 
-      {/* External Public Routes */}
-      <Route path="public/patients/addNew" element={<AddNewPatientExternal />} />
-      <Route path="public/appointment" element={<AddExternalAppointment />} />
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
+        {/* External Public Routes */}
+        <Route path="public/patients/addNew" element={<AddNewPatientExternal />} />
+        <Route path="public/appointment" element={<AddExternalAppointment />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    </>
   );
 }
