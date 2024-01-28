@@ -46,7 +46,13 @@
 
   // sampat
   $(document).ready(function () {
-    console.log('topiso')
+
+    var currentHostname = window.location.host;
+    var dynamicLink = document.getElementById('appdynamicLink');
+    let mainAppButton = document.getElementById('mainappdynamicLink')
+    dynamicLink.href = window.location.protocol + '/public/appointment';
+    mainAppButton.href = dynamicLink.href
+
     $(window).trigger("scroll");
     $(window).trigger("resize");
     preloaderSetup();
@@ -694,3 +700,4 @@
 
 
 })(jQuery); // End of use strict
+
