@@ -21,6 +21,7 @@ import citiesData from '../../Files/cities.json';
 import { RefrenceList, educationLevels, indianStatesAndUTs, statusOptions, PatientRefrenceList } from '../../Files/dropdownOptions';
 import statesData from '../../Files/states.json';
 import diagnosis from '../../Files/diagnosis.json';
+import { FaStar } from 'react-icons/fa';
 
 const fetchSingleItem = async (id) => {
   try {
@@ -217,6 +218,21 @@ export default function CustomerForm() {
     }
   };
 
+  const handleStarRating = (event, rating, name, id) => {
+    setFormData({
+      ...formData,
+      [name]: rating,
+    });
+  };
+
+  const handleCheckboxChange = (event, name, id) => {
+    const { checked } = event.target;
+    setFormData({
+      ...formData,
+      [name]: checked,
+    });
+  };
+
   return (
     <div className="m-3 rounded-md bg-slate-100 h-fit min-h-[100vh] lg:px-24 w-full p-10">
       <button
@@ -308,6 +324,44 @@ export default function CustomerForm() {
               </div>
             </div>
           )}
+
+          <div className="px-6 py-6 rounded-md ">
+            <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3 mt-12 mb-10">Others</h2>
+
+            <div className="flex justify-between">
+              <div className="flex gap-2 items-center">
+                <label htmlFor="CaseMark" className="text-md">
+                  Rate Case
+                </label>
+                <div className="flex items-center">
+                  {[...Array(5)].map((_, index) => (
+                    <FaStar key={index} onClick={(e) => handleStarRating(e, index + 1, 'CaseRating', formData?.Date)} className={`cursor-pointer h-5 w-5 ${index < formData?.CaseRating ? 'text-yellow-400 fas' : 'text-gray-300 far'}`} />
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 items-center gap-5">
+                <div className="flex items-center gap-2">
+                  <label htmlFor="CaseMark" className="text-md">
+                    Case Study
+                  </label>
+                  <input type="checkbox" id="CaseMark" checked={formData?.CaseMark} onChange={(e) => handleCheckboxChange(e, 'CaseMark', formData?.Date)} className="h-5 w-5" />
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <label htmlFor="ReviewMark" className="text-md">
+                    Review
+                  </label>
+                  <input type="checkbox" id="ReviewMark" checked={formData?.ReviewMark} onChange={(e) => handleCheckboxChange(e, 'ReviewMark', formData?.Date)} className="h-5 w-5" />
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+              <CustomSelect disabled={''} label="Patient Status" options={statusOptions} onChange={handleInputChange} value={formData?.PatientStatus} name={'PatientStatus'} placeholder={'--Select Status--'} />
+              <CustomSelect disabled={''} label="Type Of Patient" options={['Online', 'Offline']} onChange={handleInputChange} value={formData?.Patient_Type} name={'Patient_Type'} placeholder={'--Select Patient Type--'} />
+            </div>
+          </div>
 
           {/* create item button */}
           <div className="lg:w-80 mx-auto w-full px-5  ">

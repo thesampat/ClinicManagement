@@ -85,7 +85,6 @@ const addNewPatient = (data) => async (dispatch) => {
 
 
 
-
 // get all doctors
 const getAllDoctor = (data) => async (dispatch) => {
     dispatch({ type: types.GET_ALL_DOCTOR_PROCESSING });

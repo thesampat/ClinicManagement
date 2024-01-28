@@ -74,7 +74,7 @@ const AddPrescription = () => {
 
   const handleCtrlS = (event) => {
     if (event.ctrlKey && event.key === 's') {
-      event.preventDefault(); // Prevent the default browser save dialog
+      event.preventDefault();
       if (updateFormRef.current?.length > 0 || patientUpdateRef.current !== null) {
         updateFormRef.current?.length > 0 && dispatch(addNewPrescription(updateFormRef.current));
         patientUpdateRef.current !== null && updatePatient();
@@ -205,17 +205,6 @@ const AddPrescription = () => {
     }
   }, [updatePrescriptionProcessing]);
 
-  const handleStarRating = (event, rating, name, id) => {
-    setPatientUpdate((prev) => ({ ...prev, [name]: rating }));
-    patientUpdateRef.current = { ...patientUpdateRef.current, [name]: rating };
-  };
-
-  const handleCheckboxChange = (event, name, id) => {
-    const { checked } = event.target;
-    setPatientUpdate((prev) => ({ ...prev, [name]: checked }));
-    patientUpdateRef.current = { ...patientUpdateRef.current, [name]: checked };
-  };
-
   return (
     <div className="m-3 rounded-md bg-gray-100 h-fit lg:px-6 w-full p-5 bg-white">
       <button
@@ -238,35 +227,6 @@ const AddPrescription = () => {
             {singlePatientData?.firstName} {singlePatientData?.surname} – {singlePatientData?.customerId}
           </h3>
         </button>
-
-        <div className="flex gap-4">
-          <div className="flex gap-2 items-center">
-            <label htmlFor="CaseMark" className="text-md">
-              Rate Case
-            </label>
-            <div className="flex items-center">
-              {[...Array(5)].map((_, index) => (
-                <FaStar key={index} onClick={(e) => handleStarRating(e, index + 1, 'CaseRating', formData?.Date)} className={`cursor-pointer h-5 w-5 ${index < patientUpdate?.CaseRating ? 'text-yellow-400 fas' : 'text-gray-300 far'}`} />
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 items-center gap-5">
-            <div className="flex items-center gap-2">
-              <label htmlFor="CaseMark" className="text-md">
-                Case Study
-              </label>
-              <input type="checkbox" id="CaseMark" checked={patientUpdate?.CaseMark} onChange={(e) => handleCheckboxChange(e, 'CaseMark', formData?.Date)} className="h-5 w-5" />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <label htmlFor="ReviewMark" className="text-md">
-                Review
-              </label>
-              <input type="checkbox" id="ReviewMark" checked={patientUpdate?.ReviewMark} onChange={(e) => handleCheckboxChange(e, 'ReviewMark', formData?.Date)} className="h-5 w-5" />
-            </div>
-          </div>
-        </div>
 
         <div className="flex align-center gap-4">
           <button
@@ -407,10 +367,6 @@ const PrescriptionForm = ({ disabled, handelPriceTable, formData, setFormData, h
           <div className="h-[15vh] overflow-y-scroll">
             <SupplimentoryMedicineTable disabled={disabled} SupplimentoryMedicine={formData?.SupplimentoryMedicine} setFormData={setFormData} formData={formData} handleTableChange={handleTableChange} />
           </div>
-        </div>
-        <div className="">
-          <CustomSelect disabled={disabled} label="Patient Status" options={statusOptions} onChange={handelInputChange} value={formData?.PatientStatus} name={'PatientStatus'} placeholder={'--Select Status--'} id={formData?.Date} />
-          <CustomSelect disabled={disabled} label="Type Of Patient" options={['Online', 'Offline']} onChange={handelInputChange} value={formData?.Patient_Type} name={'Patient_Type'} placeholder={'--Select Patient Type--'} id={formData?.Date} />
         </div>
       </div>
     </div>

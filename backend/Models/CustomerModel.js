@@ -50,6 +50,9 @@ const customerSchema = new mongoose.Schema({
   CaseRating: { type: Number },
   CaseMark: { type: Boolean, default: false },
   ReviewMark: { type: Boolean, default: false },
+  PatientStatus: { type: String, default: '' },
+  Patient_Type: { type: String, default: '' }
+
 
 });
 

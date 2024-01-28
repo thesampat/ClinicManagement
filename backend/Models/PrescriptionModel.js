@@ -52,9 +52,7 @@ const prescriptionSchema = new mongoose.Schema({
   PaymentMode: { type: String },
   ReceivedBy: { type: String },
   paid: { type: Number },
-  PatientStatus: { type: String },
   Appointment_type: { type: String },
-  Patient_Type: { type: String }
 
 
 });

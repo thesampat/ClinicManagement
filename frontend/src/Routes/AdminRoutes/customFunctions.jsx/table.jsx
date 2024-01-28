@@ -8,8 +8,8 @@ const getHeadings = (sectionType) => {
       break;
 
     case 'patients':
-      main_head = ['firstName', 'mobile', 'patientStatus', 'location', 'primary', 'secondary', 'third', 'patientType'];
-      custom_head = ['Name', 'Phone', 'patient status', 'location', 'primary', 'secondary', 'teritery', 'patient type'];
+      main_head = ['firstName', 'mobile', 'patientStatus', 'location', 'primary', 'secondary', 'third', 'Patient_Type'];
+      custom_head = ['Name', 'Phone', 'patient status', 'location', 'primary', 'secondary', 'teritery', 'type'];
       break;
 
     case 'consultant':
