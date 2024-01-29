@@ -17,8 +17,8 @@ let END_POINT
 // }
 
 
-// END_POINT = `https://${window.location.host}/api`
-END_POINT = `http://127.0.0.1:5000`
+END_POINT = `https://${window.location.host}/api`
+// END_POINT = `http://127.0.0.1:5000`
 
 // jwtToken
 const getJwtToken = () => {
