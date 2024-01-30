@@ -81,6 +81,8 @@ const getTitle = (listType) => {
 export default function InventoryTable({ listType }) {
   // Redux selectors to access state
   const [tableData, setTableData] = useState(null);
+  const [medicineOrders, setMedicineOrders] = useState([]);
+
   const [query, setQuery] = useState({ search: '', page: 1, limit: 10, minQuantity: undefined });
   let tableHeading;
   const { inventory_item_id, section } = useParams();
@@ -100,6 +102,17 @@ export default function InventoryTable({ listType }) {
     listType === 'Returns' && fetchData(`inventory/returns/?search=${query?.search}`, query).then((data) => setTableData(data?.data));
     listType === 'medicines' && fetchData(`inventory/inventory/?search=${query?.search}`, query).then((data) => setTableData(data?.data));
   }, [listType, query]);
+
+  const handleCheckboxChange = (itemId) => {
+    const isItemInArray = medicineOrders.includes(itemId);
+
+    if (isItemInArray) {
+      const updatedOrders = medicineOrders.filter((id) => id !== itemId);
+      setMedicineOrders(updatedOrders);
+    } else {
+      setMedicineOrders([...medicineOrders, itemId]);
+    }
+  };
 
   return (
     <div className="m-3 rounded-md bg-slate-100 px-8 w-full min-h-[100vh] h-fit py-8">
@@ -210,9 +223,7 @@ export default function InventoryTable({ listType }) {
                             />
                           </>
                         ) : (
-                          <span onClick={() => navigate(`/main/inventory/Order/${listType == 'Order' ? 'Returns' : 'Order'}/addNew/${listType == 'Order' ? item?.Order_Id : item?._id}`)} className="bg-gray-100 cursor-pointer text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-gray-500">
-                            {listType == 'Order' ? 'Return' : 'Order'}
-                          </span>
+                          <input type="checkbox" className="w-6 h-6" checked={medicineOrders.includes(item?._id)} onChange={() => handleCheckboxChange(item?._id)} />
                         )}
                       </td>
                     </tr>
@@ -229,7 +240,18 @@ export default function InventoryTable({ listType }) {
           </table>
         </div>
 
-        <div className="flex justify-between ">
+        {listType == 'medicines' && (
+          <button
+            onClick={(e) => {
+              navigate(`/main/inventory/medicines/Order/addNew/${medicineOrders?.join(',')}`);
+            }}
+            className="bg-yellow-300 p-2 mt-2 rounded-md font-semibold text-black"
+          >
+            Order ({medicineOrders?.length})
+          </button>
+        )}
+
+        {/* <div className="flex justify-between ">
           <CustomSelect
             options={[10, 25, 50, 75, 100]}
             onChange={(e) => {
@@ -248,7 +270,7 @@ export default function InventoryTable({ listType }) {
             isPreviousDisabled={query.page === 1}
             isNextDisabled={tableData?.length < query.limit}
           />
-        </div>
+        </div> */}
       </div>
       <UploadMedicineModal
         isOpen={uploadMedicinePopup}

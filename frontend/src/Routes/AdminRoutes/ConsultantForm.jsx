@@ -209,10 +209,16 @@ export default function ConsultantForm() {
             <div className="px-6 py-6 rounded-md ">
               <h2 className="text-2xl font-semibold text-primary-400  border-l-4 border-primary-400 pl-3 mb-10">Reports Upload</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
-                <ChildrenComponent id={formData?.Date} label="EDUCATION DOCUMENT" formData={formData} uploadType="educationDoc" SectionType="consultant" />
-                <ChildrenComponent id={formData?.Date} label="EXPERIENCE DOCUMENT" formData={formData} uploadType="experienceDoc" SectionType="consultant" />
-                <ChildrenComponent id={formData?.Date} label="REGISTRATION DOCUMENT" formData={formData} uploadType="registrationDoc" SectionType="consultant" />
-                <ChildrenComponent id={formData?.Date} label="RESUME" formData={formData} uploadType="resumeDoc" SectionType="consultant" />
+                <ChildrenComponent id={formData?.Date} label="FORMAL EDUCATION" formData={formData} uploadType="formalEducationDoc" SectionType="consultant" />
+                <ChildrenComponent id={formData?.Date} label="PROFESSIONAL EDUCATION" formData={formData} uploadType="professionalEducationDoc" SectionType="consultant" />
+                <ChildrenComponent id={formData?.Date} label="ADDITIONAL EDUCATION" formData={formData} uploadType="additionalEducationDoc" SectionType="consultant" />
+                <ChildrenComponent id={formData?.Date} label="RECOGNITION" formData={formData} uploadType="recognition" SectionType="consultant" />
+                <ChildrenComponent id={formData?.Date} label="REGISTRATION" formData={formData} uploadType="registration" SectionType="consultant" />
+                <ChildrenComponent id={formData?.Date} label="EXPERIENCE" formData={formData} uploadType="experience" SectionType="consultant" />
+                <ChildrenComponent id={formData?.Date} label="RESUME" formData={formData} uploadType="resume" SectionType="consultant" />
+                <ChildrenComponent id={formData?.Date} label="ACHIEVEMENTS" formData={formData} uploadType="achievements" SectionType="consultant" />
+                <ChildrenComponent id={formData?.Date} label="CASE STUDIES" formData={formData} uploadType="caseStudies" SectionType="consultant" />
+                <ChildrenComponent id={formData?.Date} label="PAPER PRESENTATION" formData={formData} uploadType="paperPresentations" SectionType="consultant" />
                 <ChildrenComponent id={formData?.Date} label="OTHERS" formData={formData} uploadType="otherDocs" SectionType="consultant" />
               </div>
             </div>
@@ -326,7 +332,7 @@ const ChildrenComponent = ({ id, label, formData, uploadType, SectionType }) => 
         {uploadType == 'otherDocs' && `${formData?.[uploadType]?.length || 'No'} files uploaded`}
       </label>
       {uploadType == 'otherDocs' && (
-        <div className="flex flex-col bg-white p-2 h-[10vh] overflow-y-scroll gap-2">
+        <div className="flex flex-col bg-gray-200 p-2 h-[10vh] overflow-y-scroll gap-2">
           {formData?.[uploadType]?.map((file) => (
             <a className="text-blue-700 font-bold" target="_blank" href={`${END_POINT}/consultant/get/${file?.id}`}>
               {file?.name}

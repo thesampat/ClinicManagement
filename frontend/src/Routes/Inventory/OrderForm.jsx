@@ -6,7 +6,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch } from 'react-redux';
 import { UploadFiles, getJwtToken } from '../../Redux/AdminReducer/action';
-import { useNavigate, useParams } from 'react-router-dom';
+import { json, useNavigate, useParams } from 'react-router-dom';
 import { UploadFile, END_POINT, RemoveFile, UploadImages, DeleteImages } from '../../Redux/AdminReducer/action';
 import CustomSpinner from '../../Components/CommonComponents/CustomSpinner';
 import { FileUploadModal, ImageShowModal, ImageUploadModal, MultipleFileUploads } from '../../Components/CommonComponents/DoctorUploadModals';
@@ -30,16 +30,21 @@ const fetchSingleItem = async (id) => {
   }
 };
 
-const fetchMedicine = async (id) => {
+const fetchMedicine = async (ids) => {
   try {
-    const result = await axios.get(`${END_POINT}/inventory/inventory/${id}`, {
+    const params = ids
+      ?.split(',')
+      .map((id) => `id=${encodeURIComponent(id)}`)
+      .join('&');
+
+    const result = await axios.get(`${END_POINT}/inventory/inventoryids?${params}`, {
       headers: {
         Authorization: getJwtToken(),
       },
     });
     return result;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     toast.error('Something went wrong while fetching data');
   }
 };
@@ -111,25 +116,27 @@ const initialFormError = initialFormData;
 
 export default function OrderForm() {
   // define form state
-  const [formData, setFormData] = useState();
+  const [formData, setFormData] = useState([]);
   const [formError, setFormError] = useState(initialFormError);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const { inventory_item_id, medicine_id } = useParams();
   const [selectedMedicine, setSelectedMedicine] = useState(null);
   const [isProcessing, setIsPorcessing] = useState(false);
-  const dispatch = useDispatch();
-  const [profile_image_res, set_profile_image_res] = useState('');
   let [distributorsOptions, setDistributorsOptions] = useState([]);
 
   useEffect(() => {
     if (inventory_item_id === 'addNew') {
       fetchMedicine(medicine_id).then((e) => {
         setSelectedMedicine(e?.data);
-        const { company, nameOfMedicine, potencyOrPower, typeOfMedicine } = e.data;
-        setFormData({ company: company, nameOfMedicine: nameOfMedicine, potencyOrPower: potencyOrPower, typeOfMedicine: typeOfMedicine });
+
+        const mappedFormData = e?.data?.map((item) => {
+          const { company, nameOfMedicine, potencyOrPower, typeOfMedicine } = item;
+          let quantity = 0;
+          return { company, nameOfMedicine, potencyOrPower, typeOfMedicine, quantity };
+        });
+        setFormData(mappedFormData);
       });
-      setFormData(initialFormData);
+      setFormData([initialFormData]);
     } else {
       fetchSingleItem(inventory_item_id).then((e) => {
         setFormData(e?.data);
@@ -148,25 +155,39 @@ export default function OrderForm() {
   }, [selectedMedicine]);
 
   // handel input change
-  const handleInputChange = (event) => {
+  const handleInputChange = (event, rowIndex) => {
     let { name, value, type, checked } = event.target;
     let filteredi;
 
-    if (name == 'distributor') {
-      filteredi = distributorsOptions?.filter((d) => d?.companyName == value)?.[0];
+    if (name === 'distributor') {
+      filteredi = distributorsOptions?.filter((d) => d?.companyName === value)?.[0];
       value = filteredi?._id;
     }
 
-    setFormData({
-      ...formData,
+    // Create a copy of the current state
+    const updatedFormData = [...formData];
+
+    // If the row does not exist in the state, initialize it
+    if (!updatedFormData[rowIndex]) {
+      updatedFormData[rowIndex] = {};
+    }
+
+    // Update the values for the specific row
+    updatedFormData[rowIndex] = {
+      ...updatedFormData[rowIndex],
       [name]: value,
-      to: filteredi?.email,
-    });
+      to: filteredi?.email || distributorsOptions?.[0]?.email,
+    };
+
+    // Set the updated state
+    setFormData(updatedFormData);
   };
 
   const handleForm = () => {
     const trimmedFormData = { ...formData };
     let isValidInput = true;
+
+    console.log(formData, 'what is formdata');
 
     for (const key in trimmedFormData) {
       if (trimmedFormData?.hasOwnProperty(key)) {
@@ -178,15 +199,8 @@ export default function OrderForm() {
 
     let updatedFormError = { formError };
 
-    //  validate name
-    // if (!trimmedFormData?.name) {
-    //   updatedFormError.name = 'Name is required!';
-    //   isValidInput = false;
-    // }
-
     setFormError(updatedFormError);
 
-    console.log(formData);
     if (isValidInput) {
       setIsPorcessing(true);
       inventory_item_id == 'addNew' ? createItem(trimmedFormData, navigate, setIsPorcessing) : updateItem(trimmedFormData, setIsPorcessing);
@@ -205,25 +219,42 @@ export default function OrderForm() {
 
           <div className="px-6 py-6 rounded-md">
             <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3">Order Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-              <CustomInput label="Name of Medicine" name="nameOfMedicine" type="text" value={selectedMedicine?.nameOfMedicine} onChange={handleInputChange} />
-              <CustomInput label="Company" name="company" type="text" value={selectedMedicine?.company} onChange={handleInputChange} />
-              <CustomInput label="Potency / Power" name="potencyOrPower" type="text" value={selectedMedicine?.potencyOrPower} onChange={handleInputChange} />
-              <CustomInput label="Quantity" name="quantity" type="number" value={formData?.quantity} onChange={handleInputChange} />
-              <CustomInput label="Type of Medicine" name="typeOfMedicine" type="text" value={selectedMedicine?.typeOfMedicine} onChange={handleInputChange} />
-
-              <CustomSelect
-                onChange={(e) => {
-                  handleInputChange(e);
-                }}
-                options={distributorsOptions?.map((e) => e?.companyName)}
-                label="distributor"
-                value={formData?.distributor}
-                error={formError?.distributor}
-                name="distributor"
-                placeholder="-- Select Distributor --"
-              />
-            </div>
+            <table className="w-full mt-4">
+              <thead>
+                <tr>
+                  <th className="py-2">Name of Medicine</th>
+                  <th className="py-2">Company</th>
+                  <th className="py-2">Potency / Power</th>
+                  <th className="py-2">Quantity</th>
+                  <th className="py-2">Type of Medicine</th>
+                  <th className="py-2">Distributor</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedMedicine?.map((selectedMedicine, index) => (
+                  <tr key={index}>
+                    <td>
+                      <CustomInput disabled={true} label="Name of Medicine" name="nameOfMedicine" type="text" value={selectedMedicine?.nameOfMedicine} onChange={(e) => handleInputChange(e, index)} />
+                    </td>
+                    <td>
+                      <CustomInput disabled={true} label="Company" name="company" type="text" value={selectedMedicine?.company} onChange={(e) => handleInputChange(e, index)} />
+                    </td>
+                    <td>
+                      <CustomInput disabled={true} label="Potency / Power" name="potencyOrPower" type="text" value={selectedMedicine?.potencyOrPower} onChange={(e) => handleInputChange(e, index)} />
+                    </td>
+                    <td>
+                      <CustomInput label="Quantity" name="quantity" type="number" value={formData?.[index]?.quantity} onChange={(e) => handleInputChange(e, index)} />
+                    </td>
+                    <td>
+                      <CustomInput disabled={true} label="Type of Medicine" name="typeOfMedicine" type="text" value={selectedMedicine?.typeOfMedicine} onChange={(e) => handleInputChange(e, index)} />
+                    </td>
+                    <td>
+                      <CustomSelect onChange={(e) => handleInputChange(e, index)} options={distributorsOptions?.map((e) => e?.companyName)} label="Distributor" value={formData?.distributor} error={formError?.distributor} name="distributor" placeholder="-- Select Distributor --" />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
           {/* create item button */}

@@ -24,8 +24,8 @@ const getHeadings = (sectionType) => {
       break;
 
     case 'medicines':
-      main_head = ['nameOfMedicine', 'company', 'potencyOrPower', 'quantity', 'typeOfMedicine'];
-      custom_head = ['Medicine Name', 'Company', 'Power', 'Qty', 'Type'];
+      main_head = ['nameOfMedicine', 'company', 'potencyOrPower', 'quantity', 'email_id', 'typeOfMedicine'];
+      custom_head = ['Medicine Name', 'Company', 'Power', 'Qty', 'Email', 'Type'];
       break;
   }
 

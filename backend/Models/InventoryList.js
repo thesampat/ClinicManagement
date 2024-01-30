@@ -14,6 +14,7 @@ const inventoryListSchema = new mongoose.Schema({
     mrp: { type: Number },
     discount: { type: Number },
     hsnCode: { type: String },
+    package: { type: Number }
 });
 
 const InventoryList = mongoose.model("InventoryList", inventoryListSchema);

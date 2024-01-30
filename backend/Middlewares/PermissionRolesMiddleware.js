@@ -21,15 +21,6 @@ const checkRolesPermissions = (req, res, next) => {
     const { role, id } = access
     const { originalUrl } = req
 
-    //     Admin
-    // AssistantDoctor
-    // Consultant
-    // Customer
-    // Doctor
-    // MainDoctor
-    // Receptionist
-    // Customer
-
     let query = {}
 
     switch (originalUrl?.split('/')?.[1]) {

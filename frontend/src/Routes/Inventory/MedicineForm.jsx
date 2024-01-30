@@ -102,7 +102,6 @@ export default function MedicineInventoryForm() {
     }
   }, [inventory_item_id]);
 
-  // handel input change
   const handleInputChange = (event) => {
     const { name, value, type, checked } = event.target;
     setFormData({
@@ -125,35 +124,6 @@ export default function MedicineInventoryForm() {
 
     let updatedFormError = { formError };
 
-    //  validate name
-    // if (!trimmedFormData?.name) {
-    //   updatedFormError.name = 'Name is required!';
-    //   isValidInput = false;
-    // }
-
-    // // validate mobile
-    // if (!trimmedFormData?.number) {
-    //   updatedFormError.number = 'Phone number is required!';
-    //   isValidInput = false;
-    // } else if (!/^\d{10}$/.test(trimmedFormData?.number)) {
-    //   updatedFormError.number = 'Invalid phone number, must be 10 digits!';
-    //   isValidInput = false;
-    // }
-
-    // //  validate reference
-    // if (!trimmedFormData?.reference) {
-    //   updatedFormError.reference = 'reference is required!';
-    //   isValidInput = false;
-    // }
-
-    // //  validate purposeOfEnquiry
-    // if (!trimmedFormData?.purposeOfEnquiry) {
-    //   updatedFormError.purposeOfEnquiry = 'Purpose Of Enquiry is required!';
-    //   isValidInput = false;
-    // }
-
-    // setFormError(updatedFormError);
-
     if (isValidInput) {
       setIsPorcessing(true);
       inventory_item_id == 'addNew' ? createItem(trimmedFormData, navigate, setIsPorcessing) : updateItem(trimmedFormData, setIsPorcessing);
@@ -173,6 +143,7 @@ export default function MedicineInventoryForm() {
               <CustomInput label={'Quantity'} name={'quantity'} type={'number'} value={formData?.quantity} onChange={handleInputChange} placeholder={'Enter Quantity'} error={formError.quantity} />
               <CustomInput label={'Type of Medicine'} name={'typeOfMedicine'} type={'text'} value={formData?.typeOfMedicine} onChange={handleInputChange} placeholder={'Enter Type of Medicine'} error={formError.typeOfMedicine} />
               <CustomInput label={'Distributor Name'} name={'distributorName'} type={'text'} value={formData?.distributorName} onChange={handleInputChange} placeholder={'Enter Distributor Name'} error={formError.distributorName} />
+              <CustomInput label={'Package (ml)'} name={'package'} type={'number'} value={formData?.package} onChange={handleInputChange} placeholder={'Enter Package'} error={formError.package} />
               <CustomInput label={'Expiry Date'} name={'expiryDate'} type={'date'} value={formData?.expiryDate?.slice(0, 10)} onChange={handleInputChange} placeholder={'Enter Expiry Date'} error={formError.expiryDate} />
               <CustomInput label={'Minimum Quantity'} name={'minQuantity'} type={'number'} value={formData?.minQuantity} onChange={handleInputChange} placeholder={'Enter Minimum Quantity'} error={formError.minQuantity} />
               <CustomInput label={'Maximum Quantity'} name={'maxQuantity'} type={'number'} value={formData?.maxQuantity} onChange={handleInputChange} placeholder={'Enter Maximum Quantity'} error={formError.maxQuantity} />

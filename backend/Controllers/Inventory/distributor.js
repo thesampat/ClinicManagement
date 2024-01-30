@@ -1,5 +1,4 @@
 const { Distributor } = require('../../Models/DistributorModel'); // Adjust the path as needed
-const { InventoryList } = require('../../Models/InventoryList');
 
 // Create a new distributor
 const createDistributor = async (req, res) => {
@@ -73,8 +72,12 @@ const getAllDistributors = async (req, res) => {
 
 // Get a specific distributor by ID
 const getDistributorById = async (req, res) => {
+    const { id } = req.params
+
+    console.log(id)
     try {
-        const distributor = await Distributor.findById(req.params.id);
+        const distributor = await Distributor.findById(id);
+
         if (distributor) {
             res.status(200).json(distributor);
         } else {

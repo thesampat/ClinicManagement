@@ -18,18 +18,7 @@ const consultantSchema = new mongoose.Schema({
     role: { type: String, enum: ["Consultant"], required: true },
     phone: { type: String },
     consultantId: { type: String },
-    educationDoc: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'reports.file'
-    },
-    experienceDoc: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'reports.file'
-    },
-    resumeDoc: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'reports.file'
-    },
+
     availability: {
         type: Map,
         of: {
@@ -37,14 +26,61 @@ const consultantSchema = new mongoose.Schema({
             timeSlots: [timeSlotSchema],
         },
     },
-    registrationDoc: {
+    status: { type: String, default: 'Active' },
+    exit_date: { type: String },
+    exit_reason: { type: String },
+
+
+    formalEducationDoc: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'reports.file'
+    },
+    professionalEducationDoc: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'reports.file'
+    },
+    additionalEducationDoc: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'reports.file'
+    },
+    recognition: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'reports.file'
+    },
+    registration: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'reports.file'
+    },
+    experience: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'reports.file'
+    },
+    resume: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'reports.file'
+    },
+    achievements: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'reports.file'
+    },
+    others: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'reports.file'
+    },
+
+    caseStudies: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'reports.file'
+    },
+    paperPresentations: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'reports.file'
     },
     otherDocs: [],
-    status: { type: String, default: 'Active' },
-    exit_date: { type: String },
-    exit_reason: { type: String }
+
+
+
+
 })
 
 const Consultant = mongoose.model("Consultant", consultantSchema);

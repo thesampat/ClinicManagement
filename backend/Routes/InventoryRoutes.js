@@ -1,7 +1,7 @@
 const { createDistributor, getAllDistributors, getDistributorById, updateDistributorById, deleteDistributorById, addCompanyToDistributor, updateCompanyInDistributor, removeCompanyFromDistributor } = require("../Controllers/Inventory/distributor");
 const { createOrder, getAllOrders, getOrderById, updateOrderById, deleteOrderById, getAllOrderIds } = require("../Controllers/Inventory/order_purchase_list");
 const { createReturnOrder, getAllReturnOrders, getReturnOrderById, updateReturnOrderById, deleteReturnOrderById } = require("../Controllers/Inventory/order_return_list");
-const { createInventoryItem, getAllInventoryItems, getInventoryItemById, updateInventoryItemById, deleteInventoryItemById, uploadBulkInventory, dropInventoryCollection } = require("../Controllers/Inventory/inventory_list");
+const { createInventoryItem, getAllInventoryItems, getInventoryItemById, getInventoryItemByIds, updateInventoryItemById, deleteInventoryItemById, uploadBulkInventory, dropInventoryCollection } = require("../Controllers/Inventory/inventory_list");
 const express = require('express')
 const router = express.Router();
 
@@ -34,6 +34,7 @@ router.delete('/returns/:id', deleteReturnOrderById);
 router.post('/inventory', createInventoryItem);
 router.get('/inventory', getAllInventoryItems);
 router.get('/inventory/:id', getInventoryItemById);
+router.get('/inventoryIds', getInventoryItemByIds);
 router.put('/inventory/:id', updateInventoryItemById);
 router.delete('/inventory/:id', deleteInventoryItemById);
 router.post('/inventory/upload/bulk', uploadBulkInventory);

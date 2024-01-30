@@ -69,6 +69,23 @@ const getInventoryItemById = async (req, res) => {
     }
 };
 
+const getInventoryItemByIds = async (req, res) => {
+    let itemDatas = req.query.id;
+
+    console.log(itemDatas)
+    try {
+        const inventoryItems = await InventoryList.find({ _id: { $in: itemDatas } });
+
+        if (inventoryItems && inventoryItems.length > 0) {
+            res.status(200).json(inventoryItems);
+        } else {
+            res.status(404).json({ message: 'Inventory items not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 // Update an inventory item by ID
 const updateInventoryItemById = async (req, res) => {
     try {
@@ -135,5 +152,6 @@ module.exports = {
     updateInventoryItemById,
     deleteInventoryItemById,
     uploadBulkInventory,
-    dropInventoryCollection
+    dropInventoryCollection,
+    getInventoryItemByIds
 };

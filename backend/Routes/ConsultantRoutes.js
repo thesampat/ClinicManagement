@@ -16,8 +16,8 @@ router.route("/:id").delete(checkRolesPermissions, deleteConsultantById)
 router.route('/upload/:itemId/:uploadType').post(checkRolesPermissions, UploadReport)
 router.route('/upload_files/:itemId/:uploadType').post(checkRolesPermissions, UploadMultipleDocs)
 router.route('/remove/:id/:itemId/:uploadType').delete(checkRolesPermissions, deleteReport)
-router.route('/get/:id').get(checkRolesPermissions, getReport)
-router.route('/get/image/:id').get(checkRolesPermissions, getImage)
+router.route('/get/:id').get(getReport)
+router.route('/get/image/:id').get(getImage)
 router.route('/delete/image/:itemId/:uploadType').delete(checkRolesPermissions, deleteImages)
 
 module.exports = router

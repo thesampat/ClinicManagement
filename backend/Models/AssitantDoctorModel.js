@@ -31,23 +31,56 @@ const assistantDoctorSchema = new mongoose.Schema({
     },
     role: { type: String, enum: ["AssistantDoctor"], required: true },
     doctorId: { type: String },
-    educationDoc: {
+
+
+    formalEducationDoc: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'reports.file'
     },
-    experienceDoc: {
+    professionalEducationDoc: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'reports.file'
     },
-    resumeDoc: {
+    additionalEducationDoc: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'reports.file'
     },
-    registrationDoc: {
+    recognition: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'reports.file'
+    },
+    registration: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'reports.file'
+    },
+    experience: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'reports.file'
+    },
+    resume: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'reports.file'
+    },
+    achievements: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'reports.file'
+    },
+    others: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'reports.file'
+    },
+
+    caseStudies: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'reports.file'
+    },
+    paperPresentations: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'reports.file'
     },
     otherDocs: [],
+
+
     status: { type: String, default: 'Active' },
     exit_date: { type: String },
     exit_reason: { type: String }

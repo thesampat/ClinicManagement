@@ -14,7 +14,6 @@ const getEmailTemplate = (body, Order_Id, distributor_user) => {
         typeOfMedicine
     } = body;
 
-    console.log(distributor_user)
 
     const template = `
         Hello ${distributor_user?.companyName},
@@ -70,15 +69,23 @@ const generateOrderId = async () => {
 // Create a new order
 const createOrder = async (req, res) => {
     try {
-        const Order_Id = await generateOrderId()
-        let distributor_user = await Distributor.findOne({ _id: req.body.distributor })
-        console.log(distributor_user)
-        await sendEmail(distributor_user?.email, 'Medicine Order Request From AdityaHomeopathic', getEmailTemplate(req.body, Order_Id, distributor_user))
-        const newOrder = await OrderListModel.create({ ...req.body, Order_Id: Order_Id });
-        res.status(201).json({ msg: 'Purchase Order Created', data: newOrder?._id, });
+        const orderIds = [];
+
+        for (const key in req.body) {
+            const orderData = req.body[key];
+            const Order_Id = await generateOrderId();
+            let distributor_user = await Distributor.findOne({ email: orderData.to });
+
+
+            await sendEmail(distributor_user?.email, 'Medicine Order Request From AdityaHomeopathic', getEmailTemplate(orderData, Order_Id, distributor_user));
+            const newOrder = await OrderListModel.create({ ...orderData, Order_Id });
+            orderIds.push(newOrder?._id);
+        }
+
+        res.status(201).json({ msg: 'Purchase Orders Created', data: orderIds });
     } catch (error) {
-        console.log(error)
-        res.status(500).json({ error: 'Failed to create order' });
+        console.error(error);
+        res.status(500).json({ error: 'Failed to create orders' });
     }
 };
 

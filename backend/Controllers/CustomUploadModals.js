@@ -42,14 +42,13 @@ const storage = new GridFsStorage({
     },
 });
 
-// POST endpoint for uploading a single report
 const UploadReport = async (req, res) => {
     const itemId = req.params.itemId;
     const uploadType = req.params.uploadType;
     const CustomModal = getModal(req.baseUrl)
 
     if (['pictures', 'profile_image']?.includes(uploadType)) {
-        const upload = multer({ storage }).array('images', 10); // 'document' can be an array of files with a maximum limit of 10
+        const upload = multer({ storage }).array('images', 10);
         upload(req, res, async (uploadErr) => {
             if (uploadErr) {
                 console.error('Error uploading pictures:', uploadErr);
@@ -99,8 +98,6 @@ const UploadMultipleDocs = async (req, res) => {
         try {
             const fileData = req.files.map((file) => ({ name: file.originalname, id: file.id }));
 
-            // Assuming CustomModal model has a property corresponding to the uploadType (e.g., pictures, reports)
-            // Update the following line based on your actual CustomModal model structure
             await CustomModal.findByIdAndUpdate(itemId, { [uploadType]: fileData }, { new: true });
 
             return res.status(200).send('uploaded');
@@ -117,7 +114,6 @@ const deleteReport = async (req, res) => {
     const uploadType = req.params.uploadType;
     const CustomModal = getModal(req.baseUrl)
 
-    // Find the file by filename
     let cursor;
     try {
         cursor = bucket.find(new mongoose.Types.ObjectId(file_id));
@@ -131,7 +127,6 @@ const deleteReport = async (req, res) => {
         return res.status(404).json({ error: 'File not found' });
     }
 
-    // Delete each file found by their _id
     for (const file of files) {
         const fileId = file._id;
         try {
@@ -153,17 +148,20 @@ const getReport = async (req, res) => {
     const fileId = req.params.id;
 
     try {
+        const fileTypeRes = bucket.find(new mongoose.Types.ObjectId(fileId))
+        const files = await fileTypeRes.toArray();
+
         const downloadStream = bucket.openDownloadStream(new mongoose.Types.ObjectId(fileId));
         downloadStream.on('error', (err) => {
             console.error('Error while opening download stream:', err);
             return res.status(500).json({ error: 'An error occurred' });
         });
 
-        // Set appropriate response headers (content type and disposition)
-        res.setHeader('Content-Type', 'application/pdf'); // Set the appropriate content type
-        res.setHeader('Content-Disposition', `inline`); // Specify how the browser should handle the file
+        res.setHeader('Content-Type', files?.[0]?.contentType);
+        res.setHeader('Content-Disposition', `inline`);
+        const dispositionHeader = `inline; filename="${files?.[0]?.filename}"`;
+        res.setHeader('Content-Disposition', dispositionHeader);
 
-        // Pipe the download stream to the response
         downloadStream.pipe(res);
     } catch (error) {
         res.status(400).send('Could not get report');
@@ -180,11 +178,9 @@ const getImage = async (req, res) => {
             return res.status(500).json({ error: 'An error occurred' });
         });
 
-        // Set appropriate response headers (content type and disposition)
-        res.setHeader('Content-Type', 'image'); // Set the appropriate content type
-        res.setHeader('Content-Disposition', `inline`); // Specify how the browser should handle the file
+        res.setHeader('Content-Type', 'image');
+        res.setHeader('Content-Disposition', `inline`);
 
-        // Pipe the download stream to the response
         downloadStream.pipe(res);
     } catch (error) {
         res.status(400).send('Count not load image');
@@ -198,16 +194,13 @@ const deleteImages = async (req, res) => {
     const CustomModal = getModal(req.baseUrl)
 
 
-    // Check if fileIds is an array
     if (!Array.isArray(fileIds)) {
         return res.status(400).json({ error: 'fileIds must be an array' });
     }
 
-    // Initialize an array to store promises for file deletions
     const deletePromises = [];
     let cursor;
     for (const fileId of fileIds) {
-        // Find the file by its ID
         try {
             cursor = bucket.find(new mongoose.Types.ObjectId(fileId));
         } catch (error) {
@@ -224,10 +217,8 @@ const deleteImages = async (req, res) => {
     }
 
     try {
-        // Wait for all file deletions to complete
         await Promise.all(deletePromises);
 
-        // // Update the prescription to remove the specified uploadType
         await CustomModal.findByIdAndUpdate(itemId, { $unset: { [uploadType]: 1 } }, { new: true });
         res.status(200).send('Files Removed');
     } catch (error) {

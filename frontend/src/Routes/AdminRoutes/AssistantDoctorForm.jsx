@@ -187,11 +187,18 @@ export default function AssistantDoctorForm() {
             <div className="px-6 py-6 rounded-md ">
               <h2 className="text-2xl font-semibold text-primary-400  border-l-4 border-primary-400 pl-3 mb-10">Reports Upload</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
-                <ChildrenComponent id={formData?.Date} label="EDUCATION DOCUMENT" formData={formData} uploadType="educationDoc" SectionType="assistantDoctor" />
-                <ChildrenComponent id={formData?.Date} label="EXPERIENCE DOCUMENT" formData={formData} uploadType="experienceDoc" SectionType="assistantDoctor" />
-                <ChildrenComponent id={formData?.Date} label="REGISTRATION DOCUMENT" formData={formData} uploadType="registrationDoc" SectionType="assistantDoctor" />
-                <ChildrenComponent id={formData?.Date} label="RESUME" formData={formData} uploadType="resumeDoc" SectionType="assistantDoctor" />
+                <ChildrenComponent id={formData?.Date} label="FORMAL EDUCATION" formData={formData} uploadType="formalEducationDoc" SectionType="assistantDoctor" />
+                <ChildrenComponent id={formData?.Date} label="PROFESSIONAL EDUCATION" formData={formData} uploadType="professionalEducationDoc" SectionType="assistantDoctor" />
+                <ChildrenComponent id={formData?.Date} label="ADDITIONAL EDUCATION" formData={formData} uploadType="additionalEducationDoc" SectionType="assistantDoctor" />
+                <ChildrenComponent id={formData?.Date} label="RECOGNITION" formData={formData} uploadType="recognition" SectionType="assistantDoctor" />
+                <ChildrenComponent id={formData?.Date} label="REGISTRATION" formData={formData} uploadType="registration" SectionType="assistantDoctor" />
+                <ChildrenComponent id={formData?.Date} label="EXPERIENCE" formData={formData} uploadType="experience" SectionType="assistantDoctor" />
+                <ChildrenComponent id={formData?.Date} label="RESUME" formData={formData} uploadType="resume" SectionType="assistantDoctor" />
+                <ChildrenComponent id={formData?.Date} label="ACHIEVEMENTS" formData={formData} uploadType="achievements" SectionType="assistantDoctor" />
+                <ChildrenComponent id={formData?.Date} label="CASE STUDIES" formData={formData} uploadType="caseStudies" SectionType="assistantDoctor" />
+                <ChildrenComponent id={formData?.Date} label="PAPER PRESENTATION" formData={formData} uploadType="paperPresentations" SectionType="assistantDoctor" />
                 <ChildrenComponent id={formData?.Date} label="OTHERS" formData={formData} uploadType="otherDocs" SectionType="assistantDoctor" />
+
                 {/* <ChildrenComponent id={formData?.Date} label="Pictures" formData={formData} uploadType="pictures" SectionType="previousTreatmentNotes" /> */}
               </div>
             </div>
