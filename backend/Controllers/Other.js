@@ -1,7 +1,7 @@
 const { UserRolePermissionModel } = require('./../Models/UserRolesPermission');
 
 
-const setPermissionRoles = async (name, role, id) => {
+const setPermissionRoles = async (name, role, email, id) => {
 
     let userExist = await UserRolePermissionModel.countDocuments({ name }).get()
 
@@ -10,6 +10,7 @@ const setPermissionRoles = async (name, role, id) => {
             user_id: id,
             username: name,
             role: role,
+            email: email
         });
 
         await newUserRolePermission.save();

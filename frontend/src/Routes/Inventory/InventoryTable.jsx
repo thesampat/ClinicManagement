@@ -98,17 +98,12 @@ export default function InventoryTable({ listType }) {
     listType === 'Distributors' && fetchData(`inventory/distributors/?search=${query?.search}`, query).then((data) => setTableData(data?.data));
     listType === 'Order' && fetchData(`inventory/orders/?search=${query?.search}`, query).then((data) => setTableData(data?.data));
     listType === 'Returns' && fetchData(`inventory/returns/?search=${query?.search}`, query).then((data) => setTableData(data?.data));
-    listType === 'medicineDetections' && fetchData(`inventory/inventory/?search=${query?.search}`, query).then((data) => setTableData(data?.data));
+    listType === 'medicines' && fetchData(`inventory/inventory/?search=${query?.search}`, query).then((data) => setTableData(data?.data));
   }, [listType, query]);
 
   return (
     <div className="m-3 rounded-md bg-slate-100 px-8 w-full min-h-[100vh] h-fit py-8">
-      {!inventory_item_id && listType !== 'medicineDetections' && (
-        <button onClick={(e) => navigate(`${section}/addNew`)} className="p-2 bg-black text-white rounded fond-semibold">
-          Add {getTitle(listType)}
-        </button>
-      )}
-      {listType === 'medicineDetections' && (
+      {listType === 'inventory' && (
         <div className="flex gap-3 justify-between">
           <button onClick={(e) => setuploadMedicinePopup(true)} className="p-2 bg-black text-white rounded fond-semibold">
             Upload Medicines
@@ -125,6 +120,13 @@ export default function InventoryTable({ listType }) {
           </div>
         </div>
       )}
+
+      {!inventory_item_id && listType !== 'medicines' && (
+        <button onClick={(e) => navigate(`${section}/addNew`)} className="p-2 bg-black text-white rounded fond-semibold">
+          Add {getTitle(listType)}
+        </button>
+      )}
+
       <hr className="bg-black h-1 w-full my-5" />
       <div className="flex justify-between flex-wrap items-center ">
         <div className="mt-5 mb-2">
@@ -171,7 +173,7 @@ export default function InventoryTable({ listType }) {
                         </td>
                       ))}
                       <td className="px-4 py-3 border border-gray-300 whitespace-nowrap">
-                        {listType !== 'medicineDetections' && listType !== 'Order' ? (
+                        {listType !== 'medicines' && listType !== 'Order' ? (
                           <>
                             {
                               <span
@@ -252,7 +254,6 @@ export default function InventoryTable({ listType }) {
         isOpen={uploadMedicinePopup}
         onClose={() => setuploadMedicinePopup(false)}
         onUpload={(selectedFile) => {
-          console.log('the selcted file', selectedFile);
           uploadBulk('inventory/inventory/upload/bulk', selectedFile?.data);
         }}
         onDownloadTemplate={() => {}}

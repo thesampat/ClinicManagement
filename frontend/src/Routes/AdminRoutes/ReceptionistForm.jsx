@@ -60,7 +60,7 @@ const updateItem = async (data, setIsPorcessing) => {
     }, 500);
   } catch (error) {
     setIsPorcessing(false);
-    toast.success('Failed To Updated');
+    toast.error('Failed To Updated');
   }
 };
 

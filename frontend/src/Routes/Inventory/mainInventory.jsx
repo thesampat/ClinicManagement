@@ -26,8 +26,8 @@ const InventoryPanel = () => {
             <h4 className="py-2 px-4 rounded-md">Returns</h4>
           </NavLink>
 
-          <NavLink to="/main/inventory/medicineDetections" className={({ isActive }) => (isActive ? 'bg-blue-300 rounded-lg' : 'text-black rounded-lg')} activeClassName="active-link">
-            <h4 className="py-2 px-4 rounded-md">Medicine Detection</h4>
+          <NavLink to="/main/inventory/medicines" className={({ isActive }) => (isActive ? 'bg-blue-300 rounded-lg' : 'text-black rounded-lg')} activeClassName="active-link">
+            <h4 className="py-2 px-4 rounded-md">Medicines</h4>
           </NavLink>
         </div>
 

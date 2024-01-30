@@ -119,13 +119,10 @@ const uploadBulkInventory = async (req, res) => {
             return { 'medicine_id': itemId, ...item };
         }));
 
-        // if (bulkInventoryItems.length > 16) {
-        //     return res.status(400).json({ error: 'Bulk upload exceeds the maximum limit of 16 items.' });
-        // }
-
         const newInventoryItems = await InventoryList.create(bulkInventoryItems);
         res.status(201).json('uploaded');
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: error.message });
     }
 };

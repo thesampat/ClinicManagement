@@ -31,7 +31,7 @@ const adminRegister = async (req, res) => {
                         role: Role,
                     });
 
-                    await setPermissionRoles(name, Role, new_admin?._id)
+                    await setPermissionRoles(name, Role, email, new_admin?._id)
                     await new_admin.save();
                     return res.status(201).send({ msg: "Signup Successful" });
                 } catch (error) {

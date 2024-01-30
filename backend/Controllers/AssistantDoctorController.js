@@ -50,7 +50,7 @@ const assistantDoctorRegisterBySuperAdmin = async (req, res) => {
                     availability
                 })
 
-                await setPermissionRoles(name, Role, newDoctor?._id)
+                await setPermissionRoles(name, Role, email, newDoctor?._id)
                 let newDoctorRes = await newDoctor.save()
 
                 return res.status(201).send({ msg: 'Assistant doctor registered successfully.', data: newDoctorRes?._id });

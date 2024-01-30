@@ -55,7 +55,7 @@ app.use("/appointment", appointmentRoutes);
 app.use("/prescription", prescriptionRoutes);
 app.use("/enquiry", enquiryRoutes);
 app.use("/public/customer", createCustomerByExternal);
-app.use("/public/appointment",createExternalAppointment)
+app.use("/public/appointment", createExternalAppointment)
 app.use("/incomeExpense", IncomeAndExpensesRouter)
 app.use("/inventory", inventory)
 app.use("/configAccess", RolesPermissionRoutes)

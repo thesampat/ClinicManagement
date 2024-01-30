@@ -32,7 +32,7 @@ const MainDoctorRegister = async (req, res) => {
             MainDoctorId,
           });
 
-          await setPermissionRoles(name, Role, new_MainDoctor?._id)
+          await setPermissionRoles(name, Role, email, new_MainDoctor?._id)
           await new_MainDoctor.save();
           return res.status(201).send({ msg: "Signup Successfully" });
         } catch (error) {

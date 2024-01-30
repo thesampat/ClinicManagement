@@ -53,6 +53,6 @@ const assistantDoctorSchema = new mongoose.Schema({
     exit_reason: { type: String }
 });
 
-const AssistantDoctor = mongoose.model("assistantDoctor", assistantDoctorSchema);
+const AssistantDoctor = mongoose.model("AssistantDoctor", assistantDoctorSchema);
 
 module.exports = { AssistantDoctor };

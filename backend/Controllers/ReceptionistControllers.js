@@ -65,7 +65,7 @@ const receptionistRegisterBySuperAdmin = async (req, res) => {
                     experience_details,
                     location,
                 })
-                await setPermissionRoles(name, Role, newReceptionist?._id)
+                await setPermissionRoles(name, Role, email, newReceptionist?._id)
                 await newReceptionist.save()
                 return res.status(201).send({ msg: 'Receptionist registered successfully.', data: newReceptionist?._id });
             } catch (error) {
@@ -147,8 +147,8 @@ const updateReceptionistProfile = async (req, res) => {
         receptionist.experience_details = req.body.experience_details || receptionist.experience_details
         receptionist.location = req.body.location || receptionist.location
         receptionist.status = req.body.exit_date && 'Left'
-        receptionist.exit_date = req.body.exit_date || doctor.exit_date
-        receptionist.exit_reason = req.body.exit_reason || doctor.exit_reason
+        receptionist.exit_date = req.body.exit_date || ''
+        receptionist.exit_reason = req.body.exit_reason || ''
         const updatedReceptionist = await receptionist.save()
 
         res.json(updatedReceptionist)

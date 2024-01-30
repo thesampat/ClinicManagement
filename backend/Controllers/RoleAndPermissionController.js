@@ -1,6 +1,6 @@
+const { default: mongoose } = require('mongoose');
 const { UserRolePermissionModel } = require('./../Models/UserRolesPermission');
 
-// Create a new user role and permissions entry
 const createUserRolePermission = async (req, res) => {
     try {
         const { username, role, permissions, active } = req.body;
@@ -18,7 +18,6 @@ const createUserRolePermission = async (req, res) => {
     }
 };
 
-// Get all user role and permissions entries
 const getAllUserRolePermissions = async (req, res) => {
     try {
         const userRolePermissions = await UserRolePermissionModel.find();
@@ -31,9 +30,9 @@ const getAllUserRolePermissions = async (req, res) => {
 const getAllUsers = async (req, res) => {
     try {
         const userRolePermissions = await UserRolePermissionModel.find(
-            { role: { $ne: "MainDoctor" } },
+            {},
             { user_id: 1, role: 1, username: 1, _id: 0 }
-        ).exec();
+        );
 
         res.json(userRolePermissions);
     } catch (error) {
@@ -41,7 +40,6 @@ const getAllUsers = async (req, res) => {
     }
 };
 
-// Get user role and permissions entry by username
 const getUserRolePermissionByUsername = async (req, res) => {
 
     try {
@@ -59,7 +57,6 @@ const getUserRolePermissionByUsername = async (req, res) => {
     }
 };
 
-// Update user role and permissions entry by username
 const updateUserRolePermission = async (req, res) => {
     try {
         const { username } = req.params;
@@ -81,7 +78,6 @@ const updateUserRolePermission = async (req, res) => {
     }
 };
 
-// Delete user role and permissions entry by username
 const deleteUserRolePermission = async (req, res) => {
     try {
         const { username } = req.params;
@@ -99,11 +95,41 @@ const deleteUserRolePermission = async (req, res) => {
     }
 };
 
+const getUserDetails = async (req, res) => {
+    const { username, role } = req.query
+    let userModel
+    try {
+        userModel = mongoose.model(role);
+    } catch (error) {
+        return res.status(500).send(`No model found role: ${role}`);
+
+    }
+
+    try {
+        if (userModel) {
+            console.log(username, 'what is username')
+            const user = await userModel.findOne({ name: username }, { email: 1 });
+            if (user) {
+                res.status(200).send(user?.['email']);
+            } else {
+                res.status(404).send(`User not found for username: ${username}`);
+            }
+        } else {
+            res.status(500).send(`could not fetch`);
+
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(error)
+    }
+}
+
 module.exports = {
     createUserRolePermission,
     getAllUserRolePermissions,
     getUserRolePermissionByUsername,
     updateUserRolePermission,
     deleteUserRolePermission,
-    getAllUsers
+    getAllUsers,
+    getUserDetails
 };

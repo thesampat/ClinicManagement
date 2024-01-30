@@ -67,62 +67,52 @@ const createCustomerBySuperAdmin = async (req, res) => {
 
 
     const Role = "Customer";
-    const { role } = req.user;
 
-    if (role === "SuperAdmin" || role === "Receptionist") {
-      const customerData = {
-        firstName,
-        surname,
-        email,
-        bloodGroup,
-        gender,
-        middleName,
-        maritalStatus,
-        motherTongue,
-        education,
-        country,
-        state,
-        city,
-        area,
-        reference,
-        patient_reference,
-        location,
-        pincode,
-        patientStatus,
-        profession,
-        pic,
-        mobile,
-        role: Role,
-        status,
-        patientId,
-        date,
-        dateOfBirth,
-        anniversary,
-        weight,
-        height,
-        diagnosis,
-        package,
-        industry,
-        customerId
-      };
+    const customerData = {
+      firstName,
+      surname,
+      email,
+      bloodGroup,
+      gender,
+      middleName,
+      maritalStatus,
+      motherTongue,
+      education,
+      country,
+      state,
+      city,
+      area,
+      reference,
+      patient_reference,
+      location,
+      pincode,
+      patientStatus,
+      profession,
+      pic,
+      mobile,
+      role: Role,
+      status,
+      patientId,
+      date,
+      dateOfBirth,
+      anniversary,
+      weight,
+      height,
+      diagnosis,
+      package,
+      industry,
+      customerId
+    };
 
-      const customer = new Customer(customerData);
+    const customer = new Customer(customerData);
 
-      // Save the Customer record
-      let newCustomer = await customer.save();
+    // Save the Customer record
+    let newCustomer = await customer.save();
 
-      let message = "Customer created by ";
-      if (role === "SuperAdmin") {
-        message += "Main Doctor successfully.";
-      } else {
-        message += "Receptionist successfully.";
-      }
+    let message = "Customer created by ";
 
-      return res.status(201).send({ msg: 'Patient registered successfully.', data: newCustomer?._id });
+    return res.status(201).send({ msg: 'Patient registered successfully.', data: newCustomer?._id });
 
-    } else {
-      return res.status(401).json({ error: 'Unauthorized access' });
-    }
   } catch (error) {
     console.log(error)
     return res.status(500).json({ error: error.message });

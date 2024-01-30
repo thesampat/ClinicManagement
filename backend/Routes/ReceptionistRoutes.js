@@ -12,7 +12,7 @@ router.route("/").get(checkRolesPermissions, getAllReceptionist)
 router.route("/:id").get(checkRolesPermissions, getSingleReceptionist)
 router.route("/login").post(receptionistLogin);
 router.route("/profile/:receptionistId").put(checkRolesPermissions, updateReceptionistProfile);
-router.route("/:id").delete(checkRolesPermissions, protectSuperAdmin, deleteReceptionistById)
+router.route("/:id").delete(checkRolesPermissions, deleteReceptionistById)
 
 router.route('/upload/:itemId/:uploadType').post(checkRolesPermissions, UploadReport)
 router.route('/upload_files/:itemId/:uploadType').post(checkRolesPermissions, UploadMultipleDocs)

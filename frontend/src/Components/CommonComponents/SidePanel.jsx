@@ -33,7 +33,7 @@ const SidePanel = () => {
     // { id: 7, text: 'Income & Expn', to: '/income_expenses', icon: <AiFillAccountBook /> },
     { id: 8, text: 'Inventory', to: '/main/inventory/inventory/addNew', icon: <GiChest /> },
     // { id: 9, text: 'Nutrition', to: '/nutrition', icon: <GiChest /> },
-    { id: 10, text: 'feedback', to: '/feedback', icon: <GiChest /> },
+    { id: 10, text: 'Feedback', to: '/feedback', icon: <GiChest /> },
   ];
 
   return (
