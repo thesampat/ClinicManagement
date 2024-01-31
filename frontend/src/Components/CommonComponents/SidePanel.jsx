@@ -67,7 +67,7 @@ const SidePanel = () => {
         </text>
       </svg> */}
         {!isCollapsed && (
-          <li className="flex items-center rounded-md w-100 mt-10">
+          <li className="flex items-center rounded-md w-100 mt-10 mx-3">
             <div className="ProfileName flex flex-col gap-2">
               <div className="flex justify-center items-center">
                 <BsPerson className="h-12 w-12" />

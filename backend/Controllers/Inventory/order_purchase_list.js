@@ -126,8 +126,24 @@ const getOrderById = async (req, res) => {
     }
 };
 
+const getOrderByIds = async (req, res) => {
+
+    let { orders } = req.query
+
+    try {
+        const order = await OrderListModel.find({ '_id': { $in: orders } });
+        if (order) {
+            res.status(200).json(order);
+        } else {
+            res.status(404).json({ message: 'OrderListModel not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
 const getAllOrderIds = async (req, res) => {
-    console.log('running')
     try {
         const orders = await OrderListModel.find({}, 'Order_Id');
         const orderIds = orders.map(order => order.Order_Id);
@@ -177,5 +193,6 @@ module.exports = {
     getOrderById,
     updateOrderById,
     deleteOrderById,
-    getAllOrderIds
+    getAllOrderIds,
+    getOrderByIds
 };

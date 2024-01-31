@@ -72,7 +72,6 @@ const getInventoryItemById = async (req, res) => {
 const getInventoryItemByIds = async (req, res) => {
     let itemDatas = req.query.id;
 
-    console.log(itemDatas)
     try {
         const inventoryItems = await InventoryList.find({ _id: { $in: itemDatas } });
 

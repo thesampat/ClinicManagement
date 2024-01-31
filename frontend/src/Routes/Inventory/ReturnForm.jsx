@@ -1,33 +1,24 @@
 import React, { useEffect, useState } from 'react';
+import CustomBreadcrumbs from '../../Components/CommonComponents/CustomBreadcrumbs';
 import CustomInput from '../../Components/CommonComponents/CustomInput';
 import CustomButton from '../../Components/CommonComponents/CustomButton';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch } from 'react-redux';
-import { getJwtToken } from '../../Redux/AdminReducer/action';
-import { useNavigate, useParams } from 'react-router-dom';
-import { END_POINT } from '../../Redux/AdminReducer/action';
+import { UploadFiles, getJwtToken } from '../../Redux/AdminReducer/action';
+import { json, useNavigate, useParams } from 'react-router-dom';
+import { UploadFile, END_POINT, RemoveFile, UploadImages, DeleteImages } from '../../Redux/AdminReducer/action';
 import CustomSpinner from '../../Components/CommonComponents/CustomSpinner';
+import { FileUploadModal, ImageShowModal, ImageUploadModal, MultipleFileUploads } from '../../Components/CommonComponents/DoctorUploadModals';
+import ModalCustom from '../../Components/CommonComponents/ModalCustomPopup';
+import CustomTextarea from '../../Components/CommonComponents/CustomTextarea';
+import CustomImageInput from '../../Components/CommonComponents/CustomImageInput';
 import axios from 'axios';
 import CustomSelect from '../../Components/CommonComponents/CustomSelect';
 
-const fetchOrdersIds = async () => {
-  try {
-    const result = await axios.get(`${END_POINT}/inventory/ids/orders/`, {
-      headers: {
-        Authorization: getJwtToken(),
-      },
-    });
-    return result;
-  } catch (error) {
-    console.log(error);
-    toast.error('Something went wrong while fetching data');
-  }
-};
-
 const fetchSingleItem = async (id) => {
   try {
-    const result = await axios.get(`${END_POINT}/inventory/returns/${id}`, {
+    const result = await axios.get(`${END_POINT}/inventory/orders/${id}`, {
       headers: {
         Authorization: getJwtToken(),
       },
@@ -39,6 +30,40 @@ const fetchSingleItem = async (id) => {
   }
 };
 
+const fetchOrders = async (ids) => {
+  try {
+    const params = ids
+      ?.split(',')
+      .map((id) => `orders=${encodeURIComponent(id)}`)
+      .join('&');
+
+    const result = await axios.get(`${END_POINT}/inventory/ordersIds?${params}`, {
+      headers: {
+        Authorization: getJwtToken(),
+      },
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    toast.error('Something went wrong while fetching data');
+  }
+};
+
+const fetchDistributor = async (cname) => {
+  const params = cname.map((id) => `mname=${encodeURIComponent(id)}`).join('&');
+
+  try {
+    const result = await axios.get(`${END_POINT}/inventory/distributorsByMedicine?${params}`, {
+      headers: {
+        Authorization: getJwtToken(),
+      },
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    toast.error('Something went wrong while fetching data');
+  }
+};
 const createItem = async (data, navigate, setIsPorcessing) => {
   try {
     const result = await axios.post(`${END_POINT}/inventory/returns`, data, {
@@ -46,10 +71,11 @@ const createItem = async (data, navigate, setIsPorcessing) => {
         Authorization: getJwtToken(),
       },
     });
+    let { data: id } = result?.data;
     setIsPorcessing(false);
-    toast.success('Return Order Created Successfully');
+    toast.success('Order Created Successfully');
     setTimeout(() => {
-      navigate(`/main/inventory/Returns`);
+      navigate(`/main/inventory/Order`);
     }, 1000);
   } catch (error) {
     setIsPorcessing(false);
@@ -59,7 +85,7 @@ const createItem = async (data, navigate, setIsPorcessing) => {
 
 const updateItem = async (data, setIsPorcessing) => {
   try {
-    const result = await axios.put(`${END_POINT}/inventory/returns/${data._id}`, data, {
+    const result = await axios.put(`${END_POINT}/inventory/orders/${data._id}`, data, {
       headers: {
         Authorization: getJwtToken(),
       },
@@ -75,54 +101,82 @@ const updateItem = async (data, setIsPorcessing) => {
 };
 
 const initialFormData = {
-  order: '',
+  nameOfMedicine: '',
+  company: '',
+  potencyOrPower: '',
+  quantity: '',
+  typeOfMedicine: '',
   damage: '',
   date: '',
+  to: '',
+  distributor: '',
 };
 
 const initialFormError = initialFormData;
 
 export default function ReturnForm() {
   // define form state
-  const [formData, setFormData] = useState();
+  const [formData, setFormData] = useState([]);
   const [formError, setFormError] = useState(initialFormError);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [orderIds, setOrderIds] = useState([]);
   const navigate = useNavigate();
   const { inventory_item_id, order_id } = useParams();
+  const [selectedMedicine, setSelectedMedicine] = useState(null);
   const [isProcessing, setIsPorcessing] = useState(false);
-  const dispatch = useDispatch();
-  const [profile_image_res, set_profile_image_res] = useState('');
-
-  useEffect(() => {
-    fetchOrdersIds().then((e) => {
-      setOrderIds(e?.data);
-    });
-  }, []);
-
-  console.log(formData, 'what is form data now');
+  let [distributorsOptions, setDistributorsOptions] = useState([]);
 
   useEffect(() => {
     if (inventory_item_id === 'addNew') {
-      if (order_id !== undefined) {
-        setFormData({ ...initialFormData, order: order_id });
-      }
+      fetchOrders(order_id).then((e) => {
+        setSelectedMedicine(e?.data);
+
+        const mappedFormData = e?.data?.map((item) => {
+          const { company, nameOfMedicine, potencyOrPower, typeOfMedicine, distributor, quantity } = item;
+          let damage = 0;
+          return { company, nameOfMedicine, potencyOrPower, quantity, damage, distributor, quantity, damage };
+        });
+        setFormData(mappedFormData);
+      });
+      setFormData([initialFormData]);
     } else {
-      fetchSingleItem(inventory_item_id)
-        .then((e) => {
-          setFormData(e?.data);
-        })
-        .catch(setFormData([]));
+      fetchSingleItem(inventory_item_id).then((e) => {
+        setFormData(e?.data);
+      });
     }
   }, [inventory_item_id, order_id]);
 
+  useEffect(() => {
+    if (selectedMedicine !== null) {
+      fetchDistributor(selectedMedicine?.map((e) => e?.company)).then((e) => {
+        e?.data?.map((e) => {
+          setDistributorsOptions((prev) => [...prev, e]);
+        });
+      });
+    }
+  }, [selectedMedicine]);
+
   // handel input change
-  const handleInputChange = (event) => {
-    const { name, value, type, checked } = event.target;
-    setFormData({
-      ...formData,
+  const handleInputChange = (event, rowIndex) => {
+    let { name, value, type, checked } = event.target;
+    let filteredi;
+
+    if (name === 'distributor') {
+      filteredi = distributorsOptions?.filter((d) => d?.companyName === value)?.[0];
+      value = filteredi?.company;
+    }
+
+    const updatedFormData = [...formData];
+
+    if (!updatedFormData[rowIndex]) {
+      updatedFormData[rowIndex] = {};
+    }
+
+    updatedFormData[rowIndex] = {
+      ...updatedFormData[rowIndex],
       [name]: value,
-    });
+      to: filteredi?.email || distributorsOptions?.[0]?.email,
+    };
+
+    setFormData(updatedFormData);
   };
 
   const handleForm = () => {
@@ -137,13 +191,14 @@ export default function ReturnForm() {
       }
     }
 
-    let updatedFormError = { formError };
+    const hasUndefinedTo = formData.some((obj) => obj.damage === 0);
 
-    //  validate name
-    // if (!trimmedFormData?.name) {
-    //   updatedFormError.name = 'Name is required!';
-    //   isValidInput = false;
-    // }
+    if (hasUndefinedTo) {
+      toast.error('Damange can not be 0');
+      return false;
+    }
+
+    let updatedFormError = { formError };
 
     setFormError(updatedFormError);
 
@@ -164,18 +219,54 @@ export default function ReturnForm() {
           {/* Personal Information */}
 
           <div className="px-6 py-6 rounded-md">
-            <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3">Order Return Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-              <CustomSelect onChange={handleInputChange} options={orderIds} label="Select Order Id" value={formData?.order} error={formError?.order} name="order" placeholder="-- Select Order --" />
-              <CustomInput label="Damage" name="damage" type="text" value={formData?.damage} onChange={handleInputChange} />
-              <CustomInput onChange={handleInputChange} label="Order Date" placeholder="Date" type="date" value={formData?.date} error={formError?.date} name="date" />
-            </div>
+            <h2 className="text-2xl font-semibold text-primary-900 border-l-4 border-primary-400 pl-3">Return Order Information</h2>
+            <table className="w-full mt-4">
+              <thead>
+                <tr>
+                  <th className="py-2">Order Id</th>
+                  <th className="py-2">Name of Medicine</th>
+                  <th className="py-2">Order Date</th>
+                  <th className="py-2">Potency / Power</th>
+                  <th className="py-2">Quantity</th>
+                  <th className="py-2">Damage</th>
+                  <th className="py-2">Distributor</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedMedicine?.map((selectedMedicine, index) => (
+                  <tr key={index}>
+                    <td>
+                      <CustomInput disabled={true} label="Order" value={selectedMedicine?.Order_Id} />
+                    </td>
+                    <td>
+                      <CustomInput disabled={true} label="Name of Medicine" name="nameOfMedicine" type="text" value={selectedMedicine?.nameOfMedicine} onChange={(e) => handleInputChange(e, index)} />
+                    </td>
+                    <td>
+                      <CustomInput disabled={true} type="date" label="Order" value={selectedMedicine?.date?.slice(0, 10)} />
+                    </td>
+                    <td>
+                      <CustomInput disabled={true} label="Potency / Power" name="potencyOrPower" type="text" value={selectedMedicine?.potencyOrPower} onChange={(e) => handleInputChange(e, index)} />
+                    </td>
+                    <td>
+                      <CustomInput disabled={true} label="Quantity" name="quantity" type="number" value={formData?.[index]?.quantity} onChange={(e) => handleInputChange(e, index)} />
+                    </td>
+                    <td>
+                      <CustomSelect disabled={true} onChange={(e) => handleInputChange(e, index)} options={distributorsOptions?.map((e) => e?.companyName)} label="Distributor" value={formData?.[index]?.distributor} error={formError?.distributor} name="distributor" placeholder="-- Select Distributor --" />
+                    </td>
+                    <td>
+                      <CustomInput label="Damage" name="damage" type="number" value={formData?.[index]?.damage} onChange={(e) => handleInputChange(e, index)} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
           {/* create item button */}
           <div className="lg:w-80 mx-auto w-full px-5  ">
             <CustomButton onClick={handleForm} isProcessing={isProcessing} label={inventory_item_id == 'addNew' ? 'Submit' : 'Save'} />
           </div>
+          <div className="lg:w-80 mx-auto w-full px-5  "></div>
         </div>
       ) : (
         <CustomSpinner />

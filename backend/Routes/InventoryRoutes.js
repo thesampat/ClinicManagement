@@ -1,5 +1,5 @@
-const { createDistributor, getAllDistributors, getDistributorById, updateDistributorById, deleteDistributorById, addCompanyToDistributor, updateCompanyInDistributor, removeCompanyFromDistributor } = require("../Controllers/Inventory/distributor");
-const { createOrder, getAllOrders, getOrderById, updateOrderById, deleteOrderById, getAllOrderIds } = require("../Controllers/Inventory/order_purchase_list");
+const { createDistributor, getAllDistributors, getDistributorById, getDistributorByNameOfMedicine, updateDistributorById, deleteDistributorById, addCompanyToDistributor, updateCompanyInDistributor, removeCompanyFromDistributor } = require("../Controllers/Inventory/distributor");
+const { createOrder, getAllOrders, getOrderById, getOrderByIds, updateOrderById, deleteOrderById, getAllOrderIds } = require("../Controllers/Inventory/order_purchase_list");
 const { createReturnOrder, getAllReturnOrders, getReturnOrderById, updateReturnOrderById, deleteReturnOrderById } = require("../Controllers/Inventory/order_return_list");
 const { createInventoryItem, getAllInventoryItems, getInventoryItemById, getInventoryItemByIds, updateInventoryItemById, deleteInventoryItemById, uploadBulkInventory, dropInventoryCollection } = require("../Controllers/Inventory/inventory_list");
 const express = require('express')
@@ -10,14 +10,17 @@ router.get('/distributors', getAllDistributors);
 router.get('/distributors/:id', getDistributorById);
 router.put('/distributors/:id', updateDistributorById);
 router.delete('/distributors/:id', deleteDistributorById);
+router.get('/distributorsByMedicine', getDistributorByNameOfMedicine);
 
 router.post('/distributors/company/:distributorId', addCompanyToDistributor);
 router.delete('/distributors/company/:distributorId/:companyIndex', removeCompanyFromDistributor);
 router.put('/distributors/company/:distributorId/:companyIndex', updateCompanyInDistributor);
 
+
 // Order/Purchase List routes
 router.post('/orders', createOrder);
 router.get('/orders', getAllOrders);
+router.get('/ordersIds', getOrderByIds);
 router.get('/orders/:id', getOrderById);
 router.put('/orders/:id', updateOrderById);
 router.delete('/orders/:id', deleteOrderById);

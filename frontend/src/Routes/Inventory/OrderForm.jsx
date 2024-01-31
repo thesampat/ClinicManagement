@@ -50,10 +50,10 @@ const fetchMedicine = async (ids) => {
 };
 
 const fetchDistributor = async (cname) => {
-  const encodedSearch = encodeURIComponent(JSON.stringify({ 'companies.name': cname }));
+  const params = cname.map((id) => `mname=${encodeURIComponent(id)}`).join('&');
 
   try {
-    const result = await axios.get(`${END_POINT}/inventory/distributors?search=${encodedSearch}`, {
+    const result = await axios.get(`${END_POINT}/inventory/distributorsByMedicine?${params}`, {
       headers: {
         Authorization: getJwtToken(),
       },
@@ -132,7 +132,9 @@ export default function OrderForm() {
         const mappedFormData = e?.data?.map((item) => {
           const { company, nameOfMedicine, potencyOrPower, typeOfMedicine } = item;
           let quantity = 0;
-          return { company, nameOfMedicine, potencyOrPower, typeOfMedicine, quantity };
+          let distributor = '';
+          let to = '';
+          return { company, nameOfMedicine, potencyOrPower, typeOfMedicine, quantity, distributor, to };
         });
         setFormData(mappedFormData);
       });
@@ -146,7 +148,7 @@ export default function OrderForm() {
 
   useEffect(() => {
     if (selectedMedicine !== null) {
-      fetchDistributor(selectedMedicine?.nameOfMedicine).then((e) => {
+      fetchDistributor(selectedMedicine?.map((e) => e?.company)).then((e) => {
         e?.data?.map((e) => {
           setDistributorsOptions((prev) => [...prev, e]);
         });
@@ -161,25 +163,21 @@ export default function OrderForm() {
 
     if (name === 'distributor') {
       filteredi = distributorsOptions?.filter((d) => d?.companyName === value)?.[0];
-      value = filteredi?._id;
+      value = filteredi?.company;
     }
 
-    // Create a copy of the current state
     const updatedFormData = [...formData];
 
-    // If the row does not exist in the state, initialize it
     if (!updatedFormData[rowIndex]) {
       updatedFormData[rowIndex] = {};
     }
 
-    // Update the values for the specific row
     updatedFormData[rowIndex] = {
       ...updatedFormData[rowIndex],
       [name]: value,
       to: filteredi?.email || distributorsOptions?.[0]?.email,
     };
 
-    // Set the updated state
     setFormData(updatedFormData);
   };
 
@@ -187,14 +185,19 @@ export default function OrderForm() {
     const trimmedFormData = { ...formData };
     let isValidInput = true;
 
-    console.log(formData, 'what is formdata');
-
     for (const key in trimmedFormData) {
       if (trimmedFormData?.hasOwnProperty(key)) {
         if (typeof trimmedFormData[key] === 'string') {
           trimmedFormData[key] = trimmedFormData[key].trim();
         }
       }
+    }
+
+    const hasUndefinedTo = formData.some((obj) => obj.to === '');
+
+    if (hasUndefinedTo) {
+      toast.error('Please select distrubutor');
+      return false;
     }
 
     let updatedFormError = { formError };
@@ -206,6 +209,8 @@ export default function OrderForm() {
       inventory_item_id == 'addNew' ? createItem(trimmedFormData, navigate, setIsPorcessing) : updateItem(trimmedFormData, setIsPorcessing);
     }
   };
+
+  console.log(formData);
 
   return (
     <div className="m-3 rounded-md bg-slate-100 h-fit min-h-[100vh] lg:px-24 w-full p-10  bg-white">
@@ -249,7 +254,7 @@ export default function OrderForm() {
                       <CustomInput disabled={true} label="Type of Medicine" name="typeOfMedicine" type="text" value={selectedMedicine?.typeOfMedicine} onChange={(e) => handleInputChange(e, index)} />
                     </td>
                     <td>
-                      <CustomSelect onChange={(e) => handleInputChange(e, index)} options={distributorsOptions?.map((e) => e?.companyName)} label="Distributor" value={formData?.distributor} error={formError?.distributor} name="distributor" placeholder="-- Select Distributor --" />
+                      <CustomSelect onChange={(e) => handleInputChange(e, index)} options={distributorsOptions?.map((e) => e?.companyName)} label="Distributor" value={formData?.[index]?.distributor} error={formError?.distributor} name="distributor" placeholder="-- Select Distributor --" />
                     </td>
                   </tr>
                 ))}

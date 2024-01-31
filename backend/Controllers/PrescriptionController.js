@@ -80,11 +80,15 @@ const getAllPrescriptions = async (req, res) => {
     try {
         const { page, pageSize, doctorId, patientId } = req.query;
 
-        const query = {};
+        let query = {};
 
-        if (doctorId) {
-            query.doctor = doctorId;
+        if (req.accessFilter) {
+            query = { ...req.accessFilter }
         }
+
+        // if (doctorId) {
+        //     query.doctor = doctorId;
+        // }
 
         if (patientId) {
             query.patient = patientId;
@@ -93,12 +97,17 @@ const getAllPrescriptions = async (req, res) => {
         const skip = page ? (parseInt(page) - 1) * (pageSize ? parseInt(pageSize) : 10) : 0;
         const limit = pageSize ? parseInt(pageSize) : 10;
 
-        const prescriptions = await Prescription.find(query)
+        let prescriptions = await Prescription.find(query, req.secondaryAccessFilter)
             .sort({ Date: 1 })
             .skip(skip)
             .limit(limit);
 
+
+
         const prettifiedJSON = JSON.stringify(prescriptions, null, 2);
+
+
+
         res.status(200).send(prettifiedJSON); // Use res.send to send the prettified JSON
     } catch (error) {
         console.error(error);

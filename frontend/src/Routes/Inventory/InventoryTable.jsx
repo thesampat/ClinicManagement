@@ -251,26 +251,39 @@ export default function InventoryTable({ listType }) {
           </button>
         )}
 
-        {/* <div className="flex justify-between ">
-          <CustomSelect
-            options={[10, 25, 50, 75, 100]}
-            onChange={(e) => {
-              setQuery({ ...query, limit: e.target.value });
+        {listType == 'Order' && (
+          <button
+            onClick={(e) => {
+              navigate(`/main/inventory/Returns/Returns/addNew/${medicineOrders?.join(',')}`);
             }}
-            value={query.limit}
-            placeholder={`limit per page.`}
-          />
-          <PaginationButtons
-            onPreviousClick={() => {
-              setQuery({ ...query, page: query.page - 1 });
-            }}
-            onNextClick={() => {
-              setQuery({ ...query, page: query.page + 1 });
-            }}
-            isPreviousDisabled={query.page === 1}
-            isNextDisabled={tableData?.length < query.limit}
-          />
-        </div> */}
+            className="bg-yellow-300 p-2 mt-2 rounded-md font-semibold text-black"
+          >
+            Return Order ({medicineOrders?.length})
+          </button>
+        )}
+
+        {listType !== 'medicines' && (
+          <div className="flex justify-between ">
+            <CustomSelect
+              options={[10, 25, 50, 75, 100]}
+              onChange={(e) => {
+                setQuery({ ...query, limit: e.target.value });
+              }}
+              value={query.limit}
+              placeholder={`limit per page.`}
+            />
+            <PaginationButtons
+              onPreviousClick={() => {
+                setQuery({ ...query, page: query.page - 1 });
+              }}
+              onNextClick={() => {
+                setQuery({ ...query, page: query.page + 1 });
+              }}
+              isPreviousDisabled={query.page === 1}
+              isNextDisabled={tableData?.length < query.limit}
+            />
+          </div>
+        )}
       </div>
       <UploadMedicineModal
         isOpen={uploadMedicinePopup}

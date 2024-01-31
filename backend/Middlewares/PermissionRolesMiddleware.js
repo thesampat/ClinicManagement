@@ -22,15 +22,29 @@ const checkRolesPermissions = (req, res, next) => {
     const { originalUrl } = req
 
     let query = {}
+    let restriction = {}
 
     switch (originalUrl?.split('/')?.[1]) {
+
         case 'appointment':
             if (['Consultant', 'Doctor', 'AssistantDoctor'].includes(role) === true) {
                 query['doctor.id'] = id
             }
     }
-    req.accessFilter = query
+    switch (originalUrl?.split('?')?.[0]) {
 
+        case `/prescription`:
+            if (['Consultant', 'Doctor'].includes(role) === true) {
+                query['doctor'] = id
+            }
+            if (['AssistantDoctor'].includes(role) === true) {
+                restriction['MedicinePrescription'] = 0
+                restriction['SupplimentoryMedicine'] = 0
+            }
+
+    }
+    req.accessFilter = query
+    req.secondaryAccessFilter = restriction
     next()
 
 };

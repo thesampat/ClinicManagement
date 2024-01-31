@@ -194,9 +194,35 @@ const removeCompanyFromDistributor = async (req, res) => {
     }
 };
 
+const getDistributorByNameOfMedicine = async (req, res) => {
+    try {
+        const itemDatas = Array.isArray(req.query.mname) ? req.query.mname : [req.query.mname];
+
+        const inventoryItems = await Distributor.aggregate([
+            { $unwind: "$companies" },
+            { $match: { "companies.name": { $in: itemDatas } } },
+            {
+                $project: {
+                    "email": 1, "companies.name": 1, "companyName": 1
+                }
+            }
+        ]);
+
+        if (inventoryItems && inventoryItems.length > 0) {
+            res.status(200).json(inventoryItems);
+        } else {
+            res.status(404).json({ message: 'No matching inventory items found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
 
 module.exports = {
     createDistributor,
+    getDistributorByNameOfMedicine,
     getAllDistributors,
     getDistributorById,
     updateDistributorById,
