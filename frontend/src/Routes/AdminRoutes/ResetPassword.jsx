@@ -45,9 +45,9 @@ const forgotPassword = async (data, path, setIsPorcessing, closeModal) => {
   }
 };
 
-const getUsers = async () => {
+const getUsers = async (querry) => {
   try {
-    const result = await axios.get(`${END_POINT}/configAccess/users/getUsers`, {
+    const result = await axios.get(`${END_POINT}/configAccess/users/getUsers/?${querry}`, {
       headers: {
         Authorization: getJwtToken(),
       },
@@ -67,13 +67,23 @@ const ResetPasswordPopup = ({ isOpen, onClose }) => {
   const [processing, setIsProcessing] = useState(false);
   let loggedInUser = useSelector((state) => state.AuthReducer.userLogindata.data);
   const [logusers, setlogUsers] = useState(null);
+  const [alllogusrs, setalllogusers] = useState(null);
   const [iloguser, setselecetdiloseruser] = useState({});
+  const [passwordView, setPasswordView] = useState('self');
 
   useEffect(() => {
     toast.dismiss();
-    getUsers().then((e) => {
+    if (loggedInUser?.role === 'MainDoctor') {
+      getUsers('uid=all').then((e) => {
+        if (e?.data?.length > 0) {
+          setalllogusers(e?.data);
+        }
+      });
+    }
+
+    getUsers(`uid=${loggedInUser?._id}`).then((e) => {
       if (e?.data?.length > 0) {
-        setlogUsers(e?.data);
+        setselecetdiloseruser(e?.data);
       }
     });
   }, []);
@@ -94,7 +104,6 @@ const ResetPasswordPopup = ({ isOpen, onClose }) => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  console.log(logusers, 'the log users');
   return (
     <div className={`absolute inset-0 flex items-center justify-center ${isOpen ? '' : 'hidden'}`}>
       <div className="bg-white p-8 w-full max-w-md relative z-50">
@@ -115,23 +124,38 @@ const ResetPasswordPopup = ({ isOpen, onClose }) => {
             </div>
           </>
         ) : (
-          <CustomSelect
-            onChange={(e) => {
-              let selectedUser = logusers?.filter((l) => l.username === e.target.value)?.[0];
-              setselecetdiloseruser(selectedUser);
-            }}
-            options={logusers?.map((e) => e?.username)}
-            label="Select User"
-            value={iloguser?.usernames}
-            placeholder="-- Select Userr --"
-          />
+          <>
+            <CustomSelect
+              onChange={(e) => {
+                let selectedUser = alllogusrs?.filter((l) => l.username === e.target.value)?.[0];
+                setselecetdiloseruser(selectedUser);
+              }}
+              options={alllogusrs?.map((e) => e?.username)}
+              label="Select User"
+              value={iloguser?.usernames}
+              placeholder="-- Select Userr --"
+            />
+          </>
         )}
+
         <div className="flex justify-between gap-5">
           <CustomButton onClick={handleSubmit} isProcessing={processing} label="Submit" color={'primary-200'} width={32} />
 
-          <CustomButton onClick={onClose} isProcessing={processing} label="Close" color={'red-500'} width={32} />
+          <CustomButton
+            onClick={(e) => {
+              setselecetdiloseruser({});
+              setNewPassword('');
+              setConfirmPassword('');
+              onClose();
+            }}
+            isProcessing={processing}
+            label="Close"
+            color={'red-500'}
+            width={32}
+          />
         </div>
       </div>
+
       <ToastContainer />
       <div className={`absolute inset-0 bg-black opacity-50 transition-opacity z-40 ${isOpen ? '' : 'hidden'}`}></div>
     </div>

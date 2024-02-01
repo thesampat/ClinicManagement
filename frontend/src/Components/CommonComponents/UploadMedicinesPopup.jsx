@@ -1,5 +1,22 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import * as XLSX from 'xlsx';
+
+const keyMapping = {
+  'Name of Company': 'company',
+  'Type Of Medicine': 'typeOfMedicine',
+  'Name Of Medicine': 'nameOfMedicine',
+  Packaging: 'packaging',
+  'Potency Or Power': 'potencyOrPower',
+  MRP: 'mrp',
+  Quantity: 'quantity',
+  'Distributor Name': 'distributorName',
+  'Expiry Date': 'expiryDate',
+  'Min Quantity': 'minQuantity',
+  'Max Quantity': 'maxQuantity',
+  Discount: 'discount',
+  'HSN Code': 'hsnCode',
+};
 
 const UploadMedicineModal = ({ isOpen, onClose, onUpload, onDownloadTemplate }) => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -27,9 +44,26 @@ const UploadMedicineModal = ({ isOpen, onClose, onUpload, onDownloadTemplate }) 
       const workbook = await readExcel(selectedFile);
       const jsonData = excelToJson(workbook);
 
-      console.log('JSON Data:', jsonData);
+      const reversedData = {};
 
-      onUpload(jsonData);
+      for (const key in jsonData) {
+        if (Object.hasOwnProperty.call(jsonData, key)) {
+          const transformedArray = jsonData[key].map((data) => {
+            const transformedData = {};
+            for (const innerKey in data) {
+              if (Object.hasOwnProperty.call(data, innerKey)) {
+                transformedData[keyMapping[innerKey] || innerKey] = data[innerKey];
+              }
+            }
+            return transformedData;
+          });
+
+          reversedData[key] = transformedArray;
+        }
+      }
+
+      const allDataArray = [].concat(...Object.values(reversedData));
+      onUpload(allDataArray);
     } catch (error) {
       console.error('Error processing file:', error);
     }
@@ -38,6 +72,14 @@ const UploadMedicineModal = ({ isOpen, onClose, onUpload, onDownloadTemplate }) 
   const readExcel = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
+
+      const fileSize = file.size;
+
+      if (fileSize > 35000) {
+        toast.error('file size greater then 34KB not allowed');
+        return;
+      }
+
       reader.onload = (e) => {
         const data = e.target.result;
         const workbook = XLSX.read(data, { type: 'binary' });

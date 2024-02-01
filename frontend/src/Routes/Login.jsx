@@ -77,7 +77,7 @@ export default function Login() {
   // check if user already login
   useEffect(() => {
     dispatch(checkLoggedIn());
-    fetchItemSingle('configAccess/users/getUsers').then((e) => {
+    fetchItemSingle('configAccess/users/getUsers/?uid=all').then((e) => {
       setUserNames(e?.data);
     });
   }, []);

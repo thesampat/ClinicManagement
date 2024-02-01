@@ -1,4 +1,4 @@
-const { default: mongoose } = require('mongoose');
+const { default: mongoose, ConnectionStates } = require('mongoose');
 const { UserRolePermissionModel } = require('./../Models/UserRolesPermission');
 
 const createUserRolePermission = async (req, res) => {
@@ -29,8 +29,17 @@ const getAllUserRolePermissions = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
     try {
+        let { uid } = req.query;
+        let query = {};
+
+        if (uid !== 'all') {
+            query.user_id = uid;
+        }
+
+        console.log('what is query', query)
+
         const userRolePermissions = await UserRolePermissionModel.find(
-            {},
+            query,
             { user_id: 1, role: 1, username: 1, _id: 0 }
         );
 
@@ -39,6 +48,8 @@ const getAllUsers = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+
 
 const getUserRolePermissionByUsername = async (req, res) => {
 

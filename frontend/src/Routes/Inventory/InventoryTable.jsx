@@ -30,33 +30,42 @@ const fetchData = async (path, data) => {
 
 const uploadBulk = async (path, data) => {
   try {
-    const result = await axios.post(`${END_POINT}/${path}`, data, {
+    toast.loading('Uploading medicines, please wait.....');
+
+    await axios.post(`${END_POINT}/${path}`, data, {
       headers: {
         Authorization: getJwtToken(),
       },
     });
+
+    toast.dismiss();
     toast.success('Files uploaded');
     setTimeout(() => {
       window.location.reload();
     }, 1000);
   } catch (error) {
+    console.log(error);
+    toast.dismiss();
     toast.error('Filed to upload files');
-    console.log('Check Error', error);
   }
 };
 
 const deleteData = async (path, itype) => {
   try {
+    toast.loading('deleting data please wait.....');
     let result = await axios.delete(`${END_POINT}/${path}`, {
       headers: {
         Authorization: getJwtToken(),
       },
     });
+    toast.dismiss();
     toast.success(`${itype} Deleted!`);
     setTimeout(() => {
       window.location.reload();
     }, 1000);
   } catch (error) {
+    toast.dismiss();
+
     toast.error('Failed To Delete');
     console.log('Check Error', error);
   }
@@ -289,7 +298,7 @@ export default function InventoryTable({ listType }) {
         isOpen={uploadMedicinePopup}
         onClose={() => setuploadMedicinePopup(false)}
         onUpload={(selectedFile) => {
-          uploadBulk('inventory/inventory/upload/bulk', selectedFile?.data);
+          uploadBulk('inventory/inventory/upload/bulk', selectedFile);
         }}
         onDownloadTemplate={() => {}}
       />

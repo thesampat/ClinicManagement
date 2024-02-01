@@ -346,7 +346,7 @@ const PrescriptionForm = ({ disabled, handelPriceTable, formData, setFormData, h
         </div>
       </div>
       <hr className="h-[150vh] bg-gray-500" style={{ width: '3px' }} />
-      <div className="rightFromSection h-[180vh] px-5 py-4 flex flex-col gap-5 bg-slate-50" style={{ maxWidth: '25vw' }}>
+      <div className="rightFromSection h-[180vh] px-5 py-4 flex flex-col gap-5 bg-slate-50" style={{ maxWidth: '400px', minWidth: '350px' }}>
         <div className="PreviousReports border p-2 rounded rounded-lg">
           <ChildrenComponent disabled={disabled} id={formData?.Date} label="PREVIOUS REPORTS" handelInputChange={handelInputChange} formData={formData} uploadType="previousReports" SectionType="PreviousReportNotes" />
         </div>

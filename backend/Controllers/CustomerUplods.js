@@ -33,7 +33,6 @@ const UploadReport = async (req, res) => {
     const patientId = req.params.patientId;
     const uploadType = req.params.uploadType
 
-    console.log(patientId, uploadType, 'ceck in')
 
 
     if (['pictures', 'profile_image']?.includes(uploadType)) {
