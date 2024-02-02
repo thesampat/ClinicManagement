@@ -1,5 +1,5 @@
 const express = require('express');
-const { createPrescription, getPrescriptionDetails, getAllPrescriptions, getFeesCollectedData, getFilteredPrescription, getPrescriptionStatusData } = require("../Controllers/PrescriptionController");
+const { createPrescription, getPrescriptionDetails, getAllPrescriptions, deletePrescriptionById, getFeesCollectedData, getFilteredPrescription, getPrescriptionStatusData } = require("../Controllers/PrescriptionController");
 const { UploadReport, deleteReport, getReport, getImage, deleteImages } = require('../Controllers/PrescriptionUploads');
 const checkRolesPermissions = require('../Middlewares/PermissionRolesMiddleware');
 
@@ -9,9 +9,9 @@ const router = express.Router();
 router.route('/').post(createPrescription);
 router.route('/').get(checkRolesPermissions, getAllPrescriptions);
 router.route('/getFiltered').get(getFilteredPrescription)
-// getPrescriptionStatusData
 router.route('/getDurationData').get(getPrescriptionStatusData)
 router.route('/getFeesData').get(getFeesCollectedData)
+router.route('/delete/:prescriptionId').delete(checkRolesPermissions, deletePrescriptionById);
 
 
 router.route('/upload/:prescriptionId/:uploadType').post(UploadReport)

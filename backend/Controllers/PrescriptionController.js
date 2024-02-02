@@ -219,6 +219,30 @@ const getPrescriptionStatusData = async (req, res) => {
 };
 
 
+const deletePrescriptionById = async (req, res) => {
+    let { role } = req.userAbility
+
+
+    if (role !== 'MainDoctor') {
+        return res.status(400).send('Only main doctor can delete prescription')
+    }
+    const { prescriptionId } = req.params;
+
+    try {
+        const deletedPrescription = await Prescription.findOneAndDelete({ _id: prescriptionId });
+        if (deletedPrescription) {
+            res.status(200).json({ message: 'Prescription deleted successfully.' });
+        } else {
+            res.status(404).json({ message: 'Prescription not found.' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+};
+
+
+
 const getFeesCollectedData = async (req, res) => {
     try {
         // Calculate start date and end date for the last 5 weeks
@@ -320,4 +344,4 @@ function getPrevious5WeeksDateRanges(todayDate) {
     return dateRanges;
 }
 
-module.exports = { createPrescription, getAllPrescriptions, getFilteredPrescription, getPrescriptionStatusData, getFeesCollectedData }
+module.exports = { createPrescription, getAllPrescriptions, getFilteredPrescription, getPrescriptionStatusData, getFeesCollectedData, deletePrescriptionById }

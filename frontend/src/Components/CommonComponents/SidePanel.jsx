@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link, NavLink, useMatches } from 'react-router-dom';
-import { AiFillAccountBook, AiOutlineHome, AiOutlineInfoCircle, AiOutlineMail } from 'react-icons/ai';
+import { AiFillAccountBook, AiFillDashboard, AiOutlineHome, AiOutlineInfoCircle, AiOutlineMail, AiTwotoneDashboard } from 'react-icons/ai';
 import AdminDashboard from '../../Routes/AdminRoutes/AdminDashboard';
 import { GrContact, GrContactInfo, GrDashboard, GrLogout, GrPowerReset, GrUserWorker } from 'react-icons/gr';
 import { IoLogOut } from 'react-icons/io5';
-import { GiChest, GiDoctorFace, GiPerson, GiPersonInBed, GiSergeant } from 'react-icons/gi';
-import { BsPerson } from 'react-icons/bs';
+import { GiChest, GiDoctorFace, GiHelp, GiLetterBomb, GiMenhir, GiNotebook, GiPerson, GiPersonInBed, GiProgression, GiSergeant } from 'react-icons/gi';
+import { BsPerson, BsPersonCircle, BsPersonDash, BsPersonFill } from 'react-icons/bs';
 import { IoMdLogOut } from 'react-icons/io';
 import { useSelector } from 'react-redux';
 import ResetPasswordPopup from '../../Routes/AdminRoutes/ResetPassword';
 import ContactUsPopup from '../../Routes/AdminRoutes/ContactUsEmail';
+import { FaPaperPlane } from 'react-icons/fa';
 
 const SidePanel = () => {
   const [isCollapsed, setCollapsed] = useState(false);
@@ -23,17 +24,18 @@ const SidePanel = () => {
   };
 
   const links = [
-    { id: 1, text: 'Dashboard', to: '/dashboard', icon: <GrDashboard /> },
-    { id: 2, text: 'Doctors', to: '/doctors', icon: <GiDoctorFace /> },
-    { id: 2, text: 'Assistant Doctor', to: '/assistantDoctor', icon: <GrUserWorker /> },
-    { id: 3, text: 'Patient', to: '/patients', icon: <GiPersonInBed /> },
-    { id: 4, text: 'Receptionist', to: '/receptionist', icon: <BsPerson /> },
-    { id: 5, text: 'Consultant', to: '/consultant', icon: <AiOutlineMail /> },
-    { id: 6, text: 'Enqiury', to: '/enquiry', icon: <GrContact /> },
+    { id: 1, text: 'Dashboard', to: '/dashboard', icon: <AiTwotoneDashboard /> },
+    { id: 2, text: 'Appointments', to: '/appointment/list', icon: <GiNotebook /> },
+    { id: 3, text: 'Doctors', to: '/doctors', icon: <BsPersonFill /> },
+    { id: 4, text: 'Assistant Doctor', to: '/assistantDoctor', icon: <BsPersonDash /> },
+    { id: 5, text: 'Patient', to: '/patients', icon: <GiPersonInBed /> },
+    { id: 6, text: 'Receptionist', to: '/receptionist', icon: <BsPerson /> },
+    { id: 7, text: 'Consultant', to: '/consultant', icon: <BsPersonCircle /> },
+    { id: 8, text: 'Enqiury', to: '/enquiry', icon: <GrContact /> },
     // { id: 7, text: 'Income & Expn', to: '/income_expenses', icon: <AiFillAccountBook /> },
-    { id: 8, text: 'Inventory', to: '/main/inventory/inventory/addNew', icon: <GiChest /> },
+    { id: 9, text: 'Inventory', to: '/main/inventory/inventory/addNew', icon: <GiChest /> },
     // { id: 9, text: 'Nutrition', to: '/nutrition', icon: <GiChest /> },
-    { id: 10, text: 'Feedback', to: '/feedback', icon: <GiChest /> },
+    { id: 10, text: 'Feedback', to: '/feedback', icon: <FaPaperPlane /> },
   ];
 
   return (
@@ -72,7 +74,7 @@ const SidePanel = () => {
               <div className="flex justify-center items-center">
                 <BsPerson className="h-12 w-12" />
                 <div className="flex flex-col">
-                  <h4 className="font-semibold text-md leading-6 uppercase">{loggedInUser.name?.slice(0, 30)}</h4>
+                  <h4 className="font-semibold text-md leading-6 capitalize">{loggedInUser.name?.slice(0, 30)}</h4>
                   <span class="bg-blue-500 text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-white">{loggedInUser?.role}</span>
                 </div>
               </div>

@@ -1,14 +1,14 @@
 import React from 'react';
 import { FaUserAlt, FaPrescriptionBottleAlt, FaCalendarCheck } from 'react-icons/fa';
+import { IoMdPaper } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 
 const NavigationButtons = () => {
   const navigate = useNavigate();
 
   const tabs = [
-    { label: 'Enquiry', icon: <FaUserAlt />, url: '/enquiry' },
-    { label: 'Appointment', icon: <FaCalendarCheck />, url: '/appointment' },
-    { label: 'Prescription', icon: <FaPrescriptionBottleAlt />, url: '/prescription' },
+    { label: 'Add Appointment', icon: <FaCalendarCheck />, url: '/appointment' },
+    { label: 'Prescription', icon: <IoMdPaper />, url: '/prescription' },
   ];
 
   return (

@@ -15,6 +15,24 @@ import { FaRegStar, FaStar } from 'react-icons/fa';
 import { statusOptions } from '../../Files/dropdownOptions';
 import axios from 'axios';
 
+const deletePrescription = async (data) => {
+  try {
+    const result = await axios.delete(`${END_POINT}/prescription/delete/${data}`, {
+      headers: {
+        Authorization: getJwtToken(),
+      },
+    });
+    toast.dismiss();
+    toast.success('record deleted Successfully');
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  } catch (error) {
+    toast.dismiss();
+    toast.error('could not delete');
+  }
+};
+
 const initialFormData = {
   Date: '',
   Symptoms: '',
@@ -282,6 +300,7 @@ const AddPrescription = () => {
           )}
         </div>
       </div>
+
       <ToastContainer />
       <PaginationButtons
         onPreviousClick={() => {
@@ -298,8 +317,9 @@ const AddPrescription = () => {
 };
 
 const PrescriptionForm = ({ disabled, handelPriceTable, formData, setFormData, handelInputChange, handleTableChange }) => {
-  console.log(formData?.Date, 'these dates redereed');
   const navigate = useNavigate();
+
+  const { userLogindata } = useSelector((state) => state.AuthReducer);
 
   return (
     <div className="prescriptionFormLayout flex items-center h-[180vh]" id={formData?.Date} autoFocus={true} name={formData?.Date}>
@@ -368,7 +388,22 @@ const PrescriptionForm = ({ disabled, handelPriceTable, formData, setFormData, h
             <SupplimentoryMedicineTable disabled={disabled} SupplimentoryMedicine={formData?.SupplimentoryMedicine} setFormData={setFormData} formData={formData} handleTableChange={handleTableChange} />
           </div>
         </div>
+        {userLogindata?.data.role === 'MainDoctor' && (
+          <div className="pt-5">
+            <button
+              onClick={(e) => {
+                window.alert('are you sure want to delete?');
+                toast.loading('deleting...');
+                deletePrescription(formData?._id);
+              }}
+              className="p-2 bg-red-500 rounded-lg font-semibold text-white"
+            >
+              Delete Record
+            </button>
+          </div>
+        )}
       </div>
+      <ToastContainer />
     </div>
   );
 };
@@ -397,7 +432,7 @@ const ChildrenComponent = ({ disabled, id, label, handelInputChange, formData, u
     if (file) {
       let res = await dispatch(UploadImages(file, formData?._id, uploadType, 'prescription'));
       if (res === true) {
-        toast.success('Images Uploaded');
+        toast.success('Images Uploaded, Please refresh once');
       }
       setIsModalOpen(false);
     }

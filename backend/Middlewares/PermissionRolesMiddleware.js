@@ -41,10 +41,10 @@ const checkRolesPermissions = (req, res, next) => {
                 restriction['MedicinePrescription'] = 0
                 restriction['SupplimentoryMedicine'] = 0
             }
-
     }
     req.accessFilter = query
     req.secondaryAccessFilter = restriction
+    req.userAbility = access
     next()
 
 };

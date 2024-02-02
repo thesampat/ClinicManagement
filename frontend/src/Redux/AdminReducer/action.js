@@ -5,7 +5,8 @@ import { toast } from 'react-toastify'
 import { useLocation } from "react-router-dom";
 
 let END_POINT
-if (process.env.REACT_APP_NODE === 'development') {
+
+if (window.location.protocol === 'http:') {
     END_POINT = "http://127.0.0.1:5000"
 }
 else {
@@ -564,13 +565,11 @@ const addNewPrescription = (data) => async (dispatch) => {
                 Authorization: getJwtToken()
             }
         });
-
+        toast.success('Saved')
         // successfully added
         dispatch({ type: types.ADD_PRESCRIPTION_SUCCESS, payload: "Prescription Saved Successfully." });
         window.location.reload()
-
     } catch (error) {
-
         // fail to add doctor
         dispatch({ type: types.ADD_PRESCRIPTION_FAIL, payload: error.message || "Somthing Went Wrong." });
     }
@@ -601,8 +600,6 @@ const getAllPatientPrescription = (data) => async (dispatch) => {
 const UploadFile = (data, prescriptionId, uploadType, uploadSection) => async (dispatch) => {
     const formData = new FormData();
     formData.append('document', data, data.name);
-
-
     try {
         const result = await axios.post(`${END_POINT}/${uploadSection}/upload/${prescriptionId}/${uploadType}`, formData, {
             headers: {
@@ -610,7 +607,6 @@ const UploadFile = (data, prescriptionId, uploadType, uploadSection) => async (d
             }
         });
         toast.success('File Uploaded')
-        // window.location.reload(true)
     } catch (error) {
         // dispatch({ type: types.GET_ALL_PATIENT_PRESCRIPTION_DATA, payload: undefined })
         toast.error('File Upload Failed')
@@ -628,16 +624,20 @@ const UploadFiles = (files, prescriptionId, uploadType, uploadSection) => async 
     });
 
     try {
+        toast.loading('uploading....')
         const result = await axios.post(`${END_POINT}/${uploadSection}/upload_files/${prescriptionId}/${uploadType}`, formData, {
             headers: {
                 Authorization: getJwtToken(),
             },
         });
 
-        toast.success('Files Uploaded');
+        toast.dismiss()
+        toast.success('Files Uploaded, Please refresh to check');
         // window.location.reload(true)
     } catch (error) {
         // Handle error
+        toast.dismiss()
+
         toast.error('Files Upload Failed');
         console.log('Check Error', error);
     }
@@ -647,14 +647,20 @@ const UploadFiles = (files, prescriptionId, uploadType, uploadSection) => async 
 const RemoveFile = (fileId, prescriptionID, uploadType, uploadSection) => async (dispatch) => {
 
     try {
+        toast.loading('uploading....')
+
         const result = await axios.delete(`${END_POINT}/${uploadSection}/remove/${fileId}/${prescriptionID}/${uploadType}`, {
             headers: {
                 Authorization: getJwtToken()
             }
         });
+        toast.dismiss()
+
         toast.success('File Removed')
         // window.location.reload()
     } catch (error) {
+        toast.dismiss()
+
         toast.error('Failed to remove file')
         console.log('Check Error', error)
 
@@ -670,14 +676,18 @@ const UploadImages = (data, itemId, uploadType, uploadSection) => async (dispatc
         formData.append('images', ifile)
     })
     try {
+        toast.loading('uploading....')
         const result = await axios.post(`${END_POINT}/${uploadSection}/upload/${itemId}/${uploadType}`, formData, {
             headers: {
                 Authorization: getJwtToken()
             }
         });
+        toast.dismiss()
+
         return true
-        // window.location.reload(true)
     } catch (error) {
+        toast.dismiss()
+
         // dispatch({ type: types.GET_ALL_PATIENT_PRESCRIPTION_DATA, payload: undefined })
         toast.error('File Upload Failed')
         console.log('Check Error', error)
@@ -689,15 +699,19 @@ const UploadImages = (data, itemId, uploadType, uploadSection) => async (dispatc
 const DeleteImages = (data, prescriptionId, uploadSection, uploadType = 'pictures') => async (dispatch) => {
 
     try {
+        toast.loading('Deleting.....')
         const result = await axios.delete(`${END_POINT}/${uploadSection}/delete/image/${prescriptionId}/${uploadType}`, { data }, {
             headers: {
                 Authorization: getJwtToken()
             }
         });
-        toast.success('Files Deleted')
+        toast.dismiss()
+        toast.success('Files Deleted, Please refresh once')
         // return true
         // window.location.reload(true)
     } catch (error) {
+        toast.dismiss()
+
         toast.error('Filed to delete images')
         console.log('Check Error', error)
 

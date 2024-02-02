@@ -1,9 +1,0 @@
-So now what remaining
-
-1. Table Dynamic Content
-
-    Search ----- Patient Search Fucntion
-    View ----- Patient Search Fucntion
-            Initialize or load the Content
-    Delete ----- Delete Cofirmation  -   Delete the reports all
-

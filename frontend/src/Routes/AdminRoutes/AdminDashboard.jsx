@@ -60,15 +60,21 @@ export default function AdminDashboard() {
   return (
     <div className="m-3 rounded-md bg-slate-100 px-8 min-h-[100vh] h-fit py-8 w-full">
       {/* navigatation */}
-      <div className="font-bold text-2xl text-black">{process.env?.REACT_APP_Clinic_Name}</div>
+      <div className="font-bold text-2xl text-black">
+        {' '}
+        {(() => {
+          let name = 'LocalClinic';
+          if (window.location.hostname === 'shivenclinic.com') {
+            name = 'Shiven Clinic Management';
+          } else {
+            name = 'Aditya Homoeopathic Clinic';
+          }
+          return name;
+        })()}
+      </div>
       <div className="flex flex-wrap justify-between items-baseline mb-4 mt-1">
         <div></div>
         <NavigationButtons />
-      </div>
-
-      {/* header card */}
-      <div className="flex flex-wrap gap-10">
-        <DetailsCard title={"Appointment's"} value={''} icon={<BsCalendarCheckFill size={'25px'} />} />
       </div>
 
       <div className="DataTables grid grid-cols-3 text-center gap-5 mt-5">

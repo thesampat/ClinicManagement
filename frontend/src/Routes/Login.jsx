@@ -89,15 +89,25 @@ export default function Login() {
   }, [userLoginProcess, userLoginSuccess, userLoginFail]);
 
   return (
-    <div className="bg-blue-200">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="200" height="80">
-        ShiVen
-        <text x="10" y="50" font-family="Verdana, sans-serif" font-size="30" font-weight="bold" fill="black" className="uppercase">
-          ShiVen
-        </text>
-      </svg>
+    <div className="bg-blue-200 ">
+      <div className="w-full">
+        <img src="https://www.shiveninfotech.com/wp-content/uploads/2023/08/logo-t.png" alt="" height={200} width={200} />
+      </div>
+      <div className="flex justify-center">
+        <h1 className="mb-4 text-2xl font-extrabold text-gray-900 dark:text-white md:text-4xl lg:text-5xl bg-black p-4 rounded-lg">
+          {(() => {
+            let name = 'LocalClinic';
+            if (window.location.hostname === 'shivenclinic.com') {
+              name = 'Shiven Clinic Management';
+            } else {
+              name = 'Aditya Homoeopathic Clinic';
+            }
+            return name;
+          })()}
+        </h1>
+      </div>
 
-      <div className="bg-blue-200 flex flex-col items-center justify-center min-h-screen">
+      <div className="bg-blue-200 flex flex-col items-center min-h-screen pt-10">
         <div className="bg-white p-8 rounded-lg shadow-lg w-96 border border-gray-300">
           <p className="text-center mb-4 text-2xl font-bold ">Login to continue.</p>
 
