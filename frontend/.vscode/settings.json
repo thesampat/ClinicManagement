@@ -1,0 +1,29 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        ".vscode": true,
+        "build": true,
+        "BuildFile": true,
+        "node_modules": true,
+        "src/coverPage": true,
+        "src/Components/HomePage": true,
+        "/C:/Users/sampa/OneDrive/Desktop/ClinicManagement/Clinic-Management-application-main/Clinic-Management-application-main/backend": true,
+        "/C:/Users/sampa/OneDrive/Desktop/ClinicManagement/Clinic-Management-application-main/Clinic-Management-application-main/backend/vercel.json": true,
+        "/C:/Users/sampa/OneDrive/Desktop/ClinicManagement/Clinic-Management-application-main/Clinic-Management-application-main/backend/root@139.59.64.112": true,
+        "/C:/Users/sampa/OneDrive/Desktop/ClinicManagement/Clinic-Management-application-main/Clinic-Management-application-main/backend/planSetup.txt": true,
+        "/C:/Users/sampa/OneDrive/Desktop/ClinicManagement/Clinic-Management-application-main/Clinic-Management-application-main/backend/package.json": true,
+        "/C:/Users/sampa/OneDrive/Desktop/ClinicManagement/Clinic-Management-application-main/Clinic-Management-application-main/backend/package-lock.json": true,
+        "src/setupTests.js": true,
+        "src/reportWebVitals.js": true,
+        "src/package.json": true,
+        "src/logo.svg": true,
+        "src/index.css": true,
+        "src/App.test.js": true
+    },
+    "hide-files.files": []
+}
