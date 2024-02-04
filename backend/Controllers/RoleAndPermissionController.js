@@ -40,8 +40,6 @@ const getAllUsers = async (req, res) => {
             query.user_id = uid;
         }
 
-        console.log('what is query', query)
-
         const userRolePermissions = await UserRolePermissionModel.find(
             query,
             { user_id: 1, role: 1, username: 1, _id: 0 }
@@ -132,7 +130,6 @@ const getUserDetails = async (req, res) => {
 
     try {
         if (userModel) {
-            console.log(username, 'what is username')
             const user = await userModel.findOne({ name: username }, { email: 1 });
             if (user) {
                 res.status(200).send(user?.['email']);

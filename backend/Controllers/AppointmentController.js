@@ -100,8 +100,6 @@ const getAppointment = async (req, res) => {
     const appointments = await Appointment.find(query).sort({ bookDate: -1 }).skip(skip).limit(limit);
     res.json(appointments);
   } catch (error) {
-
-
     console.error(error);
     res.status(500).json({ error: "Failed to retrieve appointments" });
   }
@@ -157,12 +155,10 @@ const getFilteredAppointment = async (req, res) => {
       .limit(limit);
 
     const prettifiedJSON = JSON.stringify(appointments, null, 2);
-    res.status(200).send(prettifiedJSON);
+    return res.status(200).send(prettifiedJSON);
   } catch (error) {
-
-
     console.error(error);
-    res.status(500).json({ message: 'Internal server error.' });
+    return res.status(500).json({ message: 'Internal server error.' });
   }
 }
 

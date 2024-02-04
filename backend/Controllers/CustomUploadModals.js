@@ -164,10 +164,11 @@ const getReport = async (req, res) => {
     const fileId = req.params.id;
 
     try {
-        const fileTypeRes = bucket.find()
+        const fileTypeRes = bucket.find(new mongoose.Types.ObjectId(fileId))
         const files = await fileTypeRes.toArray();
 
-        const downloadStream = bucket.openDownloadStream(new mongoose.Types.ObjectId(fileId));
+        const downloadStream = bucket.openDownloadStreamByName(files?.[0]?.filename);
+
         downloadStream.on('error', (err) => {
             console.error('Error while opening download stream:', err);
             return res.status(500).json({ error: 'An error occurred' });

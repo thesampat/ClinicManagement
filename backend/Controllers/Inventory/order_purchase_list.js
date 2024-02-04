@@ -46,7 +46,6 @@ const body = {
 const Order_Id = 'ORD2023121312';
 
 const emailTemplate = getEmailTemplate(body, Order_Id);
-console.log(emailTemplate);
 
 
 const generateOrderId = async () => {
@@ -75,10 +74,8 @@ const createOrder = async (req, res) => {
             const orderData = req.body[key];
             const Order_Id = await generateOrderId();
             let distributor_user = await Distributor.findOne({ email: orderData.to });
-
-
             await sendEmail(distributor_user?.email, 'Medicine Order Request From AdityaHomeopathic', getEmailTemplate(orderData, Order_Id, distributor_user));
-            const newOrder = await OrderListModel.create({ ...orderData, Order_Id });
+            const newOrder = await OrderListModel.create({ ...orderData, Order_Id, distributor: distributor_user?._id });
             orderIds.push(newOrder?._id);
         }
 

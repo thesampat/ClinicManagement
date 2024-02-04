@@ -23,7 +23,6 @@ const generateItemId = async () => {
 
 const consultantRegisterBySuperAdmin = async (req, res) => {
     const { name, email, password, fees, phone, typesOfDoctor, pic, education_details, experience_details, location, slotTimes, availableTime, availability } = req.body;
-    console.log(req.body);
     let consultantId
     const Role = "Consultant";
     if (!name || !email) {

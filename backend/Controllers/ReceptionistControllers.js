@@ -98,7 +98,6 @@ const receptionistLogin = async (req, res) => {
         const receptionist = await Receptionist.findOne({ email });
 
         if (!receptionist) {
-            console.log('Check');
             return res.status(401).json({ error: "Invalid credentials." });
         }
 

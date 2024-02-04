@@ -148,7 +148,6 @@ router.post('/forgotPassword/:userId/:roleId', async (req, res) => {
             user.password = hash;
             let passres = await user.save();
 
-            console.log('the email', user?.email)
 
             await sendEmail(user?.email, 'Passowrd Reset Successfully', `Please Use This Password ${newPassword}`)
 

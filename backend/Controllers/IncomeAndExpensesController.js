@@ -205,7 +205,6 @@ router.post('/', async (req, res) => {
             });
 
             if (dayData?.length >= 1) {
-                console.log('i am here now')
                 try {
                     dayUpdateEntry = await IncomeAndExpensesModel.updateOne(
                         {

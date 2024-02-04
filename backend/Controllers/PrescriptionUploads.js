@@ -20,7 +20,6 @@ const bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'reports' });
 const storage = new GridFsStorage({
     url: process.env.MONGO_URL,
     file: (req, file) => {
-        console.log(file, 'check this')
         return {
             filename: file.originalname,
             bucketName: 'reports', // Name of the GridFS bucket for reports

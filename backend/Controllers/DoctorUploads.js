@@ -71,11 +71,8 @@ const UploadReport = async (req, res) => {
 };
 
 const UploadMultipleDocs = async (req, res) => {
-  console.log('why still getting error me')
   const itemId = req.params.itemId;
   const uploadType = req.params.uploadType;
-
-  console.log('whre i am getting this')
 
   const handleDocumentUpload = multer({ storage }).array('multipleDocs', 10);
 
@@ -198,7 +195,6 @@ const deleteImages = async (req, res) => {
   const uploadType = req.params.uploadType;
 
 
-  console.log(req.body, itemId, uploadType)
   // Check if fileIds is an array
   if (!Array.isArray(fileIds)) {
     return res.status(400).json({ error: 'fileIds must be an array' });
