@@ -47,6 +47,8 @@ const createExternalAppointment = async (req, res) => {
         // Respond with the created appointment
         res.status(201).json(appointment);
     } catch (error) {
+
+
         console.error(error);
         res.status(500).json({ error: "Appointment creation failed" });
     }
@@ -61,6 +63,8 @@ const getAppointment_External = async (req, res) => {
         const appointments = await Appointment.find(query);
         res.json(appointments);
     } catch (error) {
+
+
         console.error(error);
         res.status(500).json({ error: "Failed to retrieve appointments" });
     }

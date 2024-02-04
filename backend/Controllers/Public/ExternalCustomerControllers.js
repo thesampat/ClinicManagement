@@ -56,6 +56,8 @@ const createCustomerByExternal = async (req, res) => {
             let res = await generatePatientId()
             customerId = res
         } catch (error) {
+
+
             res.status(500).send('Error! Please Try Again')
         }
 
@@ -103,6 +105,8 @@ const createCustomerByExternal = async (req, res) => {
         let message = "Customer created";
         return res.status(201).json({ msg: message, customer });
     } catch (error) {
+
+
         console.log(error)
         return res.status(500).json({ error: error.message });
     }

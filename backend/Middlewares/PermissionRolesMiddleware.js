@@ -20,7 +20,6 @@ const checkRolesPermissions = (req, res, next) => {
     let access = verifyToken(req, res)
     const { role, id } = access
     const { originalUrl } = req
-
     let query = {}
     let restriction = {}
 

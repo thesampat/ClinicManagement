@@ -8,7 +8,6 @@ const { Distributor } = require('../../Models/DistributorModel');
 
 const getReturnOrderEmailTemplate = (returnOrder, originalOrder, distributor_user_object) => {
 
-    console.log(returnOrder, originalOrder, distributor_user_object)
     const {
         nameOfMedicine,
         quantity,
@@ -56,10 +55,10 @@ const createReturnOrder = async (req, res) => {
                 const newOrder = await OrderReturnModel.create(req.body);
                 res.status(201).json({ msg: 'Return Order Request', data: newOrder?._id });
             } catch (error) {
+
                 res.status(500).json({ error: error.message });
             }
         }
-        res.status(201).json({ msg: 'Return Orders Created', data: orderIds });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Failed to create return orders' });
@@ -85,6 +84,8 @@ const getAllReturnOrders = async (req, res) => {
         const orders = await OrderReturnModel.find();
         res.status(200).json(orders);
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -100,6 +101,8 @@ const getReturnOrderById = async (req, res) => {
             res.status(404).json({ message: 'OrderReturnModel not found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -118,6 +121,8 @@ const updateReturnOrderById = async (req, res) => {
             res.status(404).json({ message: 'OrderReturnModel not found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -132,6 +137,8 @@ const deleteReturnOrderById = async (req, res) => {
             res.status(404).json({ message: 'OrderReturnModel not found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };

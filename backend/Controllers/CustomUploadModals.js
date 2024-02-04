@@ -10,6 +10,8 @@ const { Receptionist } = require('../Models/ReceptionistModel');
 const { Consultant } = require('../Models/ConsultantModel');
 const { Customer } = require('../Models/CustomerModel');
 const { AssistantDoctor } = require('../Models/AssitantDoctorModel');
+const { Doctor } = require('../Models/DoctorsModel');
+
 require('dotenv').config();
 
 
@@ -23,12 +25,14 @@ const getModal = (section_Type) => {
             return Customer
         case '/assistantDoctor':
             return AssistantDoctor
+        case '/doctor':
+            return Doctor
     }
 }
 
 const client = new mongoose.mongo.MongoClient(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 
-const db = client.db('test');
+const db = client.db(client.options.dbName);
 const bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'reports' });
 
 // Define storage engine using multer-gridfs-storage
@@ -61,6 +65,8 @@ const UploadReport = async (req, res) => {
 
                 return res.status(200).send('uploaded');
             } catch (error) {
+
+
                 return res.status(500).json({ error: 'An error occurred while uploading the report' });
             }
         });
@@ -75,6 +81,8 @@ const UploadReport = async (req, res) => {
                 await CustomModal.findByIdAndUpdate(itemId, { [uploadType]: req.file.id }, { new: true });
                 return res.status(200).send('uploaded');
             } catch (error) {
+
+
                 console.log(error)
                 return res.status(500).json({ error: 'An error occurred while uploading the report' });
             }
@@ -102,6 +110,8 @@ const UploadMultipleDocs = async (req, res) => {
 
             return res.status(200).send('uploaded');
         } catch (error) {
+
+
             return res.status(500).json({ error: 'An error occurred while uploading the documents' });
         }
     });
@@ -118,6 +128,8 @@ const deleteReport = async (req, res) => {
     try {
         cursor = bucket.find(new mongoose.Types.ObjectId(file_id));
     } catch (error) {
+
+
         return res.status(400).send('invalid object id');
     }
 
@@ -135,9 +147,13 @@ const deleteReport = async (req, res) => {
                 await CustomModal.findByIdAndUpdate(itemId, { $unset: { [uploadType]: 1 } }, { new: true });
                 res.status(200).send('File Removed');
             } catch (error) {
+
+
                 return res.status(500).json({ error: 'An error occurred while uploading the report' });
             }
         } catch (error) {
+
+
             console.error(`Error deleting file with _id ${fileId}:`, error);
             return res.status(500).json({ error: 'An error occurred while deleting the file' });
         }
@@ -151,7 +167,8 @@ const getReport = async (req, res) => {
         const fileTypeRes = bucket.find(new mongoose.Types.ObjectId(fileId))
         const files = await fileTypeRes.toArray();
 
-        const downloadStream = bucket.openDownloadStream(new mongoose.Types.ObjectId(fileId));
+        const downloadStream = bucket.openDownloadStreamByName(files?.[0]?.filename);
+
         downloadStream.on('error', (err) => {
             console.error('Error while opening download stream:', err);
             return res.status(500).json({ error: 'An error occurred' });
@@ -164,6 +181,7 @@ const getReport = async (req, res) => {
 
         downloadStream.pipe(res);
     } catch (error) {
+        console.log(error)
         res.status(400).send('Could not get report');
     }
 };
@@ -183,6 +201,8 @@ const getImage = async (req, res) => {
 
         downloadStream.pipe(res);
     } catch (error) {
+
+
         res.status(400).send('Count not load image');
     }
 };
@@ -204,6 +224,8 @@ const deleteImages = async (req, res) => {
         try {
             cursor = bucket.find(new mongoose.Types.ObjectId(fileId));
         } catch (error) {
+
+
             return res.status(400).send('Invalid Object Id');
         }
 
@@ -222,6 +244,8 @@ const deleteImages = async (req, res) => {
         await CustomModal.findByIdAndUpdate(itemId, { $unset: { [uploadType]: 1 } }, { new: true });
         res.status(200).send('Files Removed');
     } catch (error) {
+
+
         console.error('Error:', error);
         return res.status(500).json({ error: 'An error occurred while deleting the files or updating the prescription' });
     }

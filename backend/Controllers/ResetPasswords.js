@@ -58,6 +58,8 @@ router.post('/:userId/:roleId', async (req, res) => {
         try {
             user = await userModel.findById(userId);
         } catch (error) {
+
+
             res.status(400).send('Something went wrong')
         }
 
@@ -68,6 +70,7 @@ router.post('/:userId/:roleId', async (req, res) => {
 
         bcrypt.hash(newPassword, 10, async function (err, hash) {
             if (err) {
+                console.log(err)
                 return res.status(500).send(err);
             }
 
@@ -125,6 +128,8 @@ router.post('/forgotPassword/:userId/:roleId', async (req, res) => {
         try {
             user = await userModel.findById(userId);
         } catch (error) {
+
+
             console.log(error)
             res.status(500).send('Something went wrong')
         }
@@ -143,7 +148,6 @@ router.post('/forgotPassword/:userId/:roleId', async (req, res) => {
             user.password = hash;
             let passres = await user.save();
 
-            console.log('the email', user?.email)
 
             await sendEmail(user?.email, 'Passowrd Reset Successfully', `Please Use This Password ${newPassword}`)
 
@@ -151,6 +155,8 @@ router.post('/forgotPassword/:userId/:roleId', async (req, res) => {
             return res.status(200).json({ msg: `Password reset email sent successfully to ${user?.name}` });
         });
     } catch (error) {
+
+
         console.log(error);
         return res.status(500).send(error);
     }

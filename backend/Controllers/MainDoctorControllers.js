@@ -36,11 +36,15 @@ const MainDoctorRegister = async (req, res) => {
           await new_MainDoctor.save();
           return res.status(201).send({ msg: "Signup Successfully" });
         } catch (error) {
+
+
           return res.status(403).send(error);
         }
       });
     }
   } catch (error) {
+
+
     return res.status(500).send(err);
   }
 };
@@ -91,6 +95,8 @@ const MainDoctorLogin = async (req, res) => {
       }
     });
   } catch (error) {
+
+
     console.log(error)
     return res.status(500).json({ error: "Server error." });
   }

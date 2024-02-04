@@ -6,6 +6,8 @@ const createFeedback = async (req, res) => {
         const savedFeedback = await newFeedback.save();
         res.status(201).json(savedFeedback?._id);
     } catch (error) {
+
+
         res.status(500).json({ error: "Error creating feedback" });
     }
 }
@@ -15,6 +17,8 @@ const getAllFeedbackPatients = async (req, res) => {
         const feedback = await Feedback.find({}, { FirstName: 1, LastName: 1 })
         res.status(200).json(feedback);
     } catch (error) {
+
+
         res.status(500).json({ error: "Error fetching feedback" });
     }
 }
@@ -38,6 +42,8 @@ const getAllFeedback = async (req, res) => {
 
         return res.status(200).json(feedback);
     } catch (error) {
+
+
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
@@ -51,6 +57,8 @@ const getFeedbackById = async (req, res) => {
         }
         res.status(200).json(feedback);
     } catch (error) {
+
+
         res.status(500).json({ error: "Error fetching feedback" });
     }
 }
@@ -70,6 +78,8 @@ const deleteFeedback = async (req, res) => {
 
         res.json(updateFeedback);
     } catch (error) {
+
+
         console.error('Error removing comment from feedback:', error);
         res.status(400).json({ message: error.message });
     }
@@ -92,6 +102,8 @@ const updateFeedbackById = async (req, res) => {
 
         res.json(updateFeedback);
     } catch (error) {
+
+
         console.error('Error updating feedback:', error);
         res.status(400).json({ message: error.message });
     }

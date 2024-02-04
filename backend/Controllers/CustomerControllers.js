@@ -62,6 +62,8 @@ const createCustomerBySuperAdmin = async (req, res) => {
       let res = await generatePatientId()
       customerId = res
     } catch (error) {
+
+
       res.status(500).send('Error! Please Try Again')
     }
 
@@ -114,6 +116,8 @@ const createCustomerBySuperAdmin = async (req, res) => {
     return res.status(201).send({ msg: 'Patient registered successfully.', data: newCustomer?._id });
 
   } catch (error) {
+
+
     console.log(error)
     return res.status(500).json({ error: error.message });
   }
@@ -137,6 +141,8 @@ const updateCustomerProfile = async (req, res) => {
 
     return res.status(200).json({ msg: 'Customer updated successfully.', customer });
   } catch (error) {
+
+
     return res.status(500).json({ error: error.message });
   }
 };
@@ -173,6 +179,8 @@ const getAllCustomer = async (req, res) => {
     return res.status(200).send(customers)
 
   } catch (error) {
+
+
     return res.status(500).send(error);
   }
 }
@@ -187,6 +195,8 @@ const getSinglePatient = async (req, res) => {
     }
     return res.status(200).json(customer);
   } catch (error) {
+
+
     console.log(error)
     return res.status(500).json({ error: 'An error occurred while fetching the customer' });
   }

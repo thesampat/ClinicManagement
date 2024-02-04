@@ -46,7 +46,6 @@ const body = {
 const Order_Id = 'ORD2023121312';
 
 const emailTemplate = getEmailTemplate(body, Order_Id);
-console.log(emailTemplate);
 
 
 const generateOrderId = async () => {
@@ -75,15 +74,15 @@ const createOrder = async (req, res) => {
             const orderData = req.body[key];
             const Order_Id = await generateOrderId();
             let distributor_user = await Distributor.findOne({ email: orderData.to });
-
-
             await sendEmail(distributor_user?.email, 'Medicine Order Request From AdityaHomeopathic', getEmailTemplate(orderData, Order_Id, distributor_user));
-            const newOrder = await OrderListModel.create({ ...orderData, Order_Id });
+            const newOrder = await OrderListModel.create({ ...orderData, Order_Id, distributor: distributor_user?._id });
             orderIds.push(newOrder?._id);
         }
 
         res.status(201).json({ msg: 'Purchase Orders Created', data: orderIds });
     } catch (error) {
+
+
         console.error(error);
         res.status(500).json({ error: 'Failed to create orders' });
     }
@@ -106,6 +105,8 @@ const getAllOrders = async (req, res) => {
         const enquiries = await OrderListModel.find(query).skip(skip).limit(pageSize);
         res.status(200).json(enquiries);
     } catch (error) {
+
+
         console.error(error);
         res.status(500).json({ error: "Error fetching enquiries" });
     }
@@ -122,6 +123,8 @@ const getOrderById = async (req, res) => {
             res.status(404).json({ message: 'OrderListModel not found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -138,6 +141,8 @@ const getOrderByIds = async (req, res) => {
             res.status(404).json({ message: 'OrderListModel not found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -149,6 +154,8 @@ const getAllOrderIds = async (req, res) => {
         const orderIds = orders.map(order => order.Order_Id);
         res.status(200).json(orderIds);
     } catch (error) {
+
+
         console.log(error)
         res.status(500).json({ error: error.message });
     }
@@ -169,6 +176,8 @@ const updateOrderById = async (req, res) => {
             res.status(404).json({ message: 'OrderListModel not found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -183,6 +192,8 @@ const deleteOrderById = async (req, res) => {
             res.status(404).json({ message: 'OrderListModel not found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };

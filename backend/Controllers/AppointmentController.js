@@ -45,6 +45,8 @@ const createAppointment = async (req, res) => {
     res.status(201).json('appointment');
   }
   catch (error) {
+
+
     console.error(error);
     res.status(500).json({ error: "Appointment creation failed" });
   }
@@ -75,6 +77,8 @@ const updateAppointment = async (req, res) => {
     await existingAppointment.save();
     res.status(200).json({ message: 'Appointment updated successfully', appointment: existingAppointment });
   } catch (error) {
+
+
     console.error(error);
     res.status(500).json({ error: 'Appointment update failed' });
   }
@@ -118,6 +122,8 @@ const updateStatusAppointment = async (req, res) => {
 
     res.json({ message: 'Appointment deleted successfully' });
   } catch (error) {
+
+
     console.error(error);
     res.status(500).json({ error: "Appointment deletion failed" });
   }
@@ -149,10 +155,10 @@ const getFilteredAppointment = async (req, res) => {
       .limit(limit);
 
     const prettifiedJSON = JSON.stringify(appointments, null, 2);
-    res.status(200).send(prettifiedJSON);
+    return res.status(200).send(prettifiedJSON);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal server error.' });
+    return res.status(500).json({ message: 'Internal server error.' });
   }
 }
 

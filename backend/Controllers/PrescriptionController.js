@@ -55,6 +55,8 @@ const createPrescription = async (req, res) => {
 
         res.status(200).json(results);
     } catch (error) {
+
+
         console.error(error);
         res.status(500).json({ message: 'Internal server error.' });
     }
@@ -71,6 +73,8 @@ const updatePrescription = async (PrescriptionId, updateData) => {
         return { status: 200, message: 'Prescription updated successfully' };
 
     } catch (error) {
+
+
         return { status: 500, message: error.message };
     }
 };
@@ -110,6 +114,8 @@ const getAllPrescriptions = async (req, res) => {
 
         res.status(200).send(prettifiedJSON); // Use res.send to send the prettified JSON
     } catch (error) {
+
+
         console.error(error);
         res.status(500).json({ message: 'Internal server error.' });
     }
@@ -148,6 +154,8 @@ const getFilteredPrescription = async (req, res) => {
         const prettifiedJSON = JSON.stringify(prescriptions, null, 2);
         res.status(200).send(prettifiedJSON);
     } catch (error) {
+
+
         console.error(error);
         res.status(500).json({ message: 'Internal server error.' });
     }
@@ -213,6 +221,8 @@ const getPrescriptionStatusData = async (req, res) => {
         res.status(200).json(formattedResult);
 
     } catch (error) {
+
+
         console.error(error);
         res.status(500).json({ message: 'Internal server error.' });
     }
@@ -236,6 +246,8 @@ const deletePrescriptionById = async (req, res) => {
             res.status(404).json({ message: 'Prescription not found.' });
         }
     } catch (error) {
+
+
         console.error(error);
         res.status(500).json({ message: 'Internal server error.' });
     }
@@ -317,6 +329,8 @@ const getFeesCollectedData = async (req, res) => {
 
         res.status(200).json(result);
     } catch (error) {
+
+
         console.error(error);
         res.status(500).json({ message: 'Internal server error.' });
     }

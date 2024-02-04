@@ -53,7 +53,7 @@ const assistantDoctorSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'reports.file'
     },
-    experience: {
+    experienceDoc: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'reports.file'
     },

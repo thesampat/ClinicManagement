@@ -1,7 +1,7 @@
 const express = require('express');
 const { getSingleDoctor, doctorRegisterBySuperAdmin, doctorLogin, updateDoctorProfile, deleteDoctorById, getAllDoctor } = require("../Controllers/DoctorsControllers")
 const { getAllDoctor_External } = require('../Controllers/Public/ExternalDoctorController');
-const { UploadReport, deleteReport, getReport, getImage, deleteImages, UploadMultipleDocs } = require('../Controllers/DoctorUploads');
+const { UploadReport, deleteReport, getReport, getImage, deleteImages, UploadMultipleDocs } = require('../Controllers/CustomUploadModals');
 const checkRolesPermissions = require('../Middlewares/PermissionRolesMiddleware');
 
 
@@ -19,8 +19,8 @@ router.route('/external/doctor').get(getAllDoctor_External)
 router.route('/upload/:itemId/:uploadType').post(checkRolesPermissions, UploadReport)
 router.route('/upload_files/:itemId/:uploadType').post(checkRolesPermissions, UploadMultipleDocs)
 router.route('/remove/:id/:itemId/:uploadType').delete(checkRolesPermissions, deleteReport)
-router.route('/get/:id').get(checkRolesPermissions, getReport)
-router.route('/get/image/:id').get(checkRolesPermissions, getImage)
+router.route('/get/:id').get(getReport)
+router.route('/get/image/:id').get(getImage)
 router.route('/delete/image/:itemId/:uploadType').delete(checkRolesPermissions, deleteImages)
 
 

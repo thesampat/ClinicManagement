@@ -6,6 +6,8 @@ const createNutritionRecord = async (req, res) => {
         const savedRecord = await newRecord.save();
         return res.status(200).json(savedRecord)
     } catch (error) {
+
+
         return res.status(500).json({ error: "Error creating nutrition record" });
     }
 }
@@ -15,6 +17,8 @@ const getAllNutritionRecords = async (req, res) => {
         const records = await Nutrition.find();
         res.status(200).json(records)
     } catch (error) {
+
+
         res.status(500).json({ error: "Error fetching nutrition records" });
     }
 }
@@ -29,6 +33,8 @@ const getNutritionRecordById = async (req, res) => {
         }
         res.status(200).json(record);
     } catch (error) {
+
+
         res.status(500).json({ error: "Error fetching nutrition record" });
     }
 }
@@ -42,6 +48,8 @@ const deleteNutritionRecord = async (req, res) => {
         }
         res.status(200).json({ message: "Record deleted successfully" });
     } catch (error) {
+
+
         res.status(500).json({ error: "Error deleting nutrition record" });
     }
 }

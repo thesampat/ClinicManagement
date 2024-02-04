@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Consultant } = require("../Models/ConsultantModel");
 const { SuperAdmin } = require("../Models/MainDoctorModel");
-const { setPermissionRoles, getPermissions } = require("./Other");
+const { setPermissionRoles, getPermissions, defaultPasswordAll } = require("./Other");
 require("dotenv").config();
 
 const generateItemId = async () => {
@@ -23,10 +23,9 @@ const generateItemId = async () => {
 
 const consultantRegisterBySuperAdmin = async (req, res) => {
     const { name, email, password, fees, phone, typesOfDoctor, pic, education_details, experience_details, location, slotTimes, availableTime, availability } = req.body;
-    console.log(req.body);
     let consultantId
     const Role = "Consultant";
-    if (!name || !email || !password) {
+    if (!name || !email) {
         return res.status(422).json({ error: "Please provide all fields." });
     }
 
@@ -34,6 +33,8 @@ const consultantRegisterBySuperAdmin = async (req, res) => {
         let res = await generateItemId()
         consultantId = res
     } catch (error) {
+
+
         console.log(error)
         return res.status(500).send('Error! Please Try Again')
     }
@@ -44,7 +45,7 @@ const consultantRegisterBySuperAdmin = async (req, res) => {
             return res.status(403).send({ msg: 'Consultant is already registered.' });
         }
 
-        bcrypt.hash(password, 10, async function (err, hash) {
+        bcrypt.hash(defaultPasswordAll, 10, async function (err, hash) {
             if (err) {
                 return res.status(500).send(err);
             }
@@ -72,12 +73,16 @@ const consultantRegisterBySuperAdmin = async (req, res) => {
                 await newConsultant.save()
                 return res.status(201).send({ msg: 'Consultant registered successfully.', data: newConsultant?._id });
             } catch (error) {
+
+
                 console.log(error)
                 return res.status(403).send(error);
             }
         })
 
     } catch (error) {
+
+
         return res.status(500).send(error);
     }
 }
@@ -102,6 +107,8 @@ const getAllConsultant = async (req, res) => {
 
         return res.status(200).send(consultants);
     } catch (error) {
+
+
         return res.status(500).send(error);
     }
 }
@@ -156,6 +163,8 @@ const consultantLogin = async (req, res) => {
             }
         });
     } catch (error) {
+
+
         console.log(error);
         return res.status(500).json({ error: "Server error." });
     }
@@ -210,6 +219,8 @@ const getSingleConsultant = async (req, res) => {
         res.status(200).send(rescp)
 
     } catch (error) {
+
+
         res.status(404).send('Something went wrong')
     }
 }

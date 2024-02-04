@@ -9,6 +9,8 @@ const createNutritionEntry = async (req, res) => {
         let res = await generateItemId(nutritionModel)
         nutritionId = res
     } catch (error) {
+
+
         res.status(500).send('Error! Please Try Again')
     }
 
@@ -18,6 +20,8 @@ const createNutritionEntry = async (req, res) => {
         const savedNutritionEntry = await newNutritionEntry.save();
         res.status(201).json({ message: 'nutrition entry created successfully', nutritionEntry: 'savedNutritionEntry' });
     } catch (error) {
+
+
         console.error('Error creating nutrition entry:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -31,6 +35,8 @@ const updateNutritionEntry = async (req, res) => {
 
         res.json({ message: 'nutrition entry updated successfully', nutritionEntry: updatedNutritionEntry });
     } catch (error) {
+
+
         console.error('Error updating nutrition entry:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -43,6 +49,8 @@ const getNutritionEntries = async (req, res) => {
         const updatedNutritionEntry = await nutritionModel.find({}).skip(skip).limit(limit);
         res.json(updatedNutritionEntry);
     } catch (error) {
+
+
         console.error('Error updating nutrition entry:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -55,6 +63,8 @@ const getNutritionEntry = async (req, res) => {
         const NutritionEntry = await nutritionModel.find({ nutritionId });
         res.json(NutritionEntry);
     } catch (error) {
+
+
         console.error('Error updating nutrition entry:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -66,6 +76,8 @@ const deleteNutritionEntry = async (req, res) => {
         await nutritionModel.findByIdAndDelete(nutritionId);
         res.json({ message: 'nutrition entry deleted successfully' });
     } catch (error) {
+
+
         console.error('Error deleting nutrition entry:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }

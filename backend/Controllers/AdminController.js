@@ -35,11 +35,14 @@ const adminRegister = async (req, res) => {
                     await new_admin.save();
                     return res.status(201).send({ msg: "Signup Successful" });
                 } catch (error) {
+
                     return res.status(403).send(error);
                 }
             });
         }
     } catch (error) {
+
+
         return res.status(500).send(error);
     }
 };
@@ -87,6 +90,8 @@ const adminLogin = async (req, res) => {
             }
         });
     } catch (error) {
+
+
         return res.status(500).json({ error: "Server error." });
     }
 };

@@ -6,6 +6,8 @@ const createDistributor = async (req, res) => {
         const newDistributor = await Distributor.create(req.body);
         res.status(201).send({ msg: 'distrubutor added', data: newDistributor?._id });
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -64,6 +66,8 @@ const getAllDistributors = async (req, res) => {
 
         res.status(200).json(distributors);
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -84,6 +88,8 @@ const getDistributorById = async (req, res) => {
             res.status(404).json({ message: 'Distributor not found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -102,6 +108,8 @@ const updateDistributorById = async (req, res) => {
             res.status(404).json({ message: 'Distributor not found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -118,6 +126,8 @@ const deleteDistributorById = async (req, res) => {
             res.status(404).json({ message: 'Distributor not found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -150,6 +160,8 @@ const addCompanyToDistributor = async (req, res) => {
             res.status(404).json({ error: 'Distributor not found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -173,6 +185,8 @@ const updateCompanyInDistributor = async (req, res) => {
             res.status(404).json({ error: 'Distributor not found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -190,6 +204,8 @@ const removeCompanyFromDistributor = async (req, res) => {
             res.status(404).json({ error: 'Distributor not found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -214,6 +230,8 @@ const getDistributorByNameOfMedicine = async (req, res) => {
             res.status(404).json({ message: 'No matching inventory items found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };

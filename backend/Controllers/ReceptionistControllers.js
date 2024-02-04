@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Receptionist } = require("../Models/ReceptionistModel")
 const { SuperAdmin } = require("../Models/MainDoctorModel");
-const { setPermissionRoles, getPermissions } = require("./Other");
+const { setPermissionRoles, getPermissions, defaultPasswordAll } = require("./Other");
 require("dotenv").config();
 
 const generateItemId = async () => {
@@ -26,8 +26,8 @@ const receptionistRegisterBySuperAdmin = async (req, res) => {
     let receptionistId
 
     const Role = "Receptionist";
-    if (!name || !email || !password) {
-        return res.status(422).send("Please provide all fields");
+    if (!name || !email) {
+        return res.status(400).send("Please provide all fields");
     }
 
 
@@ -36,6 +36,8 @@ const receptionistRegisterBySuperAdmin = async (req, res) => {
         let res = await generateItemId()
         receptionistId = res
     } catch (error) {
+
+
         console.log(error)
         return res.status(500).send('Error! Please Try Again')
     }
@@ -47,7 +49,7 @@ const receptionistRegisterBySuperAdmin = async (req, res) => {
             return res.status(403).send('Receptionist is already registered');
         }
 
-        bcrypt.hash(password, 10, async function (err, hash) {
+        bcrypt.hash(defaultPasswordAll, 10, async function (err, hash) {
             if (err) {
                 return res.status(500).send('Something went wrong');
             }
@@ -69,11 +71,15 @@ const receptionistRegisterBySuperAdmin = async (req, res) => {
                 await newReceptionist.save()
                 return res.status(201).send({ msg: 'Receptionist registered successfully.', data: newReceptionist?._id });
             } catch (error) {
+
+
                 console.log(error)
                 return res.status(403).send('Something went wrong');
             }
         })
     } catch (error) {
+
+
         console.log(error)
         return res.status(500).send('Something went wrong');
     }
@@ -92,7 +98,6 @@ const receptionistLogin = async (req, res) => {
         const receptionist = await Receptionist.findOne({ email });
 
         if (!receptionist) {
-            console.log('Check');
             return res.status(401).json({ error: "Invalid credentials." });
         }
 
@@ -128,6 +133,8 @@ const receptionistLogin = async (req, res) => {
             }
         });
     } catch (error) {
+
+
         console.log(error);
         return res.status(500).json({ error: "Server error." });
     }
@@ -179,6 +186,8 @@ const getAllReceptionist = async (req, res) => {
 
         return res.status(200).json(receptionists);
     } catch (error) {
+
+
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
@@ -202,6 +211,8 @@ const getSingleReceptionist = async (req, res) => {
         res.status(200).send(rescp)
 
     } catch (error) {
+
+
         res.status(404).send('Something went wrong')
     }
 }

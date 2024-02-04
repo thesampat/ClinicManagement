@@ -18,6 +18,8 @@ const createInventoryItem = async (req, res) => {
         const newInventoryItem = await InventoryList.create({ 'medicine_id': itemId, ...req.body });
         res.status(201).json(newInventoryItem);
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -49,6 +51,8 @@ const getAllInventoryItems = async (req, res) => {
 
         return res.status(200).json(inventoryItems);
     } catch (error) {
+
+
         console.log(error);
         return res.status(500).json({ error: error.message });
     }
@@ -65,6 +69,8 @@ const getInventoryItemById = async (req, res) => {
             res.status(404).json({ message: 'Inventory item not found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -81,6 +87,8 @@ const getInventoryItemByIds = async (req, res) => {
             res.status(404).json({ message: 'Inventory items not found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -99,6 +107,8 @@ const updateInventoryItemById = async (req, res) => {
             res.status(404).json({ message: 'Inventory item not found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -115,6 +125,8 @@ const deleteInventoryItemById = async (req, res) => {
             res.status(404).json({ message: 'Inventory item not found' });
         }
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -124,6 +136,8 @@ const dropInventoryCollection = async (req, res) => {
         await InventoryList.collection.drop()
         res.status(200).json({ message: 'Inventory collection dropped successfully.' });
     } catch (error) {
+
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -138,6 +152,8 @@ const uploadBulkInventory = async (req, res) => {
         const newInventoryItems = await InventoryList.create(bulkInventoryItems);
         res.status(201).json('uploaded');
     } catch (error) {
+
+
         console.log(error)
         res.status(500).json({ error: error.message });
     }

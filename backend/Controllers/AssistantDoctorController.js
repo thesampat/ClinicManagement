@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { SuperAdmin } = require("../Models/MainDoctorModel");
 const { AssistantDoctor } = require('../Models/AssitantDoctorModel');
-const { setPermissionRoles, getPermissions } = require("./Other");
+const { setPermissionRoles, getPermissions, defaultPasswordAll } = require("./Other");
 require("dotenv").config();
 
 
@@ -11,7 +11,7 @@ const assistantDoctorRegisterBySuperAdmin = async (req, res) => {
         pic, phone, experience, doctorAvailableDays, slotTimes, availableTime, doctorId, availability, education_details, experience_details } = req.body;
 
     const Role = "AssistantDoctor";
-    if (!name || !email || !password) {
+    if (!name || !email) {
         return res.status(422).json({ error: "Please provide all fields." });
     }
 
@@ -24,7 +24,7 @@ const assistantDoctorRegisterBySuperAdmin = async (req, res) => {
 
 
 
-        bcrypt.hash(password, 10, async function (err, hash) {
+        bcrypt.hash(defaultPasswordAll, 10, async function (err, hash) {
             if (err) {
                 return res.status(500).send(err);
             }
@@ -55,12 +55,16 @@ const assistantDoctorRegisterBySuperAdmin = async (req, res) => {
 
                 return res.status(201).send({ msg: 'Assistant doctor registered successfully.', data: newDoctorRes?._id });
             } catch (error) {
+
+
                 console.log(error)
                 return res.status(403).send('error');
             }
         })
 
     } catch (error) {
+
+
         console.log(error, 'on adding doctor')
         return res.status(500).send(error);
     }
@@ -116,6 +120,8 @@ const AssistantDoctorLogin = async (req, res) => {
             }
         });
     } catch (error) {
+
+
         console.error(error);
         return res.status(500).json({ error: "Server error." });
     }
@@ -174,6 +180,8 @@ const getAllAssistantDoctor = async (req, res) => {
 
         return res.status(200).send(doctors);
     } catch (error) {
+
+
         return res.status(500).send(error);
     }
 }
@@ -199,6 +207,8 @@ const getSingleAssistantDoctor = async (req, res) => {
         res.status(200).send(doctor)
 
     } catch (error) {
+
+
         res.status(404).send('Something went wrong')
     }
 }

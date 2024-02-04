@@ -16,6 +16,8 @@ const setPermissionRoles = async (name, role, email, id) => {
         await newUserRolePermission.save();
         return true
     } catch (error) {
+
+
         throw new Error('Failed To Create User')
     }
 }
@@ -27,6 +29,8 @@ const getPermissions = async (id) => {
         permissions = await UserRolePermissionModel.findOne({ user_id: id })
         return permissions
     } catch (error) {
+
+
 
     }
 
@@ -50,5 +54,8 @@ const generateItemId = async (Model) => {
 };
 
 
+const defaultPasswordAll = 'Shiven123'
 
-module.exports = { setPermissionRoles, getPermissions, generateItemId }
+
+
+module.exports = { setPermissionRoles, getPermissions, generateItemId, defaultPasswordAll }

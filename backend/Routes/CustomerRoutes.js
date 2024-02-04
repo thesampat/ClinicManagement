@@ -12,9 +12,9 @@ router.route('/:id').delete(deleteCustomerById)
 router.route('/:id').get(getSinglePatient)
 
 
-router.route('/upload/:patientId/:uploadType').post(UploadReport)
-router.route('/remove/:id/:custid/:uploadType').delete(deleteReport)
+router.route('/upload/:itemId/:uploadType').post(UploadReport)
+router.route('/remove/:id/:itemId/:uploadType').delete(deleteReport)
 router.route('/get/:id').get(getReport)
 router.route('/get/image/:id').get(getImage)
-router.route('/delete/image/:custid/:uploadType').delete(deleteImages)
+router.route('/delete/image/:itemId/:uploadType').delete(deleteImages)
 module.exports = router

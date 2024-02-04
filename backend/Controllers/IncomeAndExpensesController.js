@@ -63,6 +63,8 @@ router.get('/', async (req, res) => {
         let final = dayDocument?.length <= 0 ? monthDocument : dayDocument
         return res.status(200).send(final);
     } catch (error) {
+
+
         console.error(error);
         return res.status(500).send({ error: 'Internal server error' });
     }
@@ -132,6 +134,8 @@ router.get('/specialQuery', async (req, res) => {
         return res.status(200).send(resultArray)
 
     } catch (error) {
+
+
         console.error(error);
         return res.status(500).send({ error: 'Internal server error' });
     }
@@ -180,6 +184,8 @@ router.post('/', async (req, res) => {
 
             return res.status(200).send("created")
         } catch (error) {
+
+
             console.log(error)
             return res.status(200).send("filed to create data")
         }
@@ -199,7 +205,6 @@ router.post('/', async (req, res) => {
             });
 
             if (dayData?.length >= 1) {
-                console.log('i am here now')
                 try {
                     dayUpdateEntry = await IncomeAndExpensesModel.updateOne(
                         {
@@ -235,6 +240,8 @@ router.post('/', async (req, res) => {
 
                     return res.status(200).send("day updated");
                 } catch (error) {
+
+
                     return res.status(400).send(error)
                 }
 
@@ -265,6 +272,8 @@ router.post('/', async (req, res) => {
 
                     res.status(200).send('Day Pushed')
                 } catch (error) {
+
+
                     console.log(error)
                     res.status(400).send(error)
                 }
@@ -295,6 +304,8 @@ router.post('/', async (req, res) => {
 
                 res.status(400).send('Month Pushed')
             } catch (error) {
+
+
                 console.log(error)
                 res.status(400).send(error)
             }
@@ -314,6 +325,8 @@ router.get('/shortcuts', async (req, res) => {
 
         return res.status(200).send(documents);
     } catch (error) {
+
+
         console.error(error);
         return res.status(500).send({ error: 'Internal server error' });
     }
@@ -337,6 +350,8 @@ router.post('/shortCuts', async (req, res) => {
             })
             return res.status(200).send("created")
         } catch (error) {
+
+
             console.log(error)
             return res.status(200).send("filed to create data")
         }
@@ -348,6 +363,8 @@ router.post('/shortCuts', async (req, res) => {
             update_entry = await IncomeAndExpensesShortcutsModel.findOneAndUpdate({ year: year }, { 'data': data }, { new: true })
             return res.status(200).send("updated")
         } catch (error) {
+
+
             console.log(error)
             return res.status(200).send("filed to update data")
         }
